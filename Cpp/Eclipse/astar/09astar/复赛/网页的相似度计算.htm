@@ -1,0 +1,348 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=GB2312">
+<title>百度之星astar2009程序设计大赛</title>
+<style type="text/css">
+<!--
+body,td,th {
+	font-size: 12px;
+}
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+}
+-->
+</style>
+<link href="%E7%BD%91%E9%A1%B5%E7%9A%84%E7%9B%B8%E4%BC%BC%E5%BA%A6%E8%AE%A1%E7%AE%97_files/star.css" rel="stylesheet" type="text/css">
+<link href="%E7%BD%91%E9%A1%B5%E7%9A%84%E7%9B%B8%E4%BC%BC%E5%BA%A6%E8%AE%A1%E7%AE%97_files/star2008.css" rel="stylesheet" type="text/css">
+</head><body>
+<table align="center" border="0" cellpadding="0" cellspacing="0" height="49" width="940">
+  <tbody><tr>
+    <td width="319"><img src="%E7%BD%91%E9%A1%B5%E7%9A%84%E7%9B%B8%E4%BC%BC%E5%BA%A6%E8%AE%A1%E7%AE%97_files/logo.jpg" height="53" width="319"></td>
+    <td width="347">&nbsp;</td>
+    <td valign="bottom" width="274">&nbsp;</td>
+  </tr>
+</tbody></table>
+
+<table align="center" background="%E7%BD%91%E9%A1%B5%E7%9A%84%E7%9B%B8%E4%BC%BC%E5%BA%A6%E8%AE%A1%E7%AE%97_files/top01.jpg" border="0" cellpadding="0" cellspacing="0" height="33" width="940">
+  <tbody><tr>
+    <td width="30">&nbsp;</td>
+    <td>
+              <div style="float: right;"><a href="http://astar.baidu.com/main/update.php">个人信息及修改</a> <a href="http://astar.baidu.com/main/logout.php">退出登录</a>&nbsp;&nbsp;</div>
+      
+      <span class="z1"><strong><a href="http://astar.baidu.com/index.html" class="z1">Astar首页</a></strong>&nbsp;&nbsp;</span>
+      <span class="z1"><strong><a href="http://astar.baidu.com/intro.html" class="z1">赛事概述</a></strong>&nbsp;&nbsp;</span>
+      <span class="z1"><strong><a href="http://astar.baidu.com/rules.html" class="z1">赛事规则</a></strong>&nbsp;&nbsp;</span>
+      <span class="z1"><strong><a href="http://astar.baidu.com/collect.html" class="z1">赛题集锦</a></strong>&nbsp;&nbsp;</span>
+      <span class="z1"><strong><a href="http://astar.baidu.com/guide.html" class="z1">答题指南</a></strong>&nbsp;&nbsp;</span>
+      <span class="z1"><strong><a href="http://astar.baidu.com/faq.html" class="z1">Q&amp;A</a></strong><strong>&nbsp;&nbsp;</strong></span>
+<strong>      <span class="z1"><strong><a href="http://astar.baidu.com/star.html" class="z1">星语星愿</a></strong>&nbsp;&nbsp;</span>
+      <span class="z1"><strong><a target="_blank" href="http://hi.baidu.com/sys/search?type=0&amp;sort=1&amp;word=a%2Astar&amp;entry=2&amp;region=2&amp;hi=baidu&amp;date=" class="z1">往届回顾</a></strong>&nbsp;&nbsp;</span>
+      <span class="z1"><strong><a href="http://www.baidu.com/home.html" target="_blank" class="z1">关于百度</a></strong>&nbsp;&nbsp;</span>
+
+    </strong></td>
+  </tr>
+</tbody></table>
+<br>
+
+
+
+
+<table align="center" border="0" cellpadding="0" cellspacing="0" height="49" width="940">
+  <tbody><tr>
+  	<td>
+
+
+<table align="center" bgcolor="#c9d5ed" border="0" cellpadding="0" cellspacing="1" width="940">
+  <tbody><tr>
+    <td background="%E7%BD%91%E9%A1%B5%E7%9A%84%E7%9B%B8%E4%BC%BC%E5%BA%A6%E8%AE%A1%E7%AE%97_files/batton02.jpg" height="26">
+    <p class="z1"><strong>&nbsp;<a name="00"></a>在线答题</strong></p>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#ffffff" height="99" valign="top"><span class="z5"><br></span>
+        <table align="center" border="0" cellpadding="0" cellspacing="0" width="840">
+          <tbody><tr><td>
+
+
+<div align="right"><a href="http://astar.baidu.com/main/entry.php">我要重新选题</a>&nbsp;&nbsp;</div>
+
+<div class="box_1 f14">
+
+
+  <span style="font-family: 黑体; font-size: 40px;">3. 网页的相似度计算 <span class="smarterwiki-popup-bubble" style="opacity: 1; margin-left: -51px; margin-top: -36px;"><span class="smarterwiki-popup-bubble-body"><span class="smarterwiki-popup-bubble-links smarterwiki-clearfix"><span class="smarterwiki-popup-bubble-links-row smarterwiki-clearfix"><a target="_blank" title="Search Wikipedia" href="http://smarterfox.com/wikisearch/search?q=%E7%BD%91%E9%A1%B5%E7%9A%84%E7%9B%B8%E4%BC%BC%E5%BA%A6%E8%AE%A1%E7%AE%97%20&amp;locale=zh-CN" class="smarterwiki-popup-bubble-link"><img src="%E7%BD%91%E9%A1%B5%E7%9A%84%E7%9B%B8%E4%BC%BC%E5%BA%A6%E8%AE%A1%E7%AE%97_files/wiki-favicon-sharpened.png" alt="" class="smarterwiki-popup-bubble-link-favicon"></a><a target="_blank" title="Search Google" href="http://www.google.com/search?q=%E7%BD%91%E9%A1%B5%E7%9A%84%E7%9B%B8%E4%BC%BC%E5%BA%A6%E8%AE%A1%E7%AE%97%20" class="smarterwiki-popup-bubble-link"><img src="%E7%BD%91%E9%A1%B5%E7%9A%84%E7%9B%B8%E4%BC%BC%E5%BA%A6%E8%AE%A1%E7%AE%97_files/favicon.ico" alt="" class="smarterwiki-popup-bubble-link-favicon"></a></span></span></span><span class="smarterwiki-popup-bubble-tip"></span></span>（100分）</span>
+
+<h2>时限:1秒/CASE</h2>
+<h2>题目描述</h2>
+
+度度熊最近发现日本的互联网有很多恶意的作弊者用程序制造了大量的垃圾站点. 分布在成千上万的主域上, 这些站点初看起来感觉还行, 但当度度熊发现几千个格式一模一样的站点, 变化的只是其中的垃圾内容时, 度度熊觉得实在作呕. 例如下面这两个网站首页
+<p>
+
+<img src="%E7%BD%91%E9%A1%B5%E7%9A%84%E7%9B%B8%E4%BC%BC%E5%BA%A6%E8%AE%A1%E7%AE%97_files/pagesim_spam.png" width="600">
+
+</p><p>
+他决定开发出一个工具, 这个工具可以用于自动比较两个网页间<em>格式</em>的相似程度. 
+</p><p>
+
+网页的HTML标签信息组成了一棵(有根的)DOM树. TAG名就是树的结点的标签. 
+下面是一个例子:
+</p><p>
+
+</p><pre>&lt;HTML&gt;
+&lt;BODY&gt;
+&lt;table&gt;
+   &lt;tr&gt;
+      &lt;td&gt;&lt;img&gt;&lt;/img&gt;&lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+      &lt;td&gt;
+         Welcome!
+         &lt;br&gt;&lt;/br&gt;
+         &lt;a&gt;Click Here!&lt;/a&gt;
+      &lt;/td&gt;
+      &lt;td&gt;&lt;img&gt;&lt;/img&gt;&lt;/td&gt;
+   &lt;/tr&gt;
+&lt;/table&gt;
+&lt;/BODY&gt;
+&lt;/HTML&gt;
+</pre>
+
+<p>
+
+<img src="%E7%BD%91%E9%A1%B5%E7%9A%84%E7%9B%B8%E4%BC%BC%E5%BA%A6%E8%AE%A1%E7%AE%97_files/pagesim_dom1.gif"><br>
+图1
+
+</p><p>
+一棵<em>”正则”</em>的树是指结点数&gt;1的树.
+
+</p><p>
+两个DOM树<em>相等</em>当且仅当根的标签相等且各个儿子结点对应的子DOM树也都<em>对应</em>相等(各兄弟结点之间的<em>顺序</em>是重要的)
+</p><p>
+
+一个树的<em>子树</em>是指去掉某一结点与其父亲的边后留下来的以该结点为根的树.<br>
+如上图中以TABLE结点为根的子树是
+
+</p><p>
+<img src="%E7%BD%91%E9%A1%B5%E7%9A%84%E7%9B%B8%E4%BC%BC%E5%BA%A6%E8%AE%A1%E7%AE%97_files/pagesim_dom2.jpg"><br>
+图2
+
+</p><p>
+一个树的<em>”根余子树”</em>是指去掉一系列的子树, 但<em>不去掉子树的根</em>后余下的树.
+<br>
+例如图1去掉2个以TR为根的子树后的”根余子树”是:
+
+</p><p>
+<img src="%E7%BD%91%E9%A1%B5%E7%9A%84%E7%9B%B8%E4%BC%BC%E5%BA%A6%E8%AE%A1%E7%AE%97_files/pagesim_dom3.jpg"><br>
+图3
+
+</p><p>
+一个树的<em>”广义子树”</em>是指某个子树的”根余子树”, 例如图2子树的一个”根余子树”如下:
+
+</p><p>
+<img src="%E7%BD%91%E9%A1%B5%E7%9A%84%E7%9B%B8%E4%BC%BC%E5%BA%A6%E8%AE%A1%E7%AE%97_files/pagesim_dom4.jpg"><br>
+图4
+
+</p><p>
+两个DOM树的<em>相似度</em>定义为这两个DOM树所拥有的<em>共同的, ”正则”的 ”广义子树”</em>的数目(不同位置的相同的广义子树重复计数)
+.
+
+</p><p>
+你的任务是给出N个HTML网页, 求出这N个网页的两两相似度(共N*(N-1)/2对).并按相似度从大到小排序输出.
+</p><p>
+由于内容信息是不重要的.故你可以把连续的文本当作一个单独的虚拟<em>PURE_TEXT</em>标签.准确来说,你<em>必须</em>将
+<br>
+&lt;b&gt; why why &lt;/b&gt;
+<br>
+看作是
+<br>
+&lt;a&gt; &lt;PURE_TEXT&gt; &lt;/PURE_TEXT&gt; &lt;/a&gt;.
+<br>
+但要注意.<em>连续的空白(空格,TAB,回车换行)</em>不是TEXT,空白只起到分隔符的作用.如果网页中有PURE_TEXT标签,则和上述虚拟的PURE_TEXT标签<em>同等对待</em>.
+
+</p><h2>输入格式</h2>
+第一行N,表示有N个HTML.  (2&lt;=N&lt;=10)
+<br>
+从第二行开始描述N个HTML,每个HTML的描述格式是
+<p><span>
+第一行URL,以<a href="http://xn--2sst8k.xn--htmlurl-bx3kfi615c4li2j8did3atlb/" class="smarterwiki-linkify">http://开头。每个HTML的URL均不相同</a>.</span><br>
+以下为HTML源码,直到一个以<em>只有</em>4个等号(====)的行表示结束.
+</p><p>
+为简单计,HTML里的标签只有名字,没有属性信息, 并且所有的标签都是成对出现的.如&lt;br&gt;&lt;/br&gt;.<br>
+标签名字不区分大小写(且不一定是标准的HTML标签). &lt;br&gt;和&lt;Br&gt;是相同标签.
+
+</p><p>
+用正则表达式表示如下,括号表示分组:
+
+</p><pre>ID:=[a-zA-Z0-9]+
+TEXT:=[a-zA-Z0-9&lt;SPACE&gt;]+
+START_TAG:=&lt;ID&gt;
+END_TAG:=&lt;/ID&gt;
+TREE:=EMPTY|TEXT|(START_TAG TREE END_TAG)+
+HTML:=&lt;html&gt;TREE&lt;/html&gt;
+</pre>
+
+其中&lt;SPACE&gt;指空白(空格,TAB,回车换行等等, 具体的说, 是c语言中isspace(c)为真的字符).
+空白起到划分语法边界的作用, 因此可以出现在任意语法边界上. 如&lt; / pre &gt;是合法的.但&lt; / p re&gt;则不是合法的.
+
+输入的HTML保证合法, 我们不会刻意出数据来测试选手对语法的理解(数据都是由真实的网页数据而来). 但选手最好作一些简单的<em>容错</em>. 如果我们的数据不<em>严格</em>符合上面的正则表达式. 但是95%的选手程序都会正确处理, 我们将认为数据是正常的.
+
+比赛规则中保证输入一定为LINUX格式, 但此题<em>不保证</em>.
+<p>
+输入文件长度&lt;=10MB. 总的标签数目（包括PURE_TEXT）&lt;=10000.
+
+</p><h2>输出格式</h2>
+共N*(N-1)/2行.<br>
+每行格式为:<br>
+<pre>相似度&lt;空格&gt;对应的URL1&lt;空格&gt;对应的URL2
+</pre>
+在同一行中，URL1和URL2按字典序排序(即URL1&lt;URL2).
+<p>
+全部结果按相似度从大到小排序. 相似度相同的按URL1的字典序排序.URL1也相同的按URL2的字典序排序.
+相似度保证小于64位有符号整数的最大值.
+</p>
+<p>
+注意:我们的测试机器是<em>64位</em>, 故long可以保存得下相似度的结果. 请用scanf("%<b>ld</b>",&amp;x)或cin&gt;&gt;x来读取long
+
+</p><h2>样例输入</h2>
+<pre>2
+http://url_b/
+&lt;html&gt;
+&lt;A&gt;TEXT&lt;/a&gt;&lt;br&gt;T&lt;/br&gt;TEXT
+&lt;/html&gt;
+====
+http://url_a/
+&lt;html&gt;
+&lt;a&gt;U&lt;/a&gt;&lt;br&gt;U&lt;/br&gt;
+&lt;/html&gt;
+====
+</pre>
+
+<h2>样例输出</h2>
+
+<pre>2 http://url_a/ http://url_b/
+</pre>
+
+<h2>测试数据</h2>
+共10组测试数据.测试数据是<em>真实</em>的网页数据(经过必要的转换以满足上述的格式描述和规模)加部分手工数据.
+</div>
+<div align="right"><a href="http://astar.baidu.com/main/entry.php">我要重新选题</a>&nbsp;&nbsp;</div>
+
+
+<iframe marginheight="0" marginwidth="0" src="%E7%BD%91%E9%A1%B5%E7%9A%84%E7%9B%B8%E4%BC%BC%E5%BA%A6%E8%AE%A1%E7%AE%97_files/keepalive.htm" frameborder="0" height="0" scrolling="no" width="100%"></iframe>
+<div class="box_1 f14">
+<table style="border: 1px solid rgb(241, 203, 156);" border="0" cellpadding="0" cellspacing="0" width="730">
+<form name="theform" action="../main/compile.php" target="_blank" method="post" onsubmit="return CheckCode(this)"></form>
+<input name="qid" value="3" type="hidden">
+  <tbody><tr>
+    <td class="tab_4" bgcolor="#fbeddc" height="30">
+      <strong><span style="float: right; padding-right: 20px;" id="timex">答题时间剩余： <font color="#008000"><strong>3 小时 25 分 06 秒</strong></font></span>
+      <span class="f14">答题区</span></strong>
+    </td>
+  </tr>
+  <tr>
+    <td class="tab_4"><br>
+      选择语言 
+        <input name="lang" value="1" type="radio">C 
+        <input name="lang" value="2" type="radio">C++
+        <br>
+        <textarea name="code" cols="97" rows="25"></textarea>
+        <br>
+        <br>
+        <div align="center">
+          <input name="submitcode" value="提交代码" type="submit"><br><br>
+        </div>
+    </td>
+  </tr>
+
+</tbody></table>
+</div>
+
+<script>
+function CheckCode(o)
+{
+	var lang = o.lang;
+	if(!lang[0].checked && !lang[1].checked)
+	{
+		alert("请选择您使用的编程语言！");
+		return false;
+	}
+	var code = o.code;
+	if (code.value.length<10)
+	{
+		alert("请填写完整的代码！");
+		return false;
+	}
+	return true;
+}
+</script>
+<script language="javascript">
+var ctimer;
+total = 12321;
+init();
+function init()
+{
+	settotal();
+	showtime();
+}
+
+function settotal()
+{
+	var time=new Date();
+	secs = time.getSeconds();
+	total += secs;
+}
+
+function showtime()
+{
+	var time= new Date();
+	secs= time.getSeconds();
+	if (secs == 0)
+	{
+		total -= 60;
+	}
+
+	remain = total - secs;
+	hour = parseInt(remain / 3600);
+	min = parseInt((remain - hour * 3600) / 60);
+	sec = remain % 60;
+	
+	if (min < 10)
+		min = "0" + min;
+	if (sec < 10)
+		sec = "0" + sec;
+
+	remainshow = "<strong>" + hour + " 小时 " + min + " 分 " + sec + " 秒" + "</strong>";
+	timer = document.getElementById('timex');
+	if (remain < 0)
+		timer.innerHTML = "答题时间剩余： " + "<font color=\"#FF0000\">" + "0 小时 00 分 00 秒" + "</font>";
+	else if (remain < 1800)
+		timer.innerHTML = "答题时间剩余： " + "<font color=\"#FF0000\">" + remainshow + "</font>";
+	else
+		timer.innerHTML = "答题时间剩余： " + "<font color=\"#008000\">" + remainshow + "</font>";
+	ctimer = setTimeout('showtime()',1000);
+}
+</script>
+
+
+          </td></tr>
+        </tbody></table>
+    </td>    
+  </tr>
+</tbody></table>    </td>
+  </tr>
+</tbody></table>
+
+
+<div align="center">
+  <script language="JavaScript" src="%E7%BD%91%E9%A1%B5%E7%9A%84%E7%9B%B8%E4%BC%BC%E5%BA%A6%E8%AE%A1%E7%AE%97_files/new_root.js"></script><style>
+#ft{clear:both;margin-top:20px;line-height:20px;text-align:center}
+#ft,#ft *{color:#77C;font-size:12px;font-family:Arial;white-space:nowrap}
+body{margin-bottom:4px}
+</style>
+<div id="ft">&#169;2009 Baidu <a href="http://www.baidu.com/duty/">使用百度前必读</a></div>
+
+</div>
+
+</body></html>

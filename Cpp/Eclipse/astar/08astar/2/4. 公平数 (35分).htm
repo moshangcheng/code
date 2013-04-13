@@ -1,0 +1,255 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312"><title>百度之星astar2008程序设计大赛</title>
+
+<style type="text/css">
+<!--
+body,td,th {
+	font-size: 12px;
+}
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+}
+-->
+</style>
+<link href="4.%20%B9%AB%C6%BD%CA%FD%20%2835%B7%D6%29_files/star.css" rel="stylesheet" type="text/css">
+<link href="4.%20%B9%AB%C6%BD%CA%FD%20%2835%B7%D6%29_files/star2008.css" rel="stylesheet" type="text/css">
+<style>
+#ft{clear:both;margin-top:20px;line-height:20px;text-align:center}
+#ft,#ft *{color:#77C;font-size:12px;font-family:Arial;white-space:nowrap}
+body{margin-bottom:4px}
+</style></head><body>
+<table align="center" border="0" cellpadding="0" cellspacing="0" height="49" width="940">
+  <tbody><tr>
+    <td width="319"><img src="4.%20%B9%AB%C6%BD%CA%FD%20%2835%B7%D6%29_files/logo.jpg" height="53" width="319"></td>
+    <td width="347">&nbsp;</td>
+    <td valign="bottom" width="274">&nbsp;</td>
+  </tr>
+</tbody></table>
+<br>
+<table align="center" bgcolor="#7d91a6" border="0" cellpadding="0" cellspacing="1" width="200">
+  <tbody><tr>
+    <td><img src="4.%20%B9%AB%C6%BD%CA%FD%20%2835%B7%D6%29_files/banner2.jpg" height="88" width="937"></td>
+  </tr>
+</tbody></table>
+<br>
+<table align="center" background="4.%20%B9%AB%C6%BD%CA%FD%20(35%B7%D6)_files/top01.jpg" border="0" cellpadding="0" cellspacing="0" height="33" width="940">
+  <tbody><tr>
+    <td width="30">&nbsp;</td>
+    <td>
+              <div style="float: right;"><a href="http://star.baidu.com/main/update.php">个人信息及修改</a> <a href="http://star.baidu.com/main/logout.php">退出登录</a>&nbsp;&nbsp;</div>
+      
+      <span class="z1"><strong><a href="http://star.baidu.com/index.html" class="z1">Astar首页</a></strong>&nbsp;&nbsp;</span>
+      <span class="z1"><strong><a href="http://star.baidu.com/intro.html" class="z1">赛事概述</a></strong>&nbsp;&nbsp;</span>
+      <span class="z1"><strong><a href="http://star.baidu.com/rules.html" class="z1">赛事规则</a></strong>&nbsp;&nbsp;</span>
+      <span class="z1"><strong><a href="http://star.baidu.com/guide.html" class="z1">答题指南</a></strong>&nbsp;&nbsp;</span>
+      <span class="z1"><strong><a href="http://star.baidu.com/faq.html" class="z1">Q&amp;A</a></strong><strong>&nbsp;&nbsp;</strong></span>
+<strong>      <span class="z1"><strong><a href="http://star.baidu.com/star.html" class="z1">星语星愿</a></strong>&nbsp;&nbsp;</span>
+      <span class="z1"><strong><a href="http://star.baidu.com/hist1.html" class="z1">往届回顾</a></strong>&nbsp;&nbsp;</span>
+      <span class="z1"><strong><a href="http://www.baidu.com/home.html" target="_blank" class="z1">关于百度</a></strong>&nbsp;&nbsp;</span>
+    </strong></td>
+  </tr>
+</tbody></table>
+<br>
+
+
+
+
+<table align="center" border="0" cellpadding="0" cellspacing="0" height="49" width="940">
+  <tbody><tr>
+  	<td>
+
+<table align="center" bgcolor="#c9d5ed" border="0" cellpadding="0" cellspacing="1" width="940">
+  <tbody><tr>
+    <td background="4.%20%B9%AB%C6%BD%CA%FD%20(35%B7%D6)_files/batton02.jpg" height="26">
+    <p class="z1"><strong>&nbsp;<a name="00"></a>在线答题</strong></p>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#ffffff" height="99" valign="top"><span class="z5"><br></span>
+        <table align="center" border="0" cellpadding="0" cellspacing="0" width="840">
+          <tbody><tr><td>
+
+
+<div align="right"><a href="http://star.baidu.com/main/entry.php">我要重新选题</a>&nbsp;&nbsp;</div>
+
+<div class="box_1 f14">
+
+
+  <span style="font-family: 黑体; font-size: 20px;">4. 公平数 (35分)</span>
+
+
+  <h3>问题背景</h3>
+
+
+  <p>
+ 如果一个整数的十六进制表示（不含前导0）中，前一半数字之和等于后一半数字之和，我们称它为公平数。<br>
+注意，如果该数的十六进制表示中包含奇数个数字，则正中间的数字既不属于前一半，又不属于后一半。
+<br>
+<br>例如在十六进制下1+D=7+7，因此1DE77是公平数。数字E并不参与计算。
+
+<br>再例如，所有单个数字的十六进制数（即0~F）均为公平数，但F0不是（不能把F0补充前导0写成0F0，进而认为它是公平数）。<br>
+
+<br>
+给出十六进制数 K, X, Y 和十六进制数字集合 S，求区间[X, Y]之内，有多少个公平数满足：
+</p><ul>
+	<li>十六进制表达式（不包含前导0）中每个数字均在集合S中</li>
+
+	<li>并且为K的倍数</li>
+</ul>
+
+
+
+
+  <h3>输入格式</h3>
+  <p>
+输入第一行为数字集S，包含0~9以及大写字母A~F。
+<br>每个数字或字母最多出现一次。
+<br>第二行包含 3 个十六进制正整数K, X, Y，均不超过  10 个数字（包含0~9以及大写字母A~F，不包含前导 0）。
+	</p>
+
+  <h3>输出格式</h3>
+  <p>
+仅一行，包含一个整数，即满足条件的公平数个数（10进制）。
+
+	</p>
+  <h3>样例输入</h3>
+  <p>
+
+124C<br>
+5 100 FFF
+	</p>
+  <h3>样例输出</h3>
+  <p>
+4
+	</p>
+
+
+  <h3>样例解释</h3>
+  <p>
+
+只有四个数满足条件：212，424，4C4，C1C。	</p>
+
+</div>
+<div align="right"><a href="http://star.baidu.com/main/entry.php">我要重新选题</a>&nbsp;&nbsp;</div>
+
+
+<iframe marginheight="0" marginwidth="0" src="4.%20%B9%AB%C6%BD%CA%FD%20%2835%B7%D6%29_files/keepalive.htm" frameborder="0" height="0" scrolling="no" width="100%"></iframe>
+<div class="box_1 f14">
+<input name="qid" value="4" type="hidden">
+  <table style="border: 1px solid rgb(241, 203, 156);" border="0" cellpadding="0" cellspacing="0" width="730">
+<form name="theform" action="../main/compile.php" target="_blank" method="post" onsubmit="return CheckCode(this)"></form>
+<tbody><tr>
+    <td class="tab_4" bgcolor="#fbeddc" height="30">
+      <strong><span style="float: right; padding-right: 20px;" id="timex">答题时间剩余： <font color="#ff0000"><strong>0 小时 03 分 24 秒</strong></font></span>
+      <span class="f14">答题区</span></strong>
+    </td>
+  </tr>
+  <tr>
+    <td class="tab_4"><br>
+      选择语言 
+        <input name="lang" value="1" type="radio">C 
+        <input name="lang" value="2" checked="checked" type="radio">C++
+        <br>
+        <textarea name="code" cols="97" rows="25"></textarea>
+        <br>
+        <br>
+        <div align="center">
+          <input name="submitcode" value="提交代码" type="submit"><br><br>
+        </div>
+    </td>
+  </tr>
+
+</tbody></table>
+</div>
+
+<script>
+function CheckCode(o)
+{
+	var lang = o.lang;
+	if(!lang[0].checked && !lang[1].checked)
+	{
+		alert("请选择您使用的编程语言！");
+		return false;
+	}
+	var code = o.code;
+	if (code.value.length<10)
+	{
+		alert("请填写完整的代码！");
+		return false;
+	}
+	return true;
+}
+</script>
+<script language="javascript">
+var ctimer;
+total = 200;
+init();
+function init()
+{
+	settotal();
+	showtime();
+}
+
+function settotal()
+{
+	var time=new Date();
+	secs = time.getSeconds();
+	total += secs;
+}
+
+function showtime()
+{
+	var time= new Date();
+	secs= time.getSeconds();
+	if (secs == 0)
+	{
+		total -= 60;
+	}
+
+	remain = total - secs;
+	hour = parseInt(remain / 3600);
+	min = parseInt((remain - hour * 3600) / 60);
+	sec = remain % 60;
+	
+	if (min < 10)
+		min = "0" + min;
+	if (sec < 10)
+		sec = "0" + sec;
+
+	remainshow = "<strong>" + hour + " 小时 " + min + " 分 " + sec + " 秒" + "</strong>";
+	timer = document.getElementById('timex');
+	if (remain < 0)
+		timer.innerHTML = "答题时间剩余： " + "<font color=\"#FF0000\">" + "0 小时 00 分 00 秒" + "</font>";
+	else if (remain < 1800)
+		timer.innerHTML = "答题时间剩余： " + "<font color=\"#FF0000\">" + remainshow + "</font>";
+	else
+		timer.innerHTML = "答题时间剩余： " + "<font color=\"#008000\">" + remainshow + "</font>";
+	ctimer = setTimeout('showtime()',1000);
+}
+</script>
+
+
+          </td></tr>
+        </tbody></table>
+    </td>    
+  </tr>
+</tbody></table>    </td>
+  </tr>
+</tbody></table>
+
+
+<div align="center">
+  <script language="JavaScript" src="4.%20%B9%AB%C6%BD%CA%FD%20%2835%B7%D6%29_files/new_root.js"></script>
+<div id="ft">&#169;2008 Baidu <a href="http://www.baidu.com/duty/">使用百度前必读</a></div>
+
+</div>
+
+<!--
+tc01
+-->
+
+</body></html>

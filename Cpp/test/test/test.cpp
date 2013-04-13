@@ -5,7 +5,9 @@ template<typename T> struct HasX {
 	struct Derived : T, Fallback { };
 
 	template<typename C, C> struct ChT; 
-
+	
+	//if T has member x, there is conflict when calling &C::x
+	//so the first function is called for T not have member x
 	template<typename C> static char (&f(ChT<int Fallback::*, &C::x>*))[1]; 
 	template<typename C> static char (&f(...))[2]; 
 

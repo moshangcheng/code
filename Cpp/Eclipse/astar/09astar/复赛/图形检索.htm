@@ -1,0 +1,250 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=GB2312">
+<title>百度之星astar2009程序设计大赛</title>
+<style type="text/css">
+<!--
+body,td,th {
+	font-size: 12px;
+}
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+}
+-->
+</style>
+<link href="%E5%9B%BE%E5%BD%A2%E6%A3%80%E7%B4%A2_files/star.css" rel="stylesheet" type="text/css">
+<link href="%E5%9B%BE%E5%BD%A2%E6%A3%80%E7%B4%A2_files/star2008.css" rel="stylesheet" type="text/css">
+</head><body>
+<table align="center" border="0" cellpadding="0" cellspacing="0" height="49" width="940">
+  <tbody><tr>
+    <td width="319"><img src="%E5%9B%BE%E5%BD%A2%E6%A3%80%E7%B4%A2_files/logo.jpg" height="53" width="319"></td>
+    <td width="347">&nbsp;</td>
+    <td valign="bottom" width="274">&nbsp;</td>
+  </tr>
+</tbody></table>
+
+<table align="center" background="%E5%9B%BE%E5%BD%A2%E6%A3%80%E7%B4%A2_files/top01.jpg" border="0" cellpadding="0" cellspacing="0" height="33" width="940">
+  <tbody><tr>
+    <td width="30">&nbsp;</td>
+    <td>
+              <div style="float: right;"><a href="http://astar.baidu.com/main/update.php">个人信息及修改</a> <a href="http://astar.baidu.com/main/logout.php">退出登录</a>&nbsp;&nbsp;</div>
+      
+      <span class="z1"><strong><a href="http://astar.baidu.com/index.html" class="z1">Astar首页</a></strong>&nbsp;&nbsp;</span>
+      <span class="z1"><strong><a href="http://astar.baidu.com/intro.html" class="z1">赛事概述</a></strong>&nbsp;&nbsp;</span>
+      <span class="z1"><strong><a href="http://astar.baidu.com/rules.html" class="z1">赛事规则</a></strong>&nbsp;&nbsp;</span>
+      <span class="z1"><strong><a href="http://astar.baidu.com/collect.html" class="z1">赛题集锦</a></strong>&nbsp;&nbsp;</span>
+      <span class="z1"><strong><a href="http://astar.baidu.com/guide.html" class="z1">答题指南</a></strong>&nbsp;&nbsp;</span>
+      <span class="z1"><strong><a href="http://astar.baidu.com/faq.html" class="z1">Q&amp;A</a></strong><strong>&nbsp;&nbsp;</strong></span>
+<strong>      <span class="z1"><strong><a href="http://astar.baidu.com/star.html" class="z1">星语星愿</a></strong>&nbsp;&nbsp;</span>
+      <span class="z1"><strong><a target="_blank" href="http://hi.baidu.com/sys/search?type=0&amp;sort=1&amp;word=a%2Astar&amp;entry=2&amp;region=2&amp;hi=baidu&amp;date=" class="z1">往届回顾</a></strong>&nbsp;&nbsp;</span>
+      <span class="z1"><strong><a href="http://www.baidu.com/home.html" target="_blank" class="z1">关于百度</a></strong>&nbsp;&nbsp;</span>
+
+    </strong></td>
+  </tr>
+</tbody></table>
+<br>
+
+
+
+
+<table align="center" border="0" cellpadding="0" cellspacing="0" height="49" width="940">
+  <tbody><tr>
+  	<td>
+
+
+<table align="center" bgcolor="#c9d5ed" border="0" cellpadding="0" cellspacing="1" width="940">
+  <tbody><tr>
+    <td background="%E5%9B%BE%E5%BD%A2%E6%A3%80%E7%B4%A2_files/batton02.jpg" height="26">
+    <p class="z1"><strong>&nbsp;<a name="00"></a>在线答题</strong></p>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#ffffff" height="99" valign="top"><span class="z5"><br></span>
+        <table align="center" border="0" cellpadding="0" cellspacing="0" width="840">
+          <tbody><tr><td>
+
+
+<div align="right"><a href="http://astar.baidu.com/main/entry.php">我要重新选题</a>&nbsp;&nbsp;</div>
+
+<div class="box_1 f14">
+
+
+  <span style="font-family: 黑体; font-size: 40px;">2. 图形检索 <span class="smarterwiki-popup-bubble" style="opacity: 1; margin-left: -51px; margin-top: -36px;"><span class="smarterwiki-popup-bubble-body"><span class="smarterwiki-popup-bubble-links smarterwiki-clearfix"><span class="smarterwiki-popup-bubble-links-row smarterwiki-clearfix"><a target="_blank" title="Search Wikipedia" href="http://smarterfox.com/wikisearch/search?q=%E5%9B%BE%E5%BD%A2%E6%A3%80%E7%B4%A2%20&amp;locale=zh-CN" class="smarterwiki-popup-bubble-link"><img src="%E5%9B%BE%E5%BD%A2%E6%A3%80%E7%B4%A2_files/wiki-favicon-sharpened.png" alt="" class="smarterwiki-popup-bubble-link-favicon"></a><a target="_blank" title="Search Google" href="http://www.google.com/search?q=%E5%9B%BE%E5%BD%A2%E6%A3%80%E7%B4%A2%20" class="smarterwiki-popup-bubble-link"><img src="%E5%9B%BE%E5%BD%A2%E6%A3%80%E7%B4%A2_files/favicon.ico" alt="" class="smarterwiki-popup-bubble-link-favicon"></a></span></span></span><span class="smarterwiki-popup-bubble-tip"></span></span>（100分）</span>
+
+<h2>时间限制:10秒</h2>
+<h2>题目描述</h2>
+和人类一样, 度度熊也喜欢上网搜美女的图片, 不过和人类不同, 他搜的是熊熊. 他经常发现现有的搜索功能无法满足他的要求.
+他看到喜欢的熊熊就喜欢狂搜那个熊熊的其他图片. 遗憾的是人类并没有给每个熊起个名字,
+他非常羡慕人类可以用"金泰熙生活照"这样精确的Query来进行图片搜索. 有一天他终于受不了了, 决定开发一个"度度熊"图片检索系统.
+目的就是从一张图片出发, 检索和该图片相似的图片.
+<p>
+
+这可不是一件容易的事情, 度度熊心里当然很清楚. 因此他要先实现一个简化版的检索系统. 具体的描述如下:
+
+</p><p>
+系统目标: 给定任意一张包含特定图形的位图，从一列候选集中，正确检索出与之相似的结果.<br>
+检索对象: 黑白位图(即0/1 bitmap), 尺寸统一为180*180，其中每一个点P<sub>x,y</sub>保存像素点的颜色，1表示黑色，0表示白色。
+
+</p><p><img src="%E5%9B%BE%E5%BD%A2%E6%A3%80%E7%B4%A2_files/imgquery_sample.bmp">
+
+</p><h2>输入格式</h2>
+<p>
+只有<em>一个</em>测试点, 共X=150幅图像, 分为M=15个类别, 每个类别N=10个样本。在人眼看来，每个类别中的样本两两相似，但任意两个不同类别的图像都不相似。
+</p>
+<p>
+每幅图像(按照输入顺序依次编号为0..X-1)包含180行, 每行180个字符(为0或1), 字符之间无空白. 不同图像间用单个空行隔开.没有多余的输入(即保证只有X幅图像)
+</p>
+
+<h2>输出格式</h2>
+<p>
+共X行, 其中第i行用10个整数描述图像i的相似图像的序号，按照相似度降序排列（即：越接近的图像越早出现）。
+</p>
+
+<h2>评分方法</h2>
+<p>
+对输入的每幅图像i，评测程序将给出一个原始得分R(i)，然后计算出所有图像的总原始得分R=R(0)+R(1)+...+R(X-1)。
+R越大，你的最终得分也越高，但具体分数还取决于其他选手的表现。
+</p>
+<p>
+具体来说, 设原始分数非0的程序数为M ，比程序i严格更优（总原始得分R更大）的程序数为Y(i)，则程序i的最终得分为本题总分的100(1-Y(i)/M)%。
+换句话说，原始分数最大的程序将获得本题 100% 的分数，而最差解惟一的情况，输出最差解（但合法）的选手将得到 100/M%的分数。注意：本题的最终得分不必为整数。
+</p>
+<p>
+第i幅图像的原始得分R(i)在很大程度上取决于检索出的正确图像个数C。具体来说，当C=0时，R(i)=0，否则(C-1)<sup>2</sup> &lt; R(i) &lt;= C<sup>2</sup>。
+当C相同时，设正确图像在输出序列中的编号分别为T<sub>0</sub>,T<sub>1</sub>,...,T<sub>C-1</sub>，
+则T=T<sub>0</sub>+T<sub>1</sub>+...+T<sub>C-1</sub>越小越好（这里不提供具体公式）。
+
+</p><h2>测试数据</h2>
+本题只有一组输入. 具体见"输入格式"的描述.
+<p>
+样例数据<a href="http://astar.baidu.com/data/images/imgquery_sample_data.zip">点此下载</a>，<br>
+共12类别*6样本 = 72幅图像, 以及相应的0/1矩阵的输入文件sample.in，你可以使用该数据调试和测试你的程序. 压缩包里有一个 typerecord.txt 文件. 格式如下<br>
+0	1	13 <br>
+表示13.bmp是第0个类别的第1个样本.
+</p><p>
+请注意样例数据和测试数据的图片个数是不同的.
+
+
+</p></div>
+<div align="right"><a href="http://astar.baidu.com/main/entry.php">我要重新选题</a>&nbsp;&nbsp;</div>
+
+
+<iframe marginheight="0" marginwidth="0" src="%E5%9B%BE%E5%BD%A2%E6%A3%80%E7%B4%A2_files/keepalive.htm" frameborder="0" height="0" scrolling="no" width="100%"></iframe>
+<div class="box_1 f14">
+<table style="border: 1px solid rgb(241, 203, 156);" border="0" cellpadding="0" cellspacing="0" width="730">
+<form name="theform" action="../main/compile.php" target="_blank" method="post" onsubmit="return CheckCode(this)"></form>
+<input name="qid" value="2" type="hidden">
+  <tbody><tr>
+    <td class="tab_4" bgcolor="#fbeddc" height="30">
+      <strong><span style="float: right; padding-right: 20px;" id="timex">答题时间剩余： <font color="#008000"><strong>3 小时 25 分 32 秒</strong></font></span>
+      <span class="f14">答题区</span></strong>
+    </td>
+  </tr>
+  <tr>
+    <td class="tab_4"><br>
+      选择语言 
+        <input name="lang" value="1" type="radio">C 
+        <input name="lang" value="2" type="radio">C++
+        <br>
+        <textarea name="code" cols="97" rows="25"></textarea>
+        <br>
+        <br>
+        <div align="center">
+          <input name="submitcode" value="提交代码" type="submit"><br><br>
+        </div>
+    </td>
+  </tr>
+
+</tbody></table>
+</div>
+
+<script>
+function CheckCode(o)
+{
+	var lang = o.lang;
+	if(!lang[0].checked && !lang[1].checked)
+	{
+		alert("请选择您使用的编程语言！");
+		return false;
+	}
+	var code = o.code;
+	if (code.value.length<10)
+	{
+		alert("请填写完整的代码！");
+		return false;
+	}
+	return true;
+}
+</script>
+<script language="javascript">
+var ctimer;
+total = 12348;
+init();
+function init()
+{
+	settotal();
+	showtime();
+}
+
+function settotal()
+{
+	var time=new Date();
+	secs = time.getSeconds();
+	total += secs;
+}
+
+function showtime()
+{
+	var time= new Date();
+	secs= time.getSeconds();
+	if (secs == 0)
+	{
+		total -= 60;
+	}
+
+	remain = total - secs;
+	hour = parseInt(remain / 3600);
+	min = parseInt((remain - hour * 3600) / 60);
+	sec = remain % 60;
+	
+	if (min < 10)
+		min = "0" + min;
+	if (sec < 10)
+		sec = "0" + sec;
+
+	remainshow = "<strong>" + hour + " 小时 " + min + " 分 " + sec + " 秒" + "</strong>";
+	timer = document.getElementById('timex');
+	if (remain < 0)
+		timer.innerHTML = "答题时间剩余： " + "<font color=\"#FF0000\">" + "0 小时 00 分 00 秒" + "</font>";
+	else if (remain < 1800)
+		timer.innerHTML = "答题时间剩余： " + "<font color=\"#FF0000\">" + remainshow + "</font>";
+	else
+		timer.innerHTML = "答题时间剩余： " + "<font color=\"#008000\">" + remainshow + "</font>";
+	ctimer = setTimeout('showtime()',1000);
+}
+</script>
+
+
+          </td></tr>
+        </tbody></table>
+    </td>    
+  </tr>
+</tbody></table>    </td>
+  </tr>
+</tbody></table>
+
+
+<div align="center">
+  <script language="JavaScript" src="%E5%9B%BE%E5%BD%A2%E6%A3%80%E7%B4%A2_files/new_root.js"></script><style>
+#ft{clear:both;margin-top:20px;line-height:20px;text-align:center}
+#ft,#ft *{color:#77C;font-size:12px;font-family:Arial;white-space:nowrap}
+body{margin-bottom:4px}
+</style>
+<div id="ft">&#169;2009 Baidu <a href="http://www.baidu.com/duty/">使用百度前必读</a></div>
+
+</div>
+
+</body></html>

@@ -1,0 +1,155 @@
+难度从易到难分为A-E五级，简单的标准如下： 
+
+A - 极易，考察简单的编程，不用到算法知识，几乎不可能在Regional中出现 
+B - 较易，简单算法/数据结构的直接套用，若出到Regional中即为秒杀题 
+C - 中等，模型较隐蔽/较复杂算法/较高级数据结构或几种方法的综合运用，在Regional中应该是中期以前清扫的题目（对于中上水平队伍） 
+D - 较难，要求对模型的深刻理解/复杂数据结构/大代码量程序的实现，在Regionl中此类应该是决定金牌/出线与否的关键 
+E - 极难，可能是冠军借以压过全场的题目 
+
+难度划分只是凭借我的个人感觉，难免会有不准确之处，望各位理解。另外，我下面列出的都是我AC了的题目，对于少量没有列出的题目，主要是因为难度较大我没有做出或描述不清/数据有误（极少），对于不在列表中的题目一般可以认为难度在D或E的级别。 
+
+关于题目分类，其实是一个比较困难的工作。因为很多题目综合运用到多个方面的知识，在这种情况下我以一般将其归为我认为较关键/较困难/较隐蔽的方面，比如一道题目是求完线段相交以后再求最短路，我就将其归为计算几何了，对于此类题目一般在下面会另有说明。 
+
+有一些很简单的题目懒得细分，直接归到“杂项”里了，这也是杂项类里面简单题较多的原因。 
+
+==================我是低调的分隔线========================= 
+
+动态规划 
+
+1122B 1130B 1139A 1145B 1146C 1177C 1189C 
+
+贪心 
+
+1115B 1136B 1163C 1188C 
+
+BFS 
+
+1113B 1116C 1132A 1140B 1164B 1198B 
+
+图论 
+
+1111B 1119B 1125C 1129B 1142B 1151C 1159B 1172B 1190C 1194C 
+1195B 1199B 
+
+组合数学 
+
+1105A 1138A 1179B 1197B 
+
+数论 
+
+1150A 1152D 1171A 
+
+其它数学 
+
+1114D 1118C 1170B 1184C 
+
+几何 
+
+1103C 1124C 1131B 1143B 1160C 1181D 1185C 
+
+搜索 
+
+1137B 1147D 1157C 1167A 1187C 
+
+字符串 
+
+1161B 
+
+杂项 
+
+1101A 1102A 1104A 1106A 1110A 1112A 1117A 1120A 1123A 1127A 
+1128A 1133A 1134A 1135B 1141B 1144A 1153A 1154A 1155B 1156A 
+1158B 1162A 1165A 1166A 1168B 1169A 1173A 1175A 1176A 1178A 
+1180B 1183C 1191A 1192A 1193A 1196A 
+
+==================我是低调的分隔线============================ 
+
+1101 Up and Down Sequences 简单题 
+1102 Machined Surfaces 简单题 
+1103 Sunrise 有点麻烦的几何题，题意不太容易读清楚 
+1104 LED Test 无聊题 
+1105 Word Index 简单的计数 
+1106 Molecules 无聊题，暴力就可以 
+1110 Word-Search Wonder 简单题，暴力 
+1111 MPI Maelstrom 简单的最短路 
+1112 Integer Inquiry 高精度加法 
+1113 Moving Object Recognition BFS 
+1114 Random Walk 记忆化搜索+解线性方程组，很好的题目 
+1115 Radar Installation 经典贪心 
+1116 Holedox Moving 有点麻烦的BFS 
+1117 Game Prediction 简单杂题 
+1118 Chocolate 暴力DP可过，因为结果收敛，当N很大时强行缩小，正确做法据说是GF? 
+1119 Machine Schedule 二分匹配的经典题目 
+1120 Mileage Bank 简单杂题 
+1122 Scheduling Lectures DP, 可以做到O(n^2) 
+1123 Counterfeit Dollar 枚举不正常的硬币后检验 
+1124 Metal Cutting 比较麻烦的几何题，枚举N!种顺序后，模拟切割的过程 
+1125 Street Directions 桥必须拆成两个方向，其余边按dfs的方向即可 
+1127 DNA Sorting 简单题 
+1128 Numbers That Count 简单题 
+1129 Arbitrage Floyd求最短路 
+1130 The Tower of Babylon DP,把每种方块的不同方向分开成三种 
+1131 The Circumference of the Circle 简单几何，有公式a*b*c/S=4*r 
+1132 Knight Moves 经典BFS 
+1133 Eeny Meeny Moo 枚举m后暴力模拟即可 
+1134 Lotto 生成组合，dfs或者随便怎么写 
+1135 Matrix Chain Multiplication 简单的表达式分析 
+1136 Humble Numbers 很好很经典的题，维护几个指针交替前移 
+1137 Addition Chains DFS硬搜 
+1138 Binomial Showdown 二项式系数，可以用递推以防止溢出 
+1139 Compromise 经典DP，词的LCS 
+1140 Dungeon Master BFS，只不过换成了三维地图 
+1141 Equation Solver 表达式分析 
+1142 Frogger Dijkstra变形 
+1143 Globetrotter 几何，球面上两点间距离 
+1144 Tree Recovery 已知二叉树前序中序求后序，经典公司面试题-_- 
+1145 Special Experiment 求树的最大独立集，树型DP 
+1146 Elevator Stopping Plan 有点麻烦的DP，注意可以直接从第1层往上走，我因为这个错了多次 
+1147 New Go Game 比较难的搜索，要根据当前的信息尽可能多的推断出更多信息，以减少搜索量 
+1150 Sum of Factorials 简单题 
+1151 Task Sequences 结果一定只有一条链，竞赛图的Hamilton路 
+1152 Vivian's Problem 难题，实际是把给出的数凑成若干不同的梅森素数之积 
+1153 Word Reversal 简单字串题 
+1154 A Mathematical Curiosity 简单杂题 
+1155 Tournament Seeding 按照题目要求构造即可 
+1156 Niven Numbers 简单题 
+1157 Triangle War 博弈搜索 
+1158 Unscrambling Images 模拟置换即可 
+1159 A Plug for UNIX 经典二分图最大匹配 
+1160 Treasure Hunt 可以转化为求起点与每段小边界中点的连线经过了多少道墙，这样就简单多了 
+1161 487-3279 我用hash做的 
+1162 Biorhythms 简单题，枚举就可以 
+1163 Gone Fishing 黑书上有相当漂亮的贪心解法 
+1164 The Same Game BFS，简单模拟 
+1165 Artificial Intelligence? 无聊题 
+1166 Balancing Bank Accounts 简单题，模拟一下交易过程就好了 
+1167 The Settlers of Catan 最长路，NPC问题，暴力硬搞 
+1168 Team Queue 易知每个team在队列中都是排在一起的，故可用“队列的队列”来模拟 
+1169 Error Correction 简单题 
+1170 France '98 简单的概率计算 
+1171 Goldbach's Conjecture 简单数论题 
+1172 Heavy Cargo Dijkstra 
+1173 Matrix 我直接暴力过去了... 
+1175 Calendar 简单题 
+1176 Recaman's Sequence 简单题 
+1177 Terrible Sets 看明白题意以后会发现是和1800一样的经典题 
+1178 Fractal 简单题，递归模拟 
+1179 Game of Connections 简单的递推，注意用高精 
+1180 Inversion 直接构造解 
+1181 Amphiphilic Carbon Molecules 枚举一点为轴，按极角排序后，转圈扫描统计 
+1183 The Counting Problem 比较麻烦的计数题 
+1184 Different Digits 枚举可以使用的数字，然后bfs，注意答案大小的判断 
+1185 That Nice Euler Circuit 基本思路就是求交点个数，但还要处理一些情况 
+1187 The Rotation Game 我用的迭代加深dfs，用未到位的方格数作为估计下界进行剪枝 
+1188 Tian Ji -- The Horse Racing 分负(最差马输给最好马)、胜(胜略差于己的马)、平(剩下的马能平则平)三步贪心，或者dp做 
+1189 Islands and Bridges 状态压缩dp,记录路径上最后两个结点 
+1190 Jamie's Contact Groups 我是二分答案后最大流过的 
+1191 The Worm Turns 简单模拟 
+1192 Undercut 简单题 
+1193 Currency Exchange 简单题 
+1194 What's In a Name 匹配的"关键边"，做法是求一个初始匹配，每次删掉一条匹配边，如果不再有完美匹配，则此边为关键边 
+1195 Sorting It All Out 拓扑排序，注意处理一些细节的东西 
+1196 Web Navigation 简单字符串题 
+1197 Trees Made to Order 组合计数 
+1198 Space Station Shielding BFS 
+1199 Roads Scholar 多次求最短路 
