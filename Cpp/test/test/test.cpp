@@ -1,51 +1,80 @@
-#include <iostream>
+#include <type_traits>
 
-template<typename T> struct HasX { 
-	struct Fallback { int x; }; // introduce member name "x"
-	struct Derived : T, Fallback { };
+template<typename T, bool DisableB = std::is_fundamental<T>::value>
+struct HasOperatorMemberAccessor
+{ 
+private:
+	typedef char no;
+	struct yes { no m[2]; };
 
-	template<typename C, C> struct ChT; 
-	
-	//if T has member x, there is conflict when calling &C::x
-	//so the first function is called for T not have member x
-	template<typename C> static char (&f(ChT<int Fallback::*, &C::x>*))[1]; 
-	template<typename C> static char (&f(...))[2]; 
+	struct ambiguator { char* operator ->() { return nullptr; } };
+	struct combined : T, ambiguator { };
+	static combined* make();
 
-	static bool const value = sizeof(f<Derived>(0)) == 2;
+	template<typename U, U> struct check_impl;
+
+	template<typename U, U> struct CheckType
+	{
+		static bool const value = 1;
+	};
+
+	template<typename U, yes> struct CheckType
+	{
+		static bool const value = 0;
+	};
+
+	template<typename U>
+	static no check(
+		U*,
+		check_impl<char* (ambiguator::*)(), &U::operator ->>* = nullptr
+		);
+	static yes check(...);
+
+public:
+	static bool const value=CheckType<yes, check(make())>::value;
 };
 
-template<typename T> struct has_c_str { 
-	//struct Fallback { const char* c_str(); };
-	//struct Derived : T, Fallback { };
+// false for fundamental types, else the definition of combined will fail
+template<typename T>
+struct HasOperatorMemberAccessor<T, true> : std::false_type { };
 
-	template<typename C, C> struct ChT; 
+// true for non-void pointers
+template<typename T>
+struct HasOperatorMemberAccessor<T*, false> :
+	std::integral_constant<
+	bool,
+	!std::is_same<typename std::remove_cv<T>::type, void>::value
+	>
+{ };
 
-	template<typename C> static char (&f(ChT<const char*(C::*)() const, &C::c_str>*))[1]; 
-	template<typename C> static char (&f(...))[2]; 
-
-	static bool const value = sizeof(f<T>(0)) == 1;//2;
+template<typename X>
+struct PointerX
+{
+	X* operator ->() const { return nullptr; }
 };
 
-#define HAS_MEM_FUNC(func)													\
-	template<typename T, typename Sign>									    \
-struct class_has_##func {													\
-	typedef char yes[1];													\
-	typedef char no [2];													\
-	template <typename U, U> struct type_check;								\
-	template <typename _1> static yes &chk(type_check<Sign, &_1::func> *);	\
-	template <typename   > static no  &chk(...);							\
-	static bool const value = sizeof(chk<T>(0)) == sizeof(yes);				\
-}
+struct X { };
 
-HAS_MEM_FUNC(c_str);
-
-struct A { int x; };
-struct B { int z; };
-
-int main() { 
-	std::cout << has_c_str<std::string>::value << std::endl; // 1
-	std::cout << has_c_str<A>::value << std::endl; // 0
-	std::cout << class_has_c_str<std::string, const char*(std::string::*)() const>::value << std::endl; // 1
-	std::cout << class_has_c_str<A, const char*(A::*)()>::value << std::endl; // 0
-	return 0;
+int main()
+{
+	static_assert(
+		HasOperatorMemberAccessor<PointerX<bool>>::value,
+		"PointerX<> has operator->"
+		);
+	static_assert(
+		!HasOperatorMemberAccessor<X>::value,
+		"X has no operator->"
+		);
+	static_assert(
+		HasOperatorMemberAccessor<int*>::value,
+		"int* is dereferencable"
+		);
+	static_assert(
+		!HasOperatorMemberAccessor<int>::value,
+		"int is not dereferencable"
+		);
+	static_assert(
+		!HasOperatorMemberAccessor<void*>::value,
+		"void* is not dereferencable"
+		);
 }

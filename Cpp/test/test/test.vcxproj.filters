@@ -21,5 +21,8 @@
     <ClCompile Include="typeid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="template class.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
