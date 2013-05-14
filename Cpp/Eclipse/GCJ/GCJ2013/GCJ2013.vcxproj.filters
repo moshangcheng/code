@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\QR">
+      <UniqueIdentifier>{77eb9032-9df1-46dd-850f-4d3970d6cb69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\R1B">
+      <UniqueIdentifier>{72709e9d-0838-4520-b14d-2e640da0fc9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\R1C">
+      <UniqueIdentifier>{e4d8be16-49ab-4df2-89ae-4898d5296f39}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="GCJ2013_QR_1.cpp">
+      <Filter>Source Files\QR</Filter>
+    </ClCompile>
+    <ClCompile Include="GCJ2013_QR_2.cpp">
+      <Filter>Source Files\QR</Filter>
+    </ClCompile>
+    <ClCompile Include="GCJ2013_R1_B1.cpp">
+      <Filter>Source Files\R1B</Filter>
+    </ClCompile>
+    <ClCompile Include="GCJ2013_R1_B2.cpp">
+      <Filter>Source Files\R1B</Filter>
+    </ClCompile>
+    <ClCompile Include="test.cpp">
+      <Filter>Source Files\R1C</Filter>
+    </ClCompile>
+    <ClCompile Include="GCJ2013_R1_C1.cpp">
+      <Filter>Source Files\R1C</Filter>
+    </ClCompile>
+    <ClCompile Include="GCJ2013_R1_C2.cpp">
+      <Filter>Source Files\R1C</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
