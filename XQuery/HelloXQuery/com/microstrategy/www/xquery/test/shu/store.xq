@@ -10,5 +10,6 @@ declare %an:sequential function shu:store-document-run() as item()+
 {
     variable $doc := document { <root> { fn:parse-xml(f:read-text("resources/books.xml")) } </root> };
     doc:put("books.xml", $doc);
-    let $doc1 := doc:document("books.xml") return $doc1
+    variable $doc1 := doc:document("books.xml");
+    $doc1
 };

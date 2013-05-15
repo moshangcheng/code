@@ -15,3 +15,10 @@ declare function shu:test-xquery-script() as xs:integer
     variable $y := $x * 2;
     $y
 };
+
+declare function shu:test-fn-trace()
+{
+    variable $xml := <root><nodes><node>3</node></nodes></root>;
+    fn:trace($xml, "this is xml trace: ")
+    ;
+};
