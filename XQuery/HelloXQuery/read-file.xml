@@ -1,7 +1,7 @@
 <root>
 	<nodes>
-		<node>2</node>
 		<node>4</node>
-		<node>6</node>
+		<node>8</node>
+		<node>12</node>
 	</nodes>
 </root>

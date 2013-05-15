@@ -15,7 +15,7 @@ declare namespace an = "http://www.zorba-xquery.com/annotations";
 
 import module namespace xslt = "http://www.zorba-xquery.com/modules/languages/xslt";
 
-declare function shu:xslt-example() as item()+
+declare function shu:xslt-example-run() as item()+
 {
     let $source :=
     <catalog>
