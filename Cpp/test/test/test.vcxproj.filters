@@ -24,5 +24,56 @@
     <ClCompile Include="template class.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="streambuf.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="visit_private_member.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="endianess.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="icu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TUUID.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TMD5.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zorba_sax.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="template code bloat.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="inheritance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="class_size.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="C:\Users\shu\Desktop\icu\lib\icudt.lib" />
+    <Library Include="C:\Users\shu\Desktop\icu\lib\icuin.lib" />
+    <Library Include="C:\Users\shu\Desktop\icu\lib\icuio.lib" />
+    <Library Include="C:\Users\shu\Desktop\icu\lib\icule.lib" />
+    <Library Include="C:\Users\shu\Desktop\icu\lib\iculx.lib" />
+    <Library Include="C:\Users\shu\Desktop\icu\lib\icutu.lib" />
+    <Library Include="C:\Users\shu\Desktop\icu\lib\icuuc.lib" />
+    <Library Include="C:\Program Files (x86)\Zorba XQuery Processor 2.6.0\lib\zorba_simplestore.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="TUUID.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UUIDTypes.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TMD5.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

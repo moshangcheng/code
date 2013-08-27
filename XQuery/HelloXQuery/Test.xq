@@ -1,6 +1,111 @@
+import module namespace string = "http://www.zorba-xquery.com/modules/string";
+import module namespace file = "http://expath.org/ns/file";
+import module namespace x = "http://www.zorba-xquery.com/modules/xml";
+import schema namespace opt = "http://www.zorba-xquery.com/modules/xml-options";
+
+let $xml-fragments1 := x:parse(file:read-text("resources/ITEM_CCTR_MNTH_SLS.xml"),  
+<opt:options>
+<opt:parse-external-parsed-entity opt:skip-root-nodes="1"/>
+</opt:options>)
+
+let $xml-fragments2 := <a></a>
+
+return $xml-fragments2
+
+(:
+for $x in 1 to 3
+return {
+    variable $y := $x * $x;
+    $y
+}
+:)
+
+(:
+import module namespace http-client = "http://expath.org/ns/http-client";  
+
+import schema namespace http = "http://expath.org/ns/http-client";
+
+let $result := http-client:send-request(validate{
+<http:request href="http://www.w3school.com.cn/xquery/books.xml" method="GET" />
+})[2]
+
+return $result
+:)
+
+(:
+import module namespace http-client = "http://expath.org/ns/http-client";  
+
+import schema namespace http = "http://expath.org/ns/http-client";
+
+let $result1 := http-client:send-request(validate{
+<http:request href="http://www.w3school.com.cn/xquery/books.xml" method="GET" />
+})[2]
+
+let $result2 := http-client:send-request(validate{
+<http:request href="http://www.w3schools.com/xquery/books.xml" method="GET" />
+})[2]
+
+let $price1 := $result1//price
+let $price2 := $result2//price
+let $price-item-count := fn:count($price1)
+
+return
+<Table>
+<ColumnHeaders>
+    <ColumnHeader name="price1" type="xsd:string"/>
+    <ColumnHeader name="price2" type="xsd:string"/>
+</ColumnHeaders>
+<Data>
+{
+for $x in (1 to $price-item-count)
+return <Row>
+            <price1>{data($price1[$x])}</price1>
+            <price2>{data($price2[$x])}</price2>
+       </Row>
+}
+</Data>
+</Table>
+:)
+(:
+variable $x := 1;
+
+variable $array := ();
+
+while($x < 10) {
+    $array := ($array, <data>{$x}</data>);
+    $x := $x + 1;
+}
+
+$array
+:)
+
+(:
+import module namespace expath-http-client = "http://expath.org/ns/http-client";
+import module namespace json = "http://www.zorba-xquery.com/modules/json";
+import module namespace base64 = "http://www.zorba-xquery.com/modules/base64";
+
+declare default element namespace "http://expath.org/ns/http-client";
+declare namespace op = "http://www.zorba-xquery.org/options";
+declare namespace an = "http://www.zorba-xquery.com/annotations";
+
+let $uri := "https://moshangcheng.zendesk.com/api/v2/users/me.json"
+    
+let $req :=
+<request href="{data($uri)}" method="get">
+    <header name="Content-Type" value="application/json" />
+    <header name="Authorization" value=" Basic bW9zaGFuZ2NoZW5nQGdtYWlsLmNvbS90b2tlbjpndnZaTzRadkRwdXZyRW13NTVISzVyVHRPUnIyT0YxMmtwSUlxbUhP" />
+</request>
+
+let $result := expath-http-client:send-request($req)
+let $jsonResult := base64:decode($result[2])
+return $jsonResult
+:)
+
+(:
 import module namespace shu = "http://www.microstrategy.com/xquery/test/shu"
     at "com/microstrategy/www/xquery/test/shu/util.xq";
 shu:test-fn-trace()
+:)
 
 (:
 declare namespace op = "http://www.zorba-xquery.org/options";
@@ -63,7 +168,6 @@ mstr-zendesk:get-user-info()
 mstr-zendesk:list-all-tickets()
 let $tickets := mstr-zendesk:list-all-tickets()
 :)
-
 
 
 

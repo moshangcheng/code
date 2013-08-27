@@ -1,4 +1,4 @@
-module namespace shu = 'http://www.microstrategy.com/xquery/test/shu';
+module namespace shu = 'http://shu.me/acc';
 
 import module namespace doc = "http://www.zorba-xquery.com/modules/store/dynamic/documents";
 import module namespace f = "http://expath.org/ns/file";

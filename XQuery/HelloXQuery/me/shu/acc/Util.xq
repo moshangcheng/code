@@ -1,4 +1,4 @@
-module namespace shu = 'http://www.microstrategy.com/xquery/test/shu';
+module namespace shu = 'acc/shu';
 
 declare namespace op = "http://www.zorba-xquery.org/options";
 declare namespace an = "http://www.zorba-xquery.com/annotations";

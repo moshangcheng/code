@@ -8,7 +8,7 @@ Ref
     http://www.zorba-xquery.com/html/modules/zorba/programming/xslt
  :)
  
-module namespace shu = 'http://www.microstrategy.com/xquery/test/shu';
+module namespace shu = 'http://shu.me/acc';
  
 declare namespace op = "http://www.zorba-xquery.org/options";
 declare namespace an = "http://www.zorba-xquery.com/annotations";
