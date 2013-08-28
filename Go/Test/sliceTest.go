@@ -6,6 +6,9 @@ import (
 )
 
 func main() {
+    var nilSlice []int
+    fmt.Println(nilSlice, len(nilSlice), cap(nilSlice), nil == nilSlice)  //print [] 0 0 true
+
 	var sliceA = make([]int, 0, 5)
 	fmt.Println(sliceA, len(sliceA), cap(sliceA))
 	sliceB := append(sliceA, 1)
@@ -13,7 +16,5 @@ func main() {
 	fmt.Println(sliceB, len(sliceB), cap(sliceB))
 
 	intSlice := make([]int, 10, 100)
-	fmt.Println(len(intSlice))
-	fmt.Println(cap(intSlice))
-	fmt.Println(intSlice)
+	fmt.Println(intSlice, len(intSlice), cap(intSlice))
 }
