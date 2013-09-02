@@ -12,7 +12,7 @@ type MyStruct struct {
 }
 
 func (s MyStruct) PrintValue() {
-    fmt.Println(s.v)
+    fmt.Println("Calling value method", s.v)
 }
 
 func (s *MyStruct) SetValue(v int) {
@@ -20,7 +20,7 @@ func (s *MyStruct) SetValue(v int) {
 }
 
 func ParamPrintValue(s MyStruct) {
-    fmt.Println(s.v)
+    fmt.Println("Calling value functions", s.v)
 }
 
 func ParamSetValue(s *MyStruct, v int) {
@@ -30,7 +30,7 @@ func ParamSetValue(s *MyStruct, v int) {
 func main() {
     ps := &MyStruct{3}
     vs := MyStruct{0}
-    fmt.Println(vs, ps)
+    //fmt.Println(vs, ps)
 
     //If vs is addressable and &vs's method set contains SetValue()
     //vs.SetValue() is shorthand for (&vs).SetValue()
