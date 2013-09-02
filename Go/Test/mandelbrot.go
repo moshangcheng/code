@@ -37,60 +37,59 @@ POSSIBILITY OF SUCH DAMAGE.
 package main
 
 import (
-    "bufio"
-    "flag"
-    "fmt"
-    "os"
+	"bufio"
+	"flag"
+	"fmt"
+	"os"
 )
 
 var n = flag.Int("n", 200, "size")
 
 func main() {
-    flag.Parse()
-    out := bufio.NewWriter(os.Stdout)
-    defer out.Flush()
+	flag.Parse()
+	out := bufio.NewWriter(os.Stdout)
+	defer out.Flush()
 
-    w := float64(*n)
-    h := float64(*n)
-    bit_num := 0
-    byte_acc := byte(0)
-    const Iter = 50
-    const Zero float64 = 0
-    const Limit = 2.0
+	w := float64(*n)
+	h := float64(*n)
+	bit_num := 0
+	byte_acc := byte(0)
+	const Iter = 50
+	const Zero float64 = 0
+	const Limit = 2.0
 
-    fmt.Fprintf(out, "P4\n%d %d\n", *n, *n)
+	fmt.Fprintf(out, "P4\n%d %d\n", *n, *n)
 
-    for y := 0.0; y < h; y++ {
-        for x := 0.0; x < w; x++ {
-            Zr, Zi, Tr, Ti := Zero, Zero, Zero, Zero
-            Cr := (2*x/w - 1.5)
-            Ci := (2*y/h - 1.0)
+	for y := 0.0; y < h; y++ {
+		for x := 0.0; x < w; x++ {
+			Zr, Zi, Tr, Ti := Zero, Zero, Zero, Zero
+			Cr := (2*x/w - 1.5)
+			Ci := (2*y/h - 1.0)
 
-            for i := 0; i < Iter && (Tr+Ti <= Limit*Limit); i++ {
-                Zi = 2*Zr*Zi + Ci
-                Zr = Tr - Ti + Cr
-                Tr = Zr * Zr
-                Ti = Zi * Zi
-            }
+			for i := 0; i < Iter && (Tr+Ti <= Limit*Limit); i++ {
+				Zi = 2*Zr*Zi + Ci
+				Zr = Tr - Ti + Cr
+				Tr = Zr * Zr
+				Ti = Zi * Zi
+			}
 
-            byte_acc <<= 1
-            if Tr+Ti <= Limit*Limit {
-                byte_acc |= 0x01
-            }
+			byte_acc <<= 1
+			if Tr+Ti <= Limit*Limit {
+				byte_acc |= 0x01
+			}
 
-            bit_num++
+			bit_num++
 
-            if bit_num == 8 {
-                out.WriteByte(byte_acc)
-                byte_acc = 0
-                bit_num = 0
-            } else if x == w-1 {
-                byte_acc <<= uint(8 - uint(*n)%8)
-                out.WriteByte(byte_acc)
-                byte_acc = 0
-                bit_num = 0
-            }
-        }
-    }
+			if bit_num == 8 {
+				out.WriteByte(byte_acc)
+				byte_acc = 0
+				bit_num = 0
+			} else if x == w-1 {
+				byte_acc <<= uint(8 - uint(*n)%8)
+				out.WriteByte(byte_acc)
+				byte_acc = 0
+				bit_num = 0
+			}
+		}
+	}
 }
-

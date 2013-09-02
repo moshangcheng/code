@@ -8,44 +8,43 @@ package main
 import "fmt"
 
 type MyStruct struct {
-    v int
+	v int
 }
 
 func (s MyStruct) PrintValue() {
-    fmt.Println("Calling value method", s.v)
+	fmt.Println("Calling value method", s.v)
 }
 
 func (s *MyStruct) SetValue(v int) {
-    s.v = v
+	s.v = v
 }
 
 func ParamPrintValue(s MyStruct) {
-    fmt.Println("Calling value functions", s.v)
+	fmt.Println("Calling value functions", s.v)
 }
 
 func ParamSetValue(s *MyStruct, v int) {
-    s.v = v
+	s.v = v
 }
 
 func main() {
-    ps := &MyStruct{3}
-    vs := MyStruct{0}
-    //fmt.Println(vs, ps)
+	ps := &MyStruct{3}
+	vs := MyStruct{0}
+	//fmt.Println(vs, ps)
 
-    //If vs is addressable and &vs's method set contains SetValue()
-    //vs.SetValue() is shorthand for (&vs).SetValue()
-    //http://golang.org/ref/spec#Calls
-    //http://stackoverflow.com/questions/7438323/method-requires-pointer-receiver-in-go-programming-language
-    vs.SetValue(4)
-    ps.SetValue(5)
+	//If vs is addressable and &vs's method set contains SetValue()
+	//vs.SetValue() is shorthand for (&vs).SetValue()
+	//http://golang.org/ref/spec#Calls
+	//http://stackoverflow.com/questions/7438323/method-requires-pointer-receiver-in-go-programming-language
+	vs.SetValue(4)
+	ps.SetValue(5)
 
-    vs.PrintValue()
-    ps.PrintValue()
+	vs.PrintValue()
+	ps.PrintValue()
 
-    //ParamSetValue(vs, 0)
-    ParamSetValue(ps, 3)
+	//ParamSetValue(vs, 0)
+	ParamSetValue(ps, 3)
 
-    ParamPrintValue(vs)
-    //ParamPrintValue(ps)
+	ParamPrintValue(vs)
+	//ParamPrintValue(ps)
 }
-

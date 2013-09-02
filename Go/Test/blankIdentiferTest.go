@@ -1,9 +1,9 @@
 package main
 
 import (
-    "fmt"
-    "io"
-    _ "os" //Import for side effect
+	"fmt"
+	"io"
+	_ "os" //Import for side effect
 )
 
 //Interface checks
@@ -14,12 +14,11 @@ import (
 var _ io.Reader
 
 func main() {
-    //suppress the warning of unused variable
-    var iv = 3
-    _ = iv
-    m := make(map[string]int)
-    //ignore value in multiple assignment
-    _, err := m["a"]
-    fmt.Println(err)
+	//suppress the warning of unused variable
+	var iv = 3
+	_ = iv
+	m := make(map[string]int)
+	//ignore value in multiple assignment
+	_, err := m["a"]
+	fmt.Println(err)
 }
-

@@ -4,33 +4,32 @@ package main
 import "fmt"
 
 type I interface {
-    Print()
+	Print()
 }
 
 type S struct {
-    v int
+	v int
 }
 
 func (s S) Print() {
-    fmt.Println(s.v)
+	fmt.Println(s.v)
 }
 
 func (s *S) Set(iv int) {
-    s.v = iv
+	s.v = iv
 }
 
 func main() {
-    var s = S{1}
+	var s = S{1}
 
-    i1 := I(s)
-    i2 := I(&s)
+	i1 := I(s)
+	i2 := I(&s)
 
-    i1.Print()
-    i2.Print()
+	i1.Print()
+	i2.Print()
 
-    s.Set(2)
+	s.Set(2)
 
-    i1.Print()
-    i2.Print()
+	i1.Print()
+	i2.Print()
 }
-

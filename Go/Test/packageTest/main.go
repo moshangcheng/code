@@ -1,11 +1,10 @@
 package main
 
 import (
-    "fmt"
-    m "./myPkg"
+	m "./myPkg"
+	"fmt"
 )
 
 func main() {
-    fmt.Println(m.V1, m.V2)
+	fmt.Println(m.V1, m.V2)
 }
-

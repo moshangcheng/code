@@ -6,8 +6,8 @@ import (
 )
 
 func main() {
-    var nilSlice []int
-    fmt.Println(nilSlice, len(nilSlice), cap(nilSlice), nil == nilSlice)  //print [] 0 0 true
+	var nilSlice []int
+	fmt.Println(nilSlice, len(nilSlice), cap(nilSlice), nil == nilSlice) //print [] 0 0 true
 
 	var sliceA = make([]int, 0, 5)
 	fmt.Println(sliceA, len(sliceA), cap(sliceA))

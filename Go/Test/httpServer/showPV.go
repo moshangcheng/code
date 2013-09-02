@@ -6,16 +6,16 @@ import (
 )
 
 type Counter struct {
-    n int
+	n int
 }
 
 func (ctr *Counter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-    ctr.n++;
+	ctr.n++
 	fmt.Fprintf(w, "counter = %d\n", *ctr)
 }
 
 func main() {
-    ctr := new(Counter)
+	ctr := new(Counter)
 	http.Handle("/", ctr)
 	http.ListenAndServe(":8080", nil)
 }
