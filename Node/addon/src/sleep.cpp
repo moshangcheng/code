@@ -1,7 +1,11 @@
 #include <node.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
+#ifdef WIN32
+  #include <Winbase.h>
+#else
+  #include <unistd.h>
+#endif
 #include <iostream>
 
 using namespace v8;
@@ -20,7 +24,11 @@ Handle<Value> Add(const Arguments& args) {
     }
 
     std::cout << "before sleep\n";
+#ifdef WIN32
+    Slee(10000);
+#else
     sleep(10);
+#endif
     std::cout << "after sleep\n";
     Local<Number> num = Number::New(args[0]->NumberValue() + args[1]->NumberValue());
     return scope.Close(num);
