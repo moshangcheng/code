@@ -2,6 +2,7 @@
 
 using namespace v8;
 
+//create and return a JavaScript function that wraps a C++ function
 Handle<Value> MyFunction(const Arguments& args) {
   HandleScope scope;
   return scope.Close(String::New("hello world"));

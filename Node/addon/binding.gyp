@@ -35,6 +35,24 @@
       "sources": ["src/funcs.cpp"],
       "dependencies": [ ],
       "conditions": [["OS==\"win\"", { }], ["OS==\"mac\"", { "libraries": ["-lobjc"] }]]
+    },
+    {
+      "target_name": "cppObj",
+      "sources": ["src/cppObj/cppObj.cpp", "src/cppObj/addon.cpp"],
+      "dependencies": [ ],
+      "conditions": [["OS==\"win\"", { }], ["OS==\"mac\"", { "libraries": ["-lobjc"] }]]
+    },
+    {
+      "target_name": "objFactory",
+      "sources": ["src/objFactory/myobject.cpp", "src/objFactory/addon.cpp"],
+      "dependencies": [ ],
+      "conditions": [["OS==\"win\"", { }], ["OS==\"mac\"", { "libraries": ["-lobjc"] }]]
+    },
+    {
+      "target_name": "unwrapping",
+      "sources": ["src/unwrapping/myobject.cpp", "src/unwrapping/addon.cpp"],
+      "dependencies": [ ],
+      "conditions": [["OS==\"win\"", { }], ["OS==\"mac\"", { "libraries": ["-lobjc"] }]]
     }
   ]
 }
