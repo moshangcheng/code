@@ -25,7 +25,7 @@ Handle<Value> Add(const Arguments& args) {
 
     std::cout << "before sleep\n";
 #ifdef WIN32
-    Slee(10000);
+    Sleep(10000);
 #else
     sleep(10);
 #endif
