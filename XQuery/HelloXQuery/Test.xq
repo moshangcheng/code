@@ -1,17 +1,50 @@
-import module namespace string = "http://www.zorba-xquery.com/modules/string";
-import module namespace file = "http://expath.org/ns/file";
-import module namespace x = "http://www.zorba-xquery.com/modules/xml";
-import schema namespace opt = "http://www.zorba-xquery.com/modules/xml-options";
+<root>
+    <entity name='"'>"</entity>
+    <entity name='&apos;'>'</entity>
+    <entity name="lower than">&lt;</entity>
+    <entity name="greater than">&gt;</entity>
+    <entity name="double quote">&amp;</entity>
+</root>
+(:
+let $x := '{"a": 1}'
+let $y := "&quot;s""s"
+let $z := ''''
+return <a>{($x, $y, $z)}</a>
+:)
+(:
+import module namespace http-client = "http://expath.org/ns/http-client";  
 
-let $xml-fragments1 := x:parse(file:read-text("resources/ITEM_CCTR_MNTH_SLS.xml"),  
-<opt:options>
-<opt:parse-external-parsed-entity opt:skip-root-nodes="1"/>
-</opt:options>)
+import schema namespace http = "http://expath.org/ns/http-client";
 
-let $xml-fragments2 := <a></a>
+let $result1 := http-client:send-request(validate{
+<http:request href="http://www.w3school.com.cn/xquery/books.xml" method="GET" />
+})[2]
 
-return $xml-fragments2
+let $result2 := http-client:send-request(validate{
+<http:request href="http://www.w3schools.com/xquery/books.xml" method="GET" />
+})[2]
 
+let $price1 := $result1//price
+let $price2 := $result2//price
+let $price-item-count := fn:count($price1)
+
+return
+<Table>
+<ColumnHeaders>
+    <ColumnHeader name="price1" type="xsd:string"/>
+    <ColumnHeader name="price2" type="xsd:string"/>
+</ColumnHeaders>
+<Data>
+{
+for $x in (1 to $price-item-count)
+return <Row>
+            <price1>{data($price1[$x])}</price1>
+            <price2>{data($price2[$x])}</price2>
+       </Row>
+}
+</Data>
+</Table>
+:)
 (:
 for $x in 1 to 3
 return {

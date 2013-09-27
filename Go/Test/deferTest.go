@@ -21,6 +21,7 @@ func (o OC) Close() {
 func main() {
 	rand.Seed(time.Now().Unix())
 
+    fmt.Println("hello world")
 	a := OC{name: "a"}
 	a.Open()
 	defer a.Close()
