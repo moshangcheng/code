@@ -54,6 +54,9 @@
     <ClCompile Include="class_size.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="c_macro_scope.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="C:\Users\shu\Desktop\icu\lib\icudt.lib" />
