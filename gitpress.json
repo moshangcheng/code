@@ -1,7 +1,6 @@
 {
     "docs"      : ["posts"],
     "template"    : "default",
-    "domain_alias" :  ["your.domain"],    
     "perpage"   : 10,
     "order"  : "number",
     "types"     : {
