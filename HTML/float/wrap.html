@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<style>
+		.container {
+			border: 1px solid #ccc;
+		}
+
+		#float-container {
+			float: left;
+		}
+
+		.container .child{
+			border: 1px solid #ccc;
+			float: left;
+			width: 400px;
+			height: 300px;
+		}
+
+		.container div:first-child {
+			height: 400px;
+		}
+
+		.clear {
+			clear: both;
+		}
+	</style>
+</head>
+	<div class="container">
+		<div class="child">A</div>
+		<div class="child">B</div>
+		<div class="child">C</div>
+		<!-- clear float to wrap all child elements -->
+		<div class="clear"></div>
+	</div>
+	<br />
+	<!-- float parent to wrap all child elements -->
+	<div class="container" id="float-container">
+		<div class="child">A</div>
+		<div class="child">B</div>
+		<div class="child">C</div>
+	</div>
+</body>
+</html>

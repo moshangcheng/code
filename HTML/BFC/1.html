@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- http://www.swordair.com/blog/2010/08/415/ -->
+	<meta charset="utf-8">
+	<style>
+	</style>
+</head>
+<body>
+	<div style="width:150px;border:1px solid red;background:#ccc;overflow:hidden;">
+		<div style="margin-top:20px;">
+			<div style="background:white;margin-top:10px;border:1px solid blue;">
+				I have 10px m-t
+			</div>
+		</div>
+	</div>
+	<br />
+	<div style="width:150px;border:1px solid red;background:#ccc;overflow:hidden;">
+		<!-- add border to prevent margin collapsing -->
+		<div style="border:1px solid green;margin-top:20px;">
+			<div style="background:white;margin-top:10px;border:1px solid blue;">
+				I have 10px m-t
+			</div>
+		</div>
+	</div>
+	<br />
+	<div style="width:150px;border:1px solid red;background:#ccc;overflow:hidden;">
+		<!-- create new BFC to prevent margin collapsing -->
+		<div style="overflow:hidden;margin-top:20px;">
+			<div style="background:white;margin-top:10px;border:1px solid blue;">
+				I have 10px m-t
+			</div>
+		</div>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- http://www.swordair.com/blog/2010/08/415/ -->
+	<meta charset="utf-8">
+	<style>
+	</style>
+</head>
+<body>
+	<div style="width:500px;background:gray;overflow:auto;">
+		<!-- overlap -->
+		<div style="width:300px;background:green;float:right;">
+			float element
+		</div>
+		<div style="width:300px;background:red;">
+			normal element
+		</div>
+	</div>
+	<br />
+	<div style="width:500px;background:gray;overflow:auto;">
+		<!-- change the order of child elements to avoid overlap -->
+		<div style="width:300px;background:red;">
+			normal element
+		</div>
+		<div style="width:300px;background:green;float:right;">
+			float element
+		</div>
+	</div>
+	<br />
+	<div style="width:500px;background:gray;overflow:auto;">
+		<!-- create new BFC to avoid overlap -->
+		<div style="width:300px;background:green;float:right;">
+			float element
+		</div>
+		<div style="width:300px;background:red;overflow:auto">
+			normal element
+		</div>
+	</div>
+</body>
+</html>
