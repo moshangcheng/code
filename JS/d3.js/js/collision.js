@@ -14,6 +14,7 @@ var c = {
 		"counter": 0, //bubble ordinal
 		"paused": false,
 		"action": 0, //nothing
+		"modified": true
 	},
 	"physics": {
 		"dampingRatio": 0.005,
@@ -26,7 +27,7 @@ var c = {
 		},
 		"padding": 3,
 		"speed": {
-			"max": 50,
+			"max": 100,
 			"min": 1
 		}
 	},
@@ -149,60 +150,65 @@ var svg = d3.select("#game-box").append("svg")
 var color = d3.scale.category20c();
 
 d3.timer(function() {
-	//get d3 selections
-	var sBubbles = svg.selectAll("g").data(nodes, function(d) { return d.id;} );
-
-	//add new bubbles
-	sBubbles.enter().append("g").attr("class", "bubble")
-		.attr("transform",  function(d, i) {
-			return "translate(" + d.p.x + ", " + d.p.y + ")";
-		}).append("circle").attr("r", function(d, i){
-			return d.r;
-		})
-		.attr("fill", function(d, i){
-			return color(i);
-		});
+	if(c.status.modified) {
+		//get d3 selections
+		var sBubbles = svg.selectAll("g").data(nodes, function(d) { return d.id;} );
 	
-	//remove bubbles
-	sBubbles.exit().remove();
+		//add new bubbles
+		sBubbles.enter().append("g").attr("class", "bubble")
+			.attr("transform",  function(d, i) {
+				return "translate(" + d.p.x + ", " + d.p.y + ")";
+			}).append("circle").attr("r", function(d, i){
+				return d.r;
+			})
+			.attr("fill", function(d, i){
+				return color(i);
+			});
+		
+		//remove bubbles
+		sBubbles.exit().remove();
+		c.status.modified = false;
 
-	//set event listener for all bubbles
-	svg.selectAll(".bubble").on("click", function(d, i) {
-		console.log("bubble clicked, current action is " + c.status.action);
-		//first, consider "Split"
-		if(c.status.action == c.actions.split) {
-			c.status.action = 0;
-			//animation
-			d3.select(this).select("circle")
-				.transition()
-				.attr("r", 0);
-				
-			d3.select(this).transition()//create a transition
-			.duration(250)
-			.style("fill-opacity", 0)
-			.each("end", function() {
-				//remove clicked bubble
-				var removedBubble = nodes.splice(i, 1);
-				addChildBubbles(removedBubble[0]);
-			});
-		}
-		//then, consider "D"
-		else if(c.status.action == c.actions.destroy) {
-			c.status.action = 0;
-			d3.select(this).select("circle")
-				.transition()
-				.attr("r", 0);
-				
-			d3.select(this).transition()//create a transition
-			.duration(250)
-			.style("fill-opacity", 0)
-			.remove()
-			.each("end", function() {
-				//remove clicked bubble
-				var removedBubble = nodes.splice(i, 1);
-			});
-		}
-	});
+		//set event listener for all bubbles
+		svg.selectAll(".bubble").on("click", function(d, i) {
+			console.log("bubble clicked, current action is " + c.status.action);
+			//first, consider "Split"
+			if(c.status.action == c.actions.split) {
+				c.status.action = 0;
+				//animation
+				d3.select(this).select("circle")
+					.transition()
+					.attr("r", 0);
+					
+				d3.select(this).transition()//create a transition
+				.duration(250)
+				.style("fill-opacity", 0)
+				.each("end", function() {
+					//remove clicked bubble
+					var removedBubble = nodes.splice(i, 1);
+					addChildBubbles(removedBubble[0]);
+					c.status.modified = true;
+				});
+			}
+			//then, consider "D"
+			else if(c.status.action == c.actions.destroy) {
+				c.status.action = 0;
+				d3.select(this).select("circle")
+					.transition()
+					.attr("r", 0);
+					
+				d3.select(this).transition()//create a transition
+				.duration(250)
+				.style("fill-opacity", 0)
+				.remove()
+				.each("end", function() {
+					//remove clicked bubble
+					var removedBubble = nodes.splice(i, 1);
+					c.status.modified = true;
+				});
+			}
+		});
+	}
 
 	//"Pause" is pressed
 	if(c.status.paused == true) {
