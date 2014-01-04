@@ -17,7 +17,7 @@ el.onmousemove = function(e) {
 		radgrad.addColorStop(0.5, 'rgba(0, 0, 0, 0.5)');
 		radgrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
 		ctx.fillStyle = radgrad;
-
+		//draw rectangle, but only circle part has color
 		ctx.fillRect(e.clientX-20, e.clientY-20, 40, 40);
 		console.log("drawing", e.clientX, e.clientY);
 	}
