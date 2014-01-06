@@ -43,4 +43,8 @@ el.onmouseup = function() {
 	points.length = 0;
 };
 
-
+var toPng = document.getElementById('to-png');
+toPng.onclick = function() {
+	var url = el.toDataURL();
+	window.open(url, 'generated image');
+}
