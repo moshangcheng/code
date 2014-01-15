@@ -16,7 +16,7 @@ int write_data(void *ptr, size_t size, size_t nmemb, void *stream)
 int main()
 {
 	const char* path = "curl_test";
-	const char* mode = "w"
+	const char* mode = "w";
 	fp = fopen(path, mode);
 
 	curl_global_init(CURL_GLOBAL_ALL);

@@ -1,5 +1,5 @@
 //Value methods can be invoked on pointers and values
-//Pointer methods can only be invoked on pointers.
+//Pointer methods can only be invoked on pointers and addressable values.
 //Value functions only accpet values
 //Pointer functions only accept pointers
 //http://golang.org/doc/effective_go.html#pointers_vs_values
@@ -12,10 +12,11 @@ type MyStruct struct {
 }
 
 func (s MyStruct) PrintValue() {
-	fmt.Println("Calling value method", s.v)
+	fmt.Println("Calling value method, the value is: ", s.v)
 }
 
 func (s *MyStruct) SetValue(v int) {
+	fmt.Println("Calling pointer method, the old/new value is: ", s.v, "/", v)
 	s.v = v
 }
 
@@ -24,13 +25,15 @@ func ParamPrintValue(s MyStruct) {
 }
 
 func ParamSetValue(s *MyStruct, v int) {
+	fmt.Println("Calling pointer function, the old/new value is: ", s.v, "/", v)
 	s.v = v
 }
 
 func main() {
 	ps := &MyStruct{3}
 	vs := MyStruct{0}
-	//fmt.Println(vs, ps)
+	fmt.Println("value of vs is: ", vs)
+	fmt.Println("value of ps is: ", ps)
 
 	//If vs is addressable and &vs's method set contains SetValue()
 	//vs.SetValue() is shorthand for (&vs).SetValue()

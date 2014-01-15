@@ -12,7 +12,12 @@ INCLUDE_DIRECTORIES(../../t3/install/include/hello)
 
 # add library path
 # prefer to use abusolute path
-LINK_DIRECTORIES(${CMAKE_SOURCE_DIR}/../t3/install/staticlib)
+IF(WIN32)
+    LINK_DIRECTORIES(${CMAKE_SOURCE_DIR}/../t3/install/staticlib)
+ELSEIF(UNIX)
+    LINK_DIRECTORIES(${CMAKE_SOURCE_DIR}/../t3/install/lib)
+ENDIF(WIN32)
+    
 # LINK_DIRECTORIES(../../../t3/install/bin)
 
 # ADD_EXECUTABLE should be placed after LINK_DIRECTORIES

@@ -12,6 +12,9 @@ func defaultHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	fmt.Print("hello")
+    //The difference between http.HandleFunc() and http.Handle() is
+    //the first one accepts function and the second one accepts struct instance
+    //We can use http.HanlderFunc() to construct a struct from function
 	http.HandleFunc("/", defaultHandler)
 	http.ListenAndServe(":8080", nil)
 }
