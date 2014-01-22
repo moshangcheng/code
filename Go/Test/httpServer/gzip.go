@@ -1,6 +1,7 @@
 package main
 
 import (
+    "fmt"
     "compress/gzip"
     "io"
     "net/http"
@@ -32,9 +33,11 @@ func gzipHandler(w http.ResponseWriter, r *http.Request) {
 func makeGzipHandler(fn http.HandlerFunc) http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
         if !strings.Contains(r.Header.Get("Accept-Encoding"), "gzip") {
+            fmt.Println("processing normal request")
             fn(w, r)
             return
         }
+        fmt.Println("processing gzip request")
         w.Header().Set("Content-Encoding", "gzip")
         gz := gzip.NewWriter(w)
         defer gz.Close()
@@ -44,7 +47,7 @@ func makeGzipHandler(fn http.HandlerFunc) http.HandlerFunc {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-    w.Header().Set("Content-Type", "text/html")
+    w.Header().Set("Content-Type", "text/html;charset=utf-8")
     w.Write([]byte(htmlText))
 }
 
