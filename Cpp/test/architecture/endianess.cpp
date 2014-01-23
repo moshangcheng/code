@@ -1,10 +1,12 @@
 #include <iostream>
+#include <cstdio>
 
 int main() {
+
 	int num = 1;
 	if(*(char *)&num == 1)
 	{
-		printf("Little-Endian\n");
+		printf("\nLittle-Endian\n");
 	}
 	else
 	{
