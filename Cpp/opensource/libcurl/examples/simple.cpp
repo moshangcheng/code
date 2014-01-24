@@ -9,7 +9,7 @@ int main(void)
   curl = curl_easy_init();
   if(curl) {
 	//set proxy
-	curl_easy_setopt(curl, CURLOPT_PROXY, "127.0.0.1:8888");
+	//curl_easy_setopt(curl, CURLOPT_PROXY, "127.0.0.1:8888");
 
     curl_easy_setopt(curl, CURLOPT_URL, "http://google.com");
  

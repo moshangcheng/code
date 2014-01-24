@@ -101,7 +101,7 @@ static void init(CURLM *cm, int i)
 	CURL *eh = curl_easy_init();
 
 	//set proxy
-	curl_easy_setopt(eh, CURLOPT_PROXY, "127.0.0.1:8888");
+	//curl_easy_setopt(eh, CURLOPT_PROXY, "127.0.0.1:8888");
 
 	curl_easy_setopt(eh, CURLOPT_WRITEFUNCTION, cb);
 	curl_easy_setopt(eh, CURLOPT_HEADER, 0L);

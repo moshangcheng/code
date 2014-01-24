@@ -22,12 +22,12 @@ int ConnectIIS()
 	if (curl) {
 		char nline[256];
 
-		curl_easy_setopt(curl, CURLOPT_PROXY, "127.0.0.1");
-		curl_easy_setopt(curl, CURLOPT_PROXYPORT, 8888);
+		//curl_easy_setopt(curl, CURLOPT_PROXY, "127.0.0.1");
+		//curl_easy_setopt(curl, CURLOPT_PROXYPORT, 8888);
 
 		//for local server, evev if using hostname, NTLM authentication is still used
 		//for remote server, use hostname to authenticate using kerberos authentication
-		curl_easy_setopt(curl, CURLOPT_URL, "http://shu-0864-imdb/kerberos/");
+		curl_easy_setopt(curl, CURLOPT_URL, "http://shu-0864-imdb.labs.microstrategy.com/kerberos/");
 		curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
 		curl_easy_setopt(curl, CURLOPT_COOKIEFILE, ""); /* just to start the cookie engine */
 		curl_easy_setopt(curl, CURLOPT_USERPWD, "Kerberos" );
