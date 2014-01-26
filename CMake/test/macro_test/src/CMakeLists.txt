@@ -1,0 +1,5 @@
+macro(PRINT STR)
+	MESSAGE(${STR})
+endmacro(PRINT)
+
+PRINT(HELLO)

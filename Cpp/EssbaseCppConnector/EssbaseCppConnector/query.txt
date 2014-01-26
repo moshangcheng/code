@@ -1,1 +1,0 @@
-with member [Measures].[FreeForm_0] as '1' set [dim0_select_members] as '{[Year].[TimeQuarter].members}' select {[Measures].[FreeForm_0]} on columns, non empty [dim0_select_members] on rows from [Sample.Basic]

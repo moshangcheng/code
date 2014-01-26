@@ -1,7 +1,20 @@
-# CMake #
+# CMake
 CMakeCache.txt
 CMakeFiles
 Makefile
 cmake_install.cmake
 install_manifest.txt
 
+# executable files
+*.exe
+
+# VS files
+*.sln
+*.vcxproj
+*.vcxproj.filters
+
+#
+build
+vs_build
+mingw_build
+msys_build
