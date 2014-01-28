@@ -4,10 +4,10 @@ if(MSVC)
 	# use import library built by me
 	link_directories(${CMAKE_SOURCE_DIR}/lib)
 else(MSVC)
-	link_directories(${CMAKE_SOURCE_DIR}/curl-7.34.0-devel-mingw32/lib)
+	link_directories(${CMAKE_SOURCE_DIR}/curl-7.34.0-devel-mingw32/bin)
 endif(MSVC)
 
-set(files gzip_test simple 10_at_a_time kerberos)
+set(files gzip_test simple 10_at_a_time libcurl_kerberos)
 
 foreach(file ${files})
 	add_executable(${file} ${file}.cpp)
@@ -21,7 +21,6 @@ endforeach(file)
 
 if(WIN32)
 	target_link_libraries(10_at_a_time Ws2_32)
-	target_link_libraries(kerberos Secur32)
 endif(WIN32)
 
 # install

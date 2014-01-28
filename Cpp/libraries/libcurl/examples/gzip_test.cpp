@@ -23,14 +23,14 @@ int main(void)
 	curl = curl_easy_init();
 	if(curl) {
 		//set proxy
-		//curl_easy_setopt(curl, CURLOPT_PROXY, "127.0.0.1:8888");
+		curl_easy_setopt(curl, CURLOPT_PROXY, "127.0.0.1:8888");
 
 		//set accept-encoding
 		curl_easy_setopt(curl, CURLOPT_ACCEPT_ENCODING, "gzip");
 
 		//curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, fn);
 
-		curl_easy_setopt(curl, CURLOPT_URL, "http://10.197.62.102:8080/");
+		curl_easy_setopt(curl, CURLOPT_URL, "localhost:8080");
 
 		/* Perform the request, res will get the return code */ 
 		res = curl_easy_perform(curl);

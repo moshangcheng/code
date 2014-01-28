@@ -19,3 +19,9 @@
 *.exe
 *.out
 *.app
+
+# build directories
+build
+mingw_build
+vs_build
+msys_build
