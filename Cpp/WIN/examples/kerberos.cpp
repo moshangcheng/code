@@ -51,7 +51,7 @@ int main()
 	lTokenBufferDesc.pBuffers = lTokenBuffer;
 	unsigned long lContextReq = ISC_REQ_DELEGATE | ISC_REQ_ALLOCATE_MEMORY | ISC_REQ_MUTUAL_AUTH;
 	unsigned long lInitSecContextRet = 0;
-	char* lpSPN = "HTTP/SHU-0864-IMDB1";
+	char* lpSPN = "HTTP/SHU-0864-IMDB";
 
 	//TGS_REQ
 	lStatus = InitializeSecurityContext( 
