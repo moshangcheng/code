@@ -62,14 +62,14 @@ const htmlString1 = `
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="css?delay=2&pause=3">
-    <script type="text/javascript" src="js?delay=1&pause=1"></script>
+    <script type="text/javascript" src="js?delay=1&pause=1" onload="console.log('first script executed')"></script>
 </head>
 `
 
 const htmlString2 =`
 <body>
-    <link rel="stylesheet" href="css?delay=0&pause=0" onload="console.log('first css loaded')" >
-    <script type="text/javascript" src="js?delay=2&pause=1" onload="console.log('first script loaded')"></script>
+    <link rel="stylesheet" href="css?delay=0&pause=0">
+    <script type="text/javascript" src="js?delay=2&pause=1" onload="console.log('second script executed')"></script>
     <img src="image/chart.png">
 </body>
 </html>
