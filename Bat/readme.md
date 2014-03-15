@@ -1,1 +1,2 @@
-to execute batch script, use "cmd /c script" or "cmd /k script"
+### Bat scripts
+- to execute bat scripts in git bash, use "cmd /c script.bat" or "cmd /k script.bat"
