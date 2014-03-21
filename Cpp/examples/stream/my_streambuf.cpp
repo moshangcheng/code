@@ -39,13 +39,5 @@ int main(int argc, const char * argv[])
 	stream.read(lBuf, 100);
 	std::cout<< lBuf << std::endl;
 
-	/*std::stringstream ss1, ss2;
-	ss1.std::ios::rdbuf(ss2.rdbuf());
-	ss1 << "ss1\n";
-	std::string str;
-	char c1, c2;
-	ss1 >> c1;
-	ss2 >> c2;
-	cout << ss2.str();*/
 	return 0;
 }
