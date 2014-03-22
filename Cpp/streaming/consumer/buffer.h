@@ -54,12 +54,17 @@ public:
 		std::cout << "Read buffer constructor\n";
 	}
 
+	size_t More(size_t n)
+	{
+		return 0;
+	}
+
 	Consumer<T>* GetReader()
 	{
 		return new Consumer<T>(&mpData, &mpCurrent, &mpEnd);
 	}
 
-	Consumer<T>* GerWriter()
+	Consumer<T>* GetWriter()
 	{
 		return new Consumer<T>(&mpCurrent, &mpEnd, &mpDataEnd);
 	}

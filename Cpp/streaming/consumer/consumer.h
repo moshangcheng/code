@@ -36,7 +36,7 @@ public:
 		return (*mppEnd) - (*mppCurrent);
 	}
 
-	size_t Get(T** p, size_t n = 1)
+	virtual size_t Get(T** p, size_t n = 1)
 	{
 		if(n == 0)
 		{
@@ -51,7 +51,7 @@ public:
 	}
 
 	// Go backward
-	bool UnGet(size_t n = 1)
+	virtual bool UnGet(size_t n = 1)
 	{
 		if(n > Size())
 		{
