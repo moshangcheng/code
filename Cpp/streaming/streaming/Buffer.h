@@ -1,7 +1,7 @@
 #ifndef __BUFFER_H
 #define __BUFFER_H
 
-#include "PDCHeader/PDCiostream"
+#include <iostream>
 
 /* why not std::basic_stringbuf
    - too complicated

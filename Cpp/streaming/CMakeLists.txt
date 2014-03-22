@@ -1,5 +1,5 @@
-set(files chain chain_call reader covariant shared_ptr typename Consumer stdstream)
+project(streming)
 
-foreach(file ${files})
-	add_executable(${file} ${file}.cpp) 
-endforeach(file)
+add_subdirectory(examples)
+add_subdirectory(streaming)
+add_subdirectory(consumer)
