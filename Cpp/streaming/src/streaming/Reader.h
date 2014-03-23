@@ -3,6 +3,7 @@
 
 #include "Buffer.h"
 
+
 template<typename T>
 class Reader
 {
@@ -37,7 +38,7 @@ public:
 
 	virtual size_t Read(T* p, size_t n = 1)
 	{
-		const T* lpBegin = NULL;
+		T* lpBegin = NULL;
 		size_t lCount = mBuffer.Get(&lpBegin, n);
 
 		for(const T* lpEnd = lpBegin + lCount; lpBegin < lpEnd;)
@@ -48,7 +49,7 @@ public:
 		return lCount;
 	}
 
-	virtual size_t Get(const T** p, size_t n = 1)
+	virtual size_t Get(T** p, size_t n = 1)
 	{
 		return mBuffer.Get(p, n);
 	}

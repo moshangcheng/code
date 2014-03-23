@@ -1,5 +1,4 @@
-project(streming)
+project(streaming)
 
-add_subdirectory(examples)
-add_subdirectory(streaming)
-add_subdirectory(consumer)
+add_subdirectory(src)
+add_subdirectory(test)

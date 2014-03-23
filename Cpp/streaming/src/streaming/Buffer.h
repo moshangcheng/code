@@ -13,17 +13,19 @@
 // read and write are dual operations
 // read is operation of occupied space
 // write is operation of not occupied space
+
+
 template<typename T>
 class Buffer
 {
 public:
 	// constructor for write buffer
 	// to reduce initial response time, intial capacity is small
-	Buffer()
+	Buffer(size_t iCapacity)
 		: mpData(NULL)
 		, mpStart(NULL)
 		, mpEnd(NULL)
-		, mCapacity(10)
+		, mCapacity(iCapacity)
 		, mVersion(0)
 	{
 		// allocate buffer
@@ -37,20 +39,19 @@ public:
 
 	// constructor for read buffer
 	// to reduce initial response time, intial capacity is small
-	Buffer(const T* ipArray = NULL, size_t n = 0)
+	Buffer(const T* ipArray, size_t n)
 		: mpData(NULL)
-		, mpStart(NULL)
+		, mpCurrent(NULL)
 		, mpEnd(NULL)
 		, mCapacity(10)
 		, mVersion(0)
-		, mMaxCapacity(0)
 	{
 		// allocate buffer
 		mCapacity = mCapacity < n ? n: mCapacity;
 		mpData = new T[mCapacity];
 
 		// set status
-		mpStart = mpEnd = mpData;
+		mpCurrent = mpEnd = mpData;
 
 		// copy content
 		if(n > 0 && ipArray != NULL)
@@ -65,9 +66,9 @@ public:
 		std::cout << "Read buffer constructor\n";
 	}
 
-	const T* Start() const
+	const T* Current() const
 	{
-		return mpStart;
+		return mpCurrent;
 	}
 
 	const T* End() const
@@ -82,7 +83,7 @@ public:
 
 	size_t Size() const
 	{
-		return mpEnd - mpStart;
+		return mpEnd - mpCurrent;
 	}
 
 	size_t FreeSpaceSize() const
@@ -94,11 +95,11 @@ public:
 	{
 		// update version number
 		mVersion++;
-		mpStart = mpEnd = mpData;
+		mpCurrent = mpEnd = mpData;
 	}
 
 	// Get data from buffer
-	size_t Get(const T** p, size_t n = 1)
+	size_t Get(T** p, size_t n = 1)
 	{
 		if(n == 0)
 		{
@@ -106,14 +107,14 @@ public:
 			return 0;
 		}
 
-		*p = mpStart;
+		*p = mpCurrent;
 		size_t lCount = n < Size() ? n: Size();
-		mpStart += lCount;
+		mpCurrent += lCount;
 		return lCount;
 	}
 
 	// Get the pointer to free space which will be filled by caller
-	size_t Put(const T** p, size_t n = 1)
+	size_t Put(T** p, size_t n = 1)
 	{
 		if(n == 0)
 		{
@@ -133,11 +134,11 @@ public:
 	// Go backward
 	bool UnGet(size_t n = 1)
 	{
-		if(n > mpStart - mpData)
+		if(n > mpCurrent - mpData)
 		{
 			return false;
 		}
-		mpStart -= n;
+		mpCurrent -= n;
 		return true;
 	}
 
@@ -187,7 +188,7 @@ public:
 		}
 
 		// copy
-		for(T *i = mpStart, *j = lpNewBuffer; i < mpEnd;)
+		for(T *i = mpCurrent, *j = lpNewBuffer; i < mpEnd;)
 		{
 			*(j++) = *(i++);
 		}
@@ -196,12 +197,12 @@ public:
 		if(lpNewBuffer != mpData)
 		{
 			delete [] mpData;
-			mpData = mpData;
+			mpData = lpNewBuffer;
 		}
 
 		//set status
-		mpEnd = mpData + (mpEnd - mpStart);
-		mpStart = mpData;
+		mpEnd = mpData + (mpEnd - mpCurrent);
+		mpCurrent = mpData;
 	}
 
 	~Buffer()
@@ -212,14 +213,14 @@ public:
 		{
 			delete [] mpData;
 			mCapacity = 0;
-			mpData = mpStart = mpEnd = NULL;
+			mpData = mpCurrent = mpEnd = NULL;
 		} 
 	}
 
 private:
 
 	T* mpData;
-	T* mpStart;
+	T* mpCurrent;
 	T* mpEnd;
 
 	size_t mCapacity;	

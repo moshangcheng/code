@@ -1,6 +1,7 @@
 #include <iostream>
 
-#include "adaptor.h"
+#include "consumer.h"
+#include "buffer.h"
 
 using namespace std;
 
