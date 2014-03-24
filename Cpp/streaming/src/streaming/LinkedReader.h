@@ -14,12 +14,14 @@ public:
 	LinkedReader(Buffer<UT>* ipUpstream, Adaptor<UT, T>* ipAdaptor)
 		: mpUpstream(ipUpstream)
 		, mpAdaptor(ipAdaptor)
+		, mTotalCount(0)
 	{}
 
 	LinkedReader(const T* ipArray, size_t iSize)
 		: mpUpstream(NULL)
 		, mpAdaptor(NULL)
 		, Buffer(ipArray, iSize)
+		, mTotalCount(0)
 	{}
 
 	template<typename DT>
@@ -60,7 +62,8 @@ public:
 			{
 			}
 		}
-		return Buffer<T>::Get(p, n);
+		size_t lCount = Buffer<T>::Get(p, n);
+		return lCount;
 	}
 
 	~LinkedReader()

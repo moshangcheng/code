@@ -66,15 +66,13 @@ int main()
 	{
 		const int SIZE = 10 * 1000 * 1000;
 		int* src = new int[SIZE];
-		int* result = new int[10];
+		int* result = new int[20];
 		for(int i = 0; i < SIZE; i++) src[i] = i;
 
 		clock_t start, end;
 		start = clock();
 
-		Buffer<char> *lpInputBuffer = ReaderFactory::FromArray(src, SIZE)->Pipe(new IntToChar());
-		Buffer<char> *lpOutputBuffer = WriterFactory::ToArray<int>(result, 10)->Pipe(new IntFromChar());
-		SimpleConnector<char> lConnector(lpInputBuffer, lpOutputBuffer, 512);
+		SimpleConnector<int, char> lConnector(ReaderFactory::FromArray(src, SIZE), WriterFactory::ToArray(result, 20)->Pipe(new IntFromChar()), new IntToChar(), 512);
 		size_t lCount = lConnector.Run();
 		
 
@@ -91,11 +89,8 @@ int main()
 			}
 		}
 
-		delete lpInputBuffer;
-		delete lpOutputBuffer;
-
 		delete [] src;
-		//delete [] result;
+		delete [] result;
 	}
 
 	return 0;

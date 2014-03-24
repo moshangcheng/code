@@ -2,8 +2,9 @@
 #define __CONNECTOR_H
 
 #include "Buffer.h"
+#include "Adaptor.h"
 
-template<class T>
+template<class I, class O>
 struct Connector
 {
 	virtual size_t Run() = 0;
@@ -11,64 +12,69 @@ struct Connector
 	virtual ~Connector() {}
 };
 
-template<class T>
-struct SimpleConnector: public Connector<T>
+template<class I, class O>
+struct SimpleConnector: public Connector<I, O>
 {
-	SimpleConnector(Buffer<T>* ipInput, Buffer<T>* ipOutput, size_t iBlockSize = 64 * 1024)
-		: mpInput(ipInput)
-		, mpOutput(ipOutput)
+	SimpleConnector(Buffer<I>* ipReader, Buffer<O>* opWriter, Adaptor<I, O>* ipAdaptor, size_t iBlockSize = 64 * 1024)
+		: mpReader(ipReader)
+		, mpWriter(opWriter)
+		, mpAdaptor(ipAdaptor)
 		, mBlockSize(iBlockSize)
 		, mTotalSize(0)
 	{}
 
 	virtual size_t Run()
 	{
+		if(!mpAdaptor || !mpInput || !mpOutput)
+		{
+			return 0;
+		}
+
 		size_t lTotalSize = 0;
+
 		while(1)
 		{
-			T* lpSrc = NULL;
-			size_t lSrcCount = mpInput->Get(&lpSrc, mBlockSize);
-			lTotalSize += lSrcCount;
-			if(lSrcCount == 0)
+			size_t lCount = mpAdaptor->operator()(mpReader, mpWriter, mBlockSize, 0);
+			if(lCount == 0)
 			{
-				cout << "input buffer is running out\n";
+				if(mpWriter->FreeSpaceSize() || mpReader->Size() == 0)
+				{
+					cout << "input buffer is running out\n";
+				}
+				else
+				{
+					cout << "output buffer is full\n";
+				}
 				break;
 			}
-
-			while(lSrcCount > 0)
-			{
-				T* lpResult = NULL;
-				size_t lResultCount = mpOutput->Put(&lpResult, lSrcCount);
-				if(lResultCount == 0)
-				{
-					break;
-				}
-				lSrcCount -= lResultCount;
-
-				for(T* lpResultEnd = lpResult + lResultCount; lpResult < lpResultEnd; )
-				{
-					*(lpResult++) = *(lpSrc++);
-				}
-				mpOutput->Flush();
-			}
-
-			lTotalSize -= lSrcCount;
-			mpInput->UnGet(lSrcCount);
-			if(lSrcCount > 0)
-			{
-				cout << "output buffer is full\n";
-				break;
-			}
+			lTotalSize += lCount;
 		}
 		mTotalSize += lTotalSize;
 		return lTotalSize;
 	}
 
-	virtual ~SimpleConnector() {}
+	virtual ~SimpleConnector()
+	{
+		if(mpReader != NULL)
+		{
+			delete mpReader;
+		}
+
+		if(mpWriter != NULL)
+		{
+			delete mpWriter;
+		}
+
+		if(mpAdaptor != NULL)
+		{
+			delete mpAdaptor;
+		}
+	}
 
 private:
-	Buffer<T>* mpInput;
-	Buffer<T>* mpOutput;
+	Buffer<I>* mpReader;
+	Buffer<O>* mpWriter;
+	Adaptor<I, O>* mpAdaptor;
 	size_t mBlockSize;
 	size_t mTotalSize;
 };

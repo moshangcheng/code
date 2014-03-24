@@ -21,32 +21,41 @@ class Buffer
 public:
 	// constructor for write buffer
 	// to reduce initial response time, intial capacity is small
-	Buffer(T* p, size_t n)
-		: mpData(p)
-		, mpCurrent(p)
-		, mpEnd(p)
+	Buffer(T* ipArray, size_t n)
+		: mpData(NULL)
+		, mpCurrent(NULL)
+		, mpEnd(NULL)
 		, mCapacity(n)
 		, mMaxCapacity(n)
 		, mVersion(0)
+		, mTotalGetCount(0)
+		, mTotalPutCount(0)
 	{
-		// allocate buffer
-		mpData = p;
-
-		// set status
-		mpCurrent = mpEnd = mpData;
+		if(ipArray != NULL)
+		{
+			mpData = ipArray;
+			// set status
+			mpCurrent = mpEnd = mpData;
+		}
+		else
+		{
+			mCapacity = mMaxCapacity = 0;
+		}
 
 		std::cout << "Write buffer constructor\n";
 	}
 
 	// constructor for read buffer
 	// to reduce initial response time, intial capacity is small
-	Buffer(const T* ipArray = NULL, size_t n = 0)
+	Buffer(const T* ipArray, size_t n)
 		: mpData(NULL)
 		, mpCurrent(NULL)
 		, mpEnd(NULL)
 		, mCapacity(10)
 		, mMaxCapacity(SIZE_MAX)
 		, mVersion(0)
+		, mTotalGetCount(0)
+		, mTotalPutCount(0)
 	{
 		// allocate buffer
 		mCapacity = mCapacity < n ? n: mCapacity;
@@ -93,17 +102,20 @@ public:
 		return mpData + mCapacity - mpEnd;
 	}
 
-	void Clear()
+	size_t GetTotalGetCount() const
 	{
-		// update version number
-		mVersion++;
-		mpCurrent = mpEnd = mpData;
+		return mTotalGetCount;
 	}
 
-	// discard remained data
-	virtual void Flush()
+	size_t GetTotalPutCount() const
 	{
-		mpEnd = mpCurrent;
+		return mTotalPutCount;
+	}
+
+	// do nothing
+	virtual bool Flush()
+	{
+		return false;
 	}
 
 	// Get data from buffer
@@ -118,6 +130,7 @@ public:
 		*p = mpCurrent;
 		size_t lCount = n < Size() ? n: Size();
 		mpCurrent += lCount;
+		mTotalGetCount += lCount;
 		return lCount;
 	}
 
@@ -134,7 +147,7 @@ public:
 		{
 			*(p++) = *(mpCurrent++);
 		}
-
+		mTotalGetCount += lCount;
 		return lCount;
 	}
 
@@ -153,6 +166,7 @@ public:
 		*p = mpEnd;
 		size_t lCount = n < FreeSpaceSize() ? n: FreeSpaceSize();
 		mpEnd += lCount;
+		mTotalPutCount += lCount;
 		return lCount;
 	}
 
@@ -169,7 +183,7 @@ public:
 		{
 			*(mpEnd++) = *(p++);
 		}
-
+		mTotalPutCount += lCount;
 		return lCount;
 	}
 
@@ -181,6 +195,7 @@ public:
 			return false;
 		}
 		mpCurrent -= n;
+		mTotalGetCount -= n;
 		return true;
 	}
 
@@ -192,6 +207,7 @@ public:
 			return false;
 		}
 		mpEnd -= n;
+		mTotalPutCount -= n;
 		return true;
 	}
 
@@ -277,6 +293,9 @@ private:
 	size_t mCapacity;
 	size_t mMaxCapacity;
 	size_t mVersion;
+
+	size_t mTotalGetCount;
+	size_t mTotalPutCount;
 
 	Buffer(const Buffer<T>& irBuffer) {}
 };

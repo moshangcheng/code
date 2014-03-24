@@ -6,6 +6,7 @@
 using namespace std;
 
 
+// Problem 1
 // In the ideal situation,
 // Reader doesn't know its upstreams
 //		IntReader r;
@@ -17,7 +18,7 @@ using namespace std;
 //		w.Write(data)
 
 // But C++'s static type system doesn't allow this to be implemented
-// Analysis
+// --- Analysis
 // In this form, the reader we use to read data is the first reader, and its upstreams are not cared.
 // As as we see, it's also the first node constructed, all its upstreams are constructed after it.
 // But in order to cascade buffers, Reader must has a member pointed to its upstream.
@@ -33,6 +34,21 @@ using namespace std;
 
 // Analogously, for Writer, we must construct its downstream first
 // IntWriter w = FileWriter.Pipe(FromStringArray).Pipe(StringFromInt)
+
+
+
+// Problem2
+// Assume there are some cascaded readers like this: R1->R2->R3
+// R1, R2, R3 have buffer. If we read some data from R3,
+// Some data is stored in intermediate buffers
+// So not all data read out from R1 are seen by user
+// Analogously, for Writers W1->W2->W3
+// Not all data written to W1 are seen by W3.
+// So we have to add counter in each buffer
+// To avoid data stored in intermediate buffers,
+// for reader, underflow is necessary to get all data in R1
+// for writer, overflow is not allowed 
+// and Flush must be called after the last put/write operator
 
 int main()
 {
