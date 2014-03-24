@@ -15,7 +15,10 @@ int main()
 		std::string lpStr = "abcdefghijklmn";
 		char lResult[14];
 
-		Buffer<char>* lpResultBuffer = ReaderFactory::FromArray(lpStr.c_str(), lpStr.length())->Pipe(new CharToInt())->Pipe(new IntToChar());
+		Buffer<char>* lpResultBuffer =
+			ReaderFactory::FromArray(lpStr.c_str(), lpStr.length())
+			->Pipe(new CharToInt())
+			->Pipe(new IntToChar());
 	
 		size_t lCount = lpResultBuffer->Read(lResult, 14);
 		for(size_t i = 0; i < lCount; i++)
@@ -35,7 +38,10 @@ int main()
 		clock_t start, end;
 		start = clock();
 
-		Buffer<int> *lpResultBuffer = ReaderFactory::FromArray(src, SIZE)->Pipe(new IntToChar())->Pipe(new CharToInt());
+		Buffer<int> *lpResultBuffer =
+			ReaderFactory::FromArray(src, SIZE)
+			->Pipe(new IntToChar())
+			->Pipe(new CharToInt());
 
 		int* result = NULL;
 		size_t lCount = lpResultBuffer->Get(&result, SIZE);
@@ -59,20 +65,47 @@ int main()
 
 	// writer test
 	{
-		
+		const int SIZE = 10 * 1000 * 1000;
+		int* src = new int[SIZE];
+		int* result = new int[SIZE];
+		for(int i = 0; i < SIZE; i++) src[i] = i;
+
+		clock_t start, end;
+		start = clock();
+
+		Buffer<int> *lpResultBuffer = WriterFactory::ToArray(result, SIZE)->Pipe(new IntFromChar())->Pipe(new CharFromInt());
+		lpResultBuffer->Write(src, SIZE);
+		lpResultBuffer->Flush();
+
+		end = clock();
+		cout << "\ntime: " << 1.0 * (end -start) / CLK_TCK << "\n";
+
+		for(size_t i = 0; i < SIZE; i++)
+		{
+			if(src[i] != result[i])
+			{
+				cout << "the " << i << " element not equal: " << src[i] << ", " << result[i] << "\n";
+				//break;
+			}
+		}
+
+		delete lpResultBuffer;
+		delete [] src;
 	}
 
 	// connector test
 	{
 		const int SIZE = 10 * 1000 * 1000;
 		int* src = new int[SIZE];
-		int* result = new int[20];
+		int* result = new int[SIZE];
 		for(int i = 0; i < SIZE; i++) src[i] = i;
 
 		clock_t start, end;
 		start = clock();
 
-		SimpleConnector<int, char> lConnector(ReaderFactory::FromArray(src, SIZE), WriterFactory::ToArray(result, 20)->Pipe(new IntFromChar()), new IntToChar(), 512);
+		SimpleConnector<int, char> lConnector(ReaderFactory::FromArray(src, SIZE)
+			, WriterFactory::ToArray(result, SIZE)->Pipe(new IntFromChar())
+			, new IntToChar());
 		size_t lCount = lConnector.Run();
 		
 
@@ -84,13 +117,13 @@ int main()
 		{
 			if(src[i] != result[i])
 			{
-				cout << "the " << i << " element not equal\n";
-				break;
+				cout << "the " << i << " element not equal: " << src[i] << ", " << result[i] << "\n";
+				//break;
 			}
 		}
 
 		delete [] src;
-		delete [] result;
+		//delete [] result;
 	}
 
 	return 0;

@@ -25,7 +25,7 @@ struct SimpleConnector: public Connector<I, O>
 
 	virtual size_t Run()
 	{
-		if(!mpAdaptor || !mpInput || !mpOutput)
+		if(!mpAdaptor || !mpReader || !mpWriter)
 		{
 			return 0;
 		}

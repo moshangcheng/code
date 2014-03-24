@@ -54,31 +54,32 @@ struct SimpleAdaptor: public Adaptor<I, O>
 
 		I* lpEnd = lpSrc + lCount;
 
-		size_t lInputCount = 0;
-		size_t lOutputCount = 0;
+		size_t lTotalInputCount = 0;
+		size_t lTotalOutputCount = 0;
 		for(I* lpUnitStart = lpSrc; lpUnitStart < lpEnd; )
 		{
 			I* lpUnitEnd = this->FindInputUnit(lpUnitStart, lpEnd);
  			if(lpUnitEnd > lpUnitStart)
 			{
-				size_t lOldSize = opWriter->Size();
-				I* lpConvertedInputEnd = this->GenerateOutput(lpUnitStart, lpUnitEnd, opWriter);
+				I* lpNewUnitStart = NULL;
+				size_t lOutputCount = this->GenerateOutput(lpUnitStart, lpUnitEnd, &lpNewUnitStart, opWriter);
 				// output buffer is full
-				if(lpConvertedInputEnd == lpUnitStart)
+				if(lOutputCount == 0)
 				{
 					ipReader->UnGet(lpEnd - lpUnitStart);
 					break;
 				}
-				lOutputCount += opWriter->Size() - lOldSize;
-				lInputCount += lpConvertedInputEnd - lpUnitStart;
-				lpUnitStart =  lpConvertedInputEnd;
+				lTotalOutputCount += lOutputCount;
+				lTotalInputCount += lpNewUnitStart - lpUnitStart;
+				lpUnitStart =  lpNewUnitStart;
+				opWriter->Flush();
 			}
 			else
 			{
 				// input unit not found
 				ipReader->UnGet(lpEnd - lpUnitStart);
 
-				if(!lOutputCount)
+				if(!lTotalOutputCount)
 				{
 					// increase input block size and try again
 					lInputBlockSize *= 2;
@@ -106,9 +107,9 @@ struct SimpleAdaptor: public Adaptor<I, O>
 			}
 		}
 
-		mTotalOutputSize += lOutputCount;
-		mTotalInputSize += lInputCount;
-		return lOutputCount;
+		mTotalOutputSize += lTotalOutputCount;
+		mTotalInputSize += lTotalInputCount;
+		return lTotalOutputCount;
 	}
 
 	// return the end of input unit found
@@ -118,9 +119,9 @@ struct SimpleAdaptor: public Adaptor<I, O>
 	}
 
 	// return the end of converted input sequence
-	virtual I* GenerateOutput(I* ipStart, I* ipEnd, Buffer<O>* opWriter)
+	virtual size_t GenerateOutput(I* ipStart, I* ipEnd, I** oppNewStart, Buffer<O>* opWriter)
 	{
-		return ipEnd;
+		return 0;
 	}
 
 	virtual ~SimpleAdaptor()
@@ -146,7 +147,7 @@ public:
 	}
 
 	// return the count outputed elements
-	virtual char* GenerateOutput(char* ipStart, char* ipEnd, Buffer<int>* opWriter)
+	virtual size_t GenerateOutput(char* ipStart, char* ipEnd, char** oppNewStart, Buffer<int>* opWriter)
 	{
 		size_t lOutputcount = (ipEnd - ipStart) / 4;
 
@@ -154,7 +155,7 @@ public:
 		size_t lCount = opWriter->Put(&lpResult, lOutputcount);
 
 		int* lpCurrentResult = lpResult;
-		for(char* lpCurrent = ipStart, *lpEnd = ipStart + lCount * 4; lpCurrent < ipEnd; lpCurrentResult++, lpCurrent += 4)
+		for(char* lpCurrent = ipStart, *lpEnd = ipStart + lCount * 4; lpCurrent < lpEnd; lpCurrentResult++, lpCurrent += 4)
 		{
 			*lpCurrentResult = 0;
 			for(int i = 3; i >= 0; i--)
@@ -162,8 +163,8 @@ public:
 				*lpCurrentResult = *lpCurrentResult * 256 + (unsigned char)(lpCurrent[i]);
 			}
 		}
-
-		return ipStart + lCount * 4;
+		*oppNewStart = ipStart + lCount * 4;
+		return lCount;
 	}
 };
 
@@ -180,7 +181,7 @@ public:
 	}
 
 	// return the count outputed elements
-	virtual int* GenerateOutput(int* ipStart, int* ipEnd, Buffer<char>* opWriter)
+	virtual size_t GenerateOutput(int* ipStart, int* ipEnd, int** oppNewStart, Buffer<char>* opWriter)
 	{
 		size_t lOutputcount = (ipEnd - ipStart) * 4;
 
@@ -190,15 +191,15 @@ public:
 		lCount = lCount / 4  * 4;
 
 		char* lpCurrentResult = lpResult;
-		for(int* lpCurrent = ipStart, *lpEnd = ipStart + lCount / 4; lpCurrent < ipEnd; lpCurrent++)
+		for(int* lpCurrent = ipStart, *lpEnd = ipStart + lCount / 4; lpCurrent < lpEnd; lpCurrent++)
 		{
 			for(int i = 3, v = *lpCurrent; i >= 0; i--, lpCurrentResult++, v /= 256)
 			{
 				*lpCurrentResult = (char)(v % 256);
 			}
 		}
-
-		return ipStart + lCount / 4;
+		*oppNewStart = ipStart + lCount / 4;
+		return lCount;
 	}
 };
 

@@ -19,8 +19,26 @@ template<typename T>
 class Buffer
 {
 public:
-	// constructor for write buffer
+
+	// constructor for read/write buffer
 	// to reduce initial response time, intial capacity is small
+	Buffer(size_t iMaxBufferSize = SIZE_MAX)
+		: mpData(NULL)
+		, mpCurrent(NULL)
+		, mpEnd(NULL)
+		, mCapacity(10)
+		, mMaxCapacity(iMaxBufferSize)
+		, mVersion(0)
+		, mTotalGetCount(0)
+		, mTotalPutCount(0)
+	{
+		mpData = new T[mCapacity];
+		mpCurrent = mpEnd = mpData;
+
+		std::cout << "Read/Write buffer constructor\n";
+	}
+
+	// constructor for write buffer
 	Buffer(T* ipArray, size_t n)
 		: mpData(NULL)
 		, mpCurrent(NULL)
@@ -31,7 +49,7 @@ public:
 		, mTotalGetCount(0)
 		, mTotalPutCount(0)
 	{
-		if(ipArray != NULL)
+		if(ipArray != NULL && mCapacity > 0)
 		{
 			mpData = ipArray;
 			// set status
@@ -46,32 +64,33 @@ public:
 	}
 
 	// constructor for read buffer
-	// to reduce initial response time, intial capacity is small
 	Buffer(const T* ipArray, size_t n)
 		: mpData(NULL)
 		, mpCurrent(NULL)
 		, mpEnd(NULL)
-		, mCapacity(10)
-		, mMaxCapacity(SIZE_MAX)
+		, mCapacity(n)
+		, mMaxCapacity(n)
 		, mVersion(0)
 		, mTotalGetCount(0)
 		, mTotalPutCount(0)
 	{
-		// allocate buffer
-		mCapacity = mCapacity < n ? n: mCapacity;
-		mpData = new T[mCapacity];
-
-		// set status
-		mpCurrent = mpEnd = mpData;
-
-		// copy content
-		if(n > 0 && ipArray != NULL)
+		if(ipArray != NULL && mCapacity > 0)
 		{
+			mpData = new T[mCapacity];
+
+			// set status
+			mpCurrent = mpEnd = mpData;
+
+			// copy data
 			mpEnd = mpData + n;
 			for(T *lpDest = mpData; lpDest < mpEnd;)
 			{
 				*(lpDest++) = *(ipArray++);
 			}
+		}
+		else
+		{
+			mCapacity = mMaxCapacity = 0;
 		}
 
 		std::cout << "Read buffer constructor\n";
