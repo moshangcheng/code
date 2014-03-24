@@ -1,12 +1,12 @@
 #ifndef __ADAPTOR_H
 #define __ADAPTOR_H
 
-#include "Reader.h"
+#include "Buffer.h"
 
 template<class I, class O>
 struct Adaptor
 {
-	virtual size_t operator()(BufferReader<I>* ipReader, Buffer<O>* opWriter, size_t iExpectedCount = 1) = 0;
+	virtual size_t operator()(Buffer<I>* ipReader, Buffer<O>* opWriter, size_t iInputCount = 0, size_t iOutputCount = 0) = 0;
 
 	virtual ~Adaptor() {}
 };
@@ -14,23 +14,34 @@ struct Adaptor
 template<class I, class O>
 struct SimpleAdaptor: public Adaptor<I, O>
 {
-	SimpleAdaptor()
+	SimpleAdaptor(size_t iMinBlockSize = 32, size_t iMaxBlockSize = SIZE_MAX)
 		: mTotalInputSize(0)
 		, mTotalOutputSize(0)
+		, mMinBlockSize(iMinBlockSize)
+		, mMaxBlockSize(iMaxBlockSize)
 	{}
 
-	size_t operator()(BufferReader<I>* ipReader, Buffer<O>* opWriter, size_t iExpectedCount = 1)
+	size_t operator()(Buffer<I>* ipReader, Buffer<O>* opWriter, size_t iInputCount = 0, size_t iOutputCount = 0)
 	{
-		if(ipReader == NULL || opWriter == NULL || iExpectedCount == 0)
+		if(ipReader == NULL || opWriter == NULL)
 		{
 			return 0;
 		}
 
-		size_t lInputBlockSize = iExpectedCount;
-		if(mTotalOutputSize != 0 && mTotalInputSize != 0)
+		// the size of input block is very important
+		size_t lInputBlockSize = mMinBlockSize;
+		if(iInputCount > 0)
 		{
-			lInputBlockSize = ceil(1.0 * mTotalInputSize / mTotalOutputSize * lInputBlockSize);
+			// use the size speicified by caller
+			lInputBlockSize = iInputCount > mMaxBlockSize ? mMaxBlockSize: iInputCount;
 		}
+		else if(iOutputCount > 0 && mTotalOutputSize > 0 && mTotalInputSize > 0)
+		{
+			// use the size speicified by calculation
+			lInputBlockSize = iOutputCount / mTotalOutputSize > mMaxBlockSize / mTotalInputSize ? mMaxBlockSize: iOutputCount / mTotalOutputSize * mTotalInputSize;
+		}
+		lInputBlockSize = lInputBlockSize > mMinBlockSize ? lInputBlockSize: mMinBlockSize;
+
 
 		I* lpSrc = NULL;
 		size_t lCount = ipReader->Get(&lpSrc, lInputBlockSize);
@@ -74,6 +85,7 @@ struct SimpleAdaptor: public Adaptor<I, O>
 					{
 						// lOutputCount += this->GenerateOutput(lpUnitStart, lpEnd, opWriter);
 						// lInputCount += lpEnd - lpUnitStart;
+						ipReader->UnGet(lpEnd - lpUnitStart);
 						break;
 					}
 
@@ -110,6 +122,8 @@ struct SimpleAdaptor: public Adaptor<I, O>
 private:
 	size_t mTotalInputSize;
 	size_t mTotalOutputSize;
+	size_t mMinBlockSize;
+	size_t mMaxBlockSize;
 };
 
 
@@ -141,9 +155,11 @@ public:
 			}
 		}
 
-		return lOutputcount;
+		return lCount;
 	}
 };
+
+typedef CharToInt IntFromChar;
 
 class IntToChar: public SimpleAdaptor<int, char>
 {
@@ -175,5 +191,7 @@ public:
 		return lOutputcount;
 	}
 };
+
+typedef IntToChar CharFromInt;
 
 #endif
