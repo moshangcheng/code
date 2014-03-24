@@ -15,7 +15,7 @@ struct Connector
 template<class I, class O>
 struct SimpleConnector: public Connector<I, O>
 {
-	SimpleConnector(Buffer<I>* ipReader, Buffer<O>* opWriter, Adaptor<I, O>* ipAdaptor, size_t iBlockSize = 64 * 1024)
+	SimpleConnector(Buffer<I>* ipReader, Buffer<O>* opWriter, Adaptor<I, O>* ipAdaptor, size_t iBlockSize = (64 * 1024)/sizeof(I))
 		: mpReader(ipReader)
 		, mpWriter(opWriter)
 		, mpAdaptor(ipAdaptor)

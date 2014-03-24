@@ -116,8 +116,13 @@ public:
 		return mpEnd - mpCurrent;
 	}
 
-	size_t FreeSpaceSize() const
+	size_t FreeSpaceSize()
 	{
+		if(mpEnd == mpCurrent)
+		{
+			mpCurrent = mpEnd = mpData;
+			mVersion++;
+		}
 		return mpData + mCapacity - mpEnd;
 	}
 
@@ -181,9 +186,8 @@ public:
 
 		// try to allocate memory
 		More(n);
-
-		*p = mpEnd;
 		size_t lCount = n < FreeSpaceSize() ? n: FreeSpaceSize();
+		*p = mpEnd;
 		mpEnd += lCount;
 		mTotalPutCount += lCount;
 		return lCount;

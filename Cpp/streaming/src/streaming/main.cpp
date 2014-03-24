@@ -10,6 +10,7 @@ using namespace std;
 
 int main()
 {
+	const int SIZE = 100 * 1000 * 1000;
 	// basic test
 	{
 		std::string lpStr = "abcdefghijklmn";
@@ -31,8 +32,8 @@ int main()
 
 	// reader test
 	{
-		const int SIZE = 10 * 1000 * 1000;
 		int* src = new int[SIZE];
+		int* result = new int[SIZE];
 		for(int i = 0; i < SIZE; i++) src[i] = i;
 
 		clock_t start, end;
@@ -43,8 +44,7 @@ int main()
 			->Pipe(new IntToChar())
 			->Pipe(new CharToInt());
 
-		int* result = NULL;
-		size_t lCount = lpResultBuffer->Get(&result, SIZE);
+		size_t lCount = lpResultBuffer->Read(result, SIZE);
 
 		end = clock();
 		cout << "\ntime: " << 1.0 * (end -start) / CLK_TCK << "\n";
@@ -54,18 +54,18 @@ int main()
 		{
 			if(src[i] != result[i])
 			{
-				cout << "the " << i << " element not equal\n";
-				break;
+				cout << "the " << i << " element not equal: " << src[i] << ", " << result[i] << "\n";
+				//break;
 			}
 		}
 
 		delete lpResultBuffer;
+		delete [] result;
 		delete [] src;
 	}
 
 	// writer test
 	{
-		const int SIZE = 10 * 1000 * 1000;
 		int* src = new int[SIZE];
 		int* result = new int[SIZE];
 		for(int i = 0; i < SIZE; i++) src[i] = i;
@@ -95,7 +95,6 @@ int main()
 
 	// connector test
 	{
-		const int SIZE = 10 * 1000 * 1000;
 		int* src = new int[SIZE];
 		int* result = new int[SIZE];
 		for(int i = 0; i < SIZE; i++) src[i] = i;

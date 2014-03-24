@@ -11,9 +11,10 @@ template<typename UT, typename T>
 class LinkedReader: public Buffer<T>
 {
 public:
-	LinkedReader(Buffer<UT>* ipUpstream, Adaptor<UT, T>* ipAdaptor)
+	LinkedReader(Buffer<UT>* ipUpstream, Adaptor<UT, T>* ipAdaptor, size_t iMaxBufferSize = (64 * 1024)/sizeof(T))
 		: mpUpstream(ipUpstream)
 		, mpAdaptor(ipAdaptor)
+		, Buffer<T>(iMaxBufferSize)
 	{}
 
 	LinkedReader(const T* ipArray, size_t iSize)
@@ -23,9 +24,9 @@ public:
 	{}
 
 	template<typename DT>
-	LinkedReader<T, DT>* Pipe(Adaptor<T, DT>* ipAdaptor)
+	LinkedReader<T, DT>* Pipe(Adaptor<T, DT>* ipAdaptor, size_t iMaxBufferSize = (64 * 1024)/sizeof(DT))
 	{
-		return new LinkedReader<T, DT>(this, ipAdaptor);
+		return new LinkedReader<T, DT>(this, ipAdaptor, iMaxBufferSize);
 	}
 
 	//read with copy, caller are responsible to allocate memory

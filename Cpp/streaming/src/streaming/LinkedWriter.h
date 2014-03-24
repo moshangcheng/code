@@ -10,10 +10,10 @@ template<typename T, typename DT>
 class LinkedWriter: public Buffer<T>
 {
 public:
-	LinkedWriter(Buffer<DT>* ipDownstream, Adaptor<T, DT>* ipAdaptor, size_t iMaxBufferSize = SIZE_MAX)
+	LinkedWriter(Buffer<DT>* ipDownstream, Adaptor<T, DT>* ipAdaptor, size_t iMaxBufferSize = (64 * 1024)/sizeof(T))
 		: mpDownstream(ipDownstream)
 		, mpAdaptor(ipAdaptor)
-		, Buffer(iMaxBufferSize)
+		, Buffer<T>(iMaxBufferSize)
 	{}
 
 	LinkedWriter(T* p, size_t n)
@@ -23,7 +23,7 @@ public:
 	{}
 
 	template<typename UT>
-	LinkedWriter<UT, T>* Pipe(Adaptor<UT, T>* ipAdaptor, size_t iMaxBufferSize = SIZE_MAX)
+	LinkedWriter<UT, T>* Pipe(Adaptor<UT, T>* ipAdaptor, size_t iMaxBufferSize = (64 * 1024)/sizeof(UT))
 	{
 		return new LinkedWriter<UT, T>(this, ipAdaptor, iMaxBufferSize);
 	}
@@ -38,6 +38,7 @@ public:
 		size_t lCount = Buffer<T>::Write(p, n);
 		if(mpAdaptor)
 		{
+			this->More(n);
 			// to improve perforamnce, dont' use Flush
 			// that's to say, flush as late as possible
 			while(lCount < n && this->Size() > 0)
@@ -50,7 +51,6 @@ public:
 						return lCount;
 					}
 				}
-				this->More(n);
 				lCount += Buffer<T>::Write(p + lCount, n - lCount);
 			}
 		}
