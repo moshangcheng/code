@@ -19,7 +19,7 @@ namespace MDb
 namespace Streaming
 {
 
-const size_t MAX_BUFFER_SIZE = 1024 * 1024;
+const size_t MAX_BUFFER_SIZE = 4 * 1024 * 1024;
 
 template<typename T>
 class Buffer

@@ -13,7 +13,7 @@ using namespace Streaming;
 
 int main()
 {
-	const int SIZE = 10 * 1000 * 1000;
+	const int SIZE = 100 * 1000 * 1000;
 	// basic test
 	{
 		cout << "--- Basic Test\n\n";
@@ -32,41 +32,6 @@ int main()
 		}
 
 		delete lpResultBuffer;
-	}
-
-	// reader test
-	{
-		cout << "\n\n--- Reader Test\n\n";
-		int* src = new int[SIZE];
-		int* result = new int[SIZE];
-		for(int i = 0; i < SIZE; i++) src[i] = i;
-
-		clock_t start, end;
-		start = clock();
-
-		Buffer<int> *lpResultBuffer =
-			ReaderFactory::FromArray(src, SIZE)
-			->Pipe(new IntToChar())
-			->Pipe(new CharToInt());
-
-		size_t lCount = lpResultBuffer->Read(result, SIZE);
-
-		end = clock();
-		cout << "\ntime: " << 1.0 * (end -start) / CLK_TCK << "\n";
-
-		// check result
-		for(size_t i = 0; i < SIZE; i++)
-		{
-			if(src[i] != result[i])
-			{
-				cout << "the " << i << " element not equal: " << src[i] << ", " << result[i] << "\n";
-				//break;
-			}
-		}
-
-		delete lpResultBuffer;
-		delete [] result;
-		delete [] src;
 	}
 
 	// writer test
@@ -130,6 +95,41 @@ int main()
 
 		delete [] src;
 		//delete [] result;
+	}
+
+	// reader test
+	{
+		cout << "\n\n--- Reader Test\n\n";
+		int* src = new int[SIZE];
+		int* result = new int[SIZE];
+		for(int i = 0; i < SIZE; i++) src[i] = i;
+
+		clock_t start, end;
+		start = clock();
+
+		Buffer<int> *lpResultBuffer =
+			ReaderFactory::FromArray(src, SIZE)
+			->Pipe(new IntToChar())
+			->Pipe(new CharToInt());
+
+		size_t lCount = lpResultBuffer->Read(result, SIZE);
+
+		end = clock();
+		cout << "\ntime: " << 1.0 * (end -start) / CLK_TCK << "\n";
+
+		// check result
+		for(size_t i = 0; i < SIZE; i++)
+		{
+			if(src[i] != result[i])
+			{
+				cout << "the " << i << " element not equal: " << src[i] << ", " << result[i] << "\n";
+				//break;
+			}
+		}
+
+		delete lpResultBuffer;
+		delete [] result;
+		delete [] src;
 	}
 
 	return 0;

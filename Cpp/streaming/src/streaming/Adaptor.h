@@ -72,30 +72,33 @@ struct SimpleAdaptor: public Adaptor<I, O>
 			mFirstRun = false;
 		}
 
+		size_t lInputBlockSize = 0;
 		// the size of input block is very important
-		size_t lInputBlockSize = iInputCount;
-		if(iInputCount > 0)
+		if(iInputCount == 0 && iOutputCount == 0)
 		{
-			// use the size speicified by caller
-			lInputBlockSize = iInputCount > mMaxBlockSize ? mMaxBlockSize: iInputCount;
+
 		}
-		else if(iOutputCount > 0 && mTotalOutputSize > 0 && mTotalInputSize > 0)
+		else if(iInputCount > 0)
 		{
-			// use the size speicified by calculation
-			lInputBlockSize = iOutputCount / mTotalOutputSize > mMaxBlockSize / mTotalInputSize ? mMaxBlockSize: ceil(1.0 * mTotalInputSize / mTotalOutputSize * iOutputCount);
+			lInputBlockSize = iInputCount;
+			if(mTotalOutputSize > 0 && mTotalInputSize > 0)
+			{
+				opWriter->More(ceil(1.0 * iInputCount * mTotalOutputSize / mTotalInputSize));
+			}
+		}
+		else
+		{
+			opWriter->More(iOutputCount);
+			if(mTotalOutputSize > 0 && mTotalInputSize > 0)
+			{
+				lInputBlockSize = ceil(1.0 * mTotalInputSize / mTotalOutputSize * iOutputCount);
+			}
 		}
 		lInputBlockSize = lInputBlockSize > mMinBlockSize ? lInputBlockSize: mMinBlockSize;
-		
 
 
 		I* lpSrc = NULL;
 		size_t lCount = ipReader->Get(&lpSrc, lInputBlockSize);
-
-		// allocate memory for writer
-		if(mTotalOutputSize > 0 && mTotalOutputSize > 0)
-		{
-			opWriter->More(ceil(1.0 * lCount * mTotalOutputSize / mTotalOutputSize));
-		}
 
 		if(lCount == 0)
 		{
