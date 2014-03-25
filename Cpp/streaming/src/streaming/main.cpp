@@ -13,7 +13,8 @@ using namespace Streaming;
 
 int main()
 {
-	const int SIZE = 100 * 1000 * 1000;
+	const int SIZE = 10 * 1000 * 1000;
+	const int RESULT_SIZE = SIZE;
 	// basic test
 	{
 		cout << "--- Basic Test\n\n";
@@ -44,14 +45,14 @@ int main()
 		clock_t start, end;
 		start = clock();
 
-		Buffer<int> *lpResultBuffer = WriterFactory::ToArray(result, SIZE)->Pipe(new IntFromChar())->Pipe(new CharFromInt());
+		Buffer<int> *lpResultBuffer = WriterFactory::ToArray(result, RESULT_SIZE)->Pipe(new IntFromChar())->Pipe(new CharFromInt());
 		size_t lCount = lpResultBuffer->Write(src, SIZE);
 		lpResultBuffer->Flush();
 
 		end = clock();
 		cout << "\ntime: " << 1.0 * (end -start) / CLK_TCK << "\n";
 
-		for(size_t i = 0; i < SIZE; i++)
+		for(size_t i = 0; i < RESULT_SIZE; i++)
 		{
 			if(src[i] != result[i])
 			{
@@ -75,7 +76,7 @@ int main()
 		start = clock();
 
 		SimpleConnector<int, char> lConnector(ReaderFactory::FromArray(src, SIZE)
-			, WriterFactory::ToArray(result, SIZE)->Pipe(new IntFromChar())
+			, WriterFactory::ToArray(result, RESULT_SIZE)->Pipe(new IntFromChar())
 			, new IntToChar());
 		size_t lCount = lConnector.Run();
 		
@@ -84,7 +85,7 @@ int main()
 		cout << "\ntime: " << 1.0 * (end -start) / CLK_TCK << "\n";
 
 		// check result
-		for(size_t i = 0; i < SIZE; i++)
+		for(size_t i = 0; i < RESULT_SIZE; i++)
 		{
 			if(src[i] != result[i])
 			{
@@ -112,13 +113,13 @@ int main()
 			->Pipe(new IntToChar())
 			->Pipe(new CharToInt());
 
-		size_t lCount = lpResultBuffer->Read(result, SIZE);
+		size_t lCount = lpResultBuffer->Read(result, RESULT_SIZE);
 
 		end = clock();
 		cout << "\ntime: " << 1.0 * (end -start) / CLK_TCK << "\n";
 
 		// check result
-		for(size_t i = 0; i < SIZE; i++)
+		for(size_t i = 0; i < RESULT_SIZE; i++)
 		{
 			if(src[i] != result[i])
 			{

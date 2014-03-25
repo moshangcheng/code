@@ -93,6 +93,7 @@ private:
 class ReaderFactory
 {
 public:
+	// very slow
 	template<typename T>
 	static LinkedReader<T, T>* FromArray(const T* ipArray, size_t n)
 	{

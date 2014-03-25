@@ -218,11 +218,12 @@ public:
 		int* lpCurrentResult = lpResult;
 		for(char* lpCurrent = ipStart, *lpEnd = ipStart + lCount * 4; lpCurrent < lpEnd; lpCurrentResult++, lpCurrent += 4)
 		{
-			*lpCurrentResult = 0;
-			for(int i = 3; i >= 0; i--)
-			{
-				*lpCurrentResult = *lpCurrentResult * 256 + (unsigned char)(lpCurrent[i]);
-			}
+			*lpCurrentResult = *((int*)lpCurrent);
+			/**lpCurrentResult =
+				(unsigned char)(lpCurrent[3]) * (1 << 24)
+				+ (unsigned char)(lpCurrent[2]) * (1 << 16)
+				+ (unsigned char)(lpCurrent[1]) * (1 << 8)
+				+ (unsigned char)(lpCurrent[0]);*/
 		}
 		*oppNewStart = ipStart + lCount * 4;
 		return lCount;
@@ -254,10 +255,13 @@ public:
 		char* lpCurrentResult = lpResult;
 		for(int* lpCurrent = ipStart, *lpEnd = ipStart + lCount / 4; lpCurrent < lpEnd; lpCurrent++)
 		{
-			for(int i = 3, v = *lpCurrent; i >= 0; i--, lpCurrentResult++, v /= 256)
-			{
-				*lpCurrentResult = (char)(v % 256);
-			}
+			memcpy(lpCurrentResult, lpCurrent, sizeof(int));
+			lpCurrentResult += 4;
+			/*int v = *lpCurrent;
+			*lpCurrentResult++ = (char)(v & 255);
+			*lpCurrentResult++ = (char)((v >> 8) & 255);
+			*lpCurrentResult++ = (char)((v >> 16) & 255);
+			*lpCurrentResult++ = (char)(v >> 24);*/
 		}
 		*oppNewStart = ipStart + lCount / 4;
 		return lCount;
