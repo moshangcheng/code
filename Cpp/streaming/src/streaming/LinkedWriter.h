@@ -5,12 +5,16 @@
 #include "Buffer.h"
 #include "Adaptor.h"
 
+namespace MDb
+{
+namespace Streaming
+{
 
 template<typename T, typename DT>
 class LinkedWriter: public Buffer<T>
 {
 public:
-	LinkedWriter(Buffer<DT>* ipDownstream, Adaptor<T, DT>* ipAdaptor, size_t iMaxBufferSize = (64 * 1024)/sizeof(T))
+	LinkedWriter(Buffer<DT>* ipDownstream, Adaptor<T, DT>* ipAdaptor, size_t iMaxBufferSize = MAX_BUFFER_SIZE /sizeof(T))
 		: mpDownstream(ipDownstream)
 		, mpAdaptor(ipAdaptor)
 		, Buffer<T>(iMaxBufferSize)
@@ -23,7 +27,7 @@ public:
 	{}
 
 	template<typename UT>
-	LinkedWriter<UT, T>* Pipe(Adaptor<UT, T>* ipAdaptor, size_t iMaxBufferSize = (64 * 1024)/sizeof(UT))
+	LinkedWriter<UT, T>* Pipe(Adaptor<UT, T>* ipAdaptor, size_t iMaxBufferSize = MAX_BUFFER_SIZE /sizeof(UT))
 	{
 		return new LinkedWriter<UT, T>(this, ipAdaptor, iMaxBufferSize);
 	}
@@ -34,18 +38,17 @@ public:
 		{
 			return 0;
 		}
-
+		
 		size_t lCount = Buffer<T>::Write(p, n);
 		if(mpAdaptor)
 		{
-			this->More(n);
 			// to improve perforamnce, dont' use Flush
 			// that's to say, flush as late as possible
 			while(lCount < n && this->Size() > 0)
 			{
 				if((*mpAdaptor)(this, mpDownstream, this->Size()) == 0)
 				{
-					if(mpDownstream->FreeSpaceSize() == 0)
+					if(mpAdaptor->Status() == DOWNSTREAM_FULL)
 					{
 						// output buffer is full
 						return lCount;
@@ -72,7 +75,7 @@ public:
 			{
 				if((*mpAdaptor)(this, mpDownstream, this->Size()) == 0)
 				{
-					if(mpDownstream->FreeSpaceSize() == 0)
+					if(mpAdaptor->Status() == DOWNSTREAM_FULL)
 					{
 						// output buffer is full
 						*p = NULL;
@@ -96,8 +99,9 @@ public:
 		{
 			while(this->Size() && (*mpAdaptor)(this, mpDownstream, this->Size()))
 			{
+				mpDownstream->Flush();
 			}
-			return mpDownstream->FreeSpaceSize() > 0;
+			return mpAdaptor->Status() == UPSTREAM_EMPTY;
 		}
 		return false;
 	}
@@ -146,5 +150,8 @@ public:
 		return new LinkedWriter<UT, T>(NULL, ipAdaptor)
 	}
 };
+
+}
+}
 
 #endif

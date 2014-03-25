@@ -4,6 +4,11 @@
 #include "Buffer.h"
 #include "Adaptor.h"
 
+namespace MDb
+{
+namespace Streaming
+{
+
 template<class I, class O>
 struct Connector
 {
@@ -15,7 +20,7 @@ struct Connector
 template<class I, class O>
 struct SimpleConnector: public Connector<I, O>
 {
-	SimpleConnector(Buffer<I>* ipReader, Buffer<O>* opWriter, Adaptor<I, O>* ipAdaptor, size_t iBlockSize = (64 * 1024)/sizeof(I))
+	SimpleConnector(Buffer<I>* ipReader, Buffer<O>* opWriter, Adaptor<I, O>* ipAdaptor, size_t iBlockSize = MAX_BUFFER_SIZE /sizeof(I))
 		: mpReader(ipReader)
 		, mpWriter(opWriter)
 		, mpAdaptor(ipAdaptor)
@@ -34,10 +39,12 @@ struct SimpleConnector: public Connector<I, O>
 
 		while(1)
 		{
-			size_t lCount = mpAdaptor->operator()(mpReader, mpWriter, mBlockSize, 0);
+			size_t lCount = (*mpAdaptor)(mpReader, mpWriter, mBlockSize, 0);
+			mpWriter->Flush();
+			lTotalSize += lCount;
 			if(lCount == 0)
 			{
-				if(mpWriter->FreeSpaceSize() || mpReader->Size() == 0)
+				if(mpAdaptor->Status() == UPSTREAM_EMPTY)
 				{
 					cout << "input buffer is running out\n";
 				}
@@ -47,7 +54,6 @@ struct SimpleConnector: public Connector<I, O>
 				}
 				break;
 			}
-			lTotalSize += lCount;
 		}
 		mTotalSize += lTotalSize;
 		return lTotalSize;
@@ -79,5 +85,7 @@ private:
 	size_t mTotalSize;
 };
 
+}
+}
 
 #endif

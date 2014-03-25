@@ -3,22 +3,60 @@
 
 #include "Buffer.h"
 
-template<class I, class O>
-struct Adaptor
+namespace MDb
 {
-	virtual size_t operator()(Buffer<I>* ipReader, Buffer<O>* opWriter, size_t iInputCount = 0, size_t iOutputCount = 0) = 0;
+namespace Streaming
+{
 
-	virtual ~Adaptor() {}
+enum AdaptorStatus
+{
+	ADAPTOR_NORMAL = 0,
+	DOWNSTREAM_FULL,
+	UPSTREAM_EMPTY
 };
 
 template<class I, class O>
+class Adaptor
+{
+public:
+	Adaptor()
+		: mStatus(ADAPTOR_NORMAL)
+	{
+	}
+
+
+	// This method is used to check upstream/downstream status
+	// We cannot check their buffer to get status
+	// Because upstream/downstream is not one-to-one conversion
+	// The data in upstream may not enough to generate data in downstream
+	AdaptorStatus Status() const
+	{
+		return mStatus;
+	}
+
+	virtual size_t operator()(Buffer<I>* ipReader, Buffer<O>* opWriter, size_t iInputCount = 0, size_t iOutputCount = 0)
+	{
+		return 0;
+	}
+
+	virtual ~Adaptor() 
+	{
+	}
+
+protected:
+	AdaptorStatus mStatus;
+};
+
+// add method: BeforeRun(Buffer<I>* ipReader), AfterRun(Buffer<O>* opWriter)
+template<class I, class O>
 struct SimpleAdaptor: public Adaptor<I, O>
 {
-	SimpleAdaptor(size_t iMinBlockSize = 32, size_t iMaxBlockSize = SIZE_MAX)
+	SimpleAdaptor(size_t iMinBlockSize = 16, size_t iMaxBlockSize = MAX_BUFFER_SIZE / sizeof(I))
 		: mTotalInputSize(0)
 		, mTotalOutputSize(0)
 		, mMinBlockSize(iMinBlockSize)
 		, mMaxBlockSize(iMaxBlockSize)
+		, mFirstRun(true)
 	{}
 
 	size_t operator()(Buffer<I>* ipReader, Buffer<O>* opWriter, size_t iInputCount = 0, size_t iOutputCount = 0)
@@ -26,6 +64,12 @@ struct SimpleAdaptor: public Adaptor<I, O>
 		if(ipReader == NULL || opWriter == NULL)
 		{
 			return 0;
+		}
+
+		if(mFirstRun)
+		{
+			FirstRun(ipReader, opWriter);
+			mFirstRun = false;
 		}
 
 		// the size of input block is very important
@@ -38,7 +82,7 @@ struct SimpleAdaptor: public Adaptor<I, O>
 		else if(iOutputCount > 0 && mTotalOutputSize > 0 && mTotalInputSize > 0)
 		{
 			// use the size speicified by calculation
-			lInputBlockSize = iOutputCount / mTotalOutputSize > mMaxBlockSize / mTotalInputSize ? mMaxBlockSize: iOutputCount / mTotalOutputSize * mTotalInputSize;
+			lInputBlockSize = iOutputCount / mTotalOutputSize > mMaxBlockSize / mTotalInputSize ? mMaxBlockSize: ceil(1.0 * mTotalInputSize / mTotalOutputSize * iOutputCount);
 		}
 		lInputBlockSize = lInputBlockSize > mMinBlockSize ? lInputBlockSize: mMinBlockSize;
 		
@@ -47,8 +91,15 @@ struct SimpleAdaptor: public Adaptor<I, O>
 		I* lpSrc = NULL;
 		size_t lCount = ipReader->Get(&lpSrc, lInputBlockSize);
 
+		// allocate memory for writer
+		if(mTotalOutputSize > 0 && mTotalOutputSize > 0)
+		{
+			opWriter->More(ceil(1.0 * lCount * mTotalOutputSize / mTotalOutputSize));
+		}
+
 		if(lCount == 0)
 		{
+			this->mStatus = UPSTREAM_EMPTY;
 			return 0;
 		}
 
@@ -59,7 +110,7 @@ struct SimpleAdaptor: public Adaptor<I, O>
 		for(I* lpUnitStart = lpSrc; lpUnitStart < lpEnd; )
 		{
 			I* lpUnitEnd = this->FindInputUnit(lpUnitStart, lpEnd);
- 			if(lpUnitEnd > lpUnitStart)
+ 			if(lpUnitEnd)
 			{
 				I* lpNewUnitStart = NULL;
 				size_t lOutputCount = this->GenerateOutput(lpUnitStart, lpUnitEnd, &lpNewUnitStart, opWriter);
@@ -67,12 +118,12 @@ struct SimpleAdaptor: public Adaptor<I, O>
 				if(lOutputCount == 0)
 				{
 					ipReader->UnGet(lpEnd - lpUnitStart);
+					this->mStatus = DOWNSTREAM_FULL;
 					break;
 				}
 				lTotalOutputCount += lOutputCount;
 				lTotalInputCount += lpNewUnitStart - lpUnitStart;
 				lpUnitStart =  lpNewUnitStart;
-				opWriter->Flush();
 			}
 			else
 			{
@@ -95,6 +146,7 @@ struct SimpleAdaptor: public Adaptor<I, O>
 						// lOutputCount += this->GenerateOutput(lpUnitStart, lpEnd, opWriter);
 						// lInputCount += lpEnd - lpUnitStart;
 						ipReader->UnGet(lpEnd - lpUnitStart);
+						this->mStatus = UPSTREAM_EMPTY;
 						break;
 					}
 
@@ -112,13 +164,17 @@ struct SimpleAdaptor: public Adaptor<I, O>
 		return lTotalOutputCount;
 	}
 
-	// return the end of input unit found
+	virtual void FirstRun(Buffer<I>* ipReader, Buffer<O>* opWriter)
+	{
+		return;
+	}
+
+	// guess the end of input unit found
 	virtual I* FindInputUnit(I* ipStart, I* ipEnd)
 	{
 		return NULL;
 	}
 
-	// return the end of converted input sequence
 	virtual size_t GenerateOutput(I* ipStart, I* ipEnd, I** oppNewStart, Buffer<O>* opWriter)
 	{
 		return 0;
@@ -133,6 +189,8 @@ private:
 	size_t mTotalOutputSize;
 	size_t mMinBlockSize;
 	size_t mMaxBlockSize;
+
+	bool mFirstRun;
 };
 
 
@@ -204,5 +262,8 @@ public:
 };
 
 typedef IntToChar CharFromInt;
+
+}
+}
 
 #endif

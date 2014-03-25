@@ -5,13 +5,16 @@
 #include "Buffer.h"
 #include "Adaptor.h"
 
-
+namespace MDb
+{
+namespace Streaming
+{
 
 template<typename UT, typename T>
 class LinkedReader: public Buffer<T>
 {
 public:
-	LinkedReader(Buffer<UT>* ipUpstream, Adaptor<UT, T>* ipAdaptor, size_t iMaxBufferSize = (64 * 1024)/sizeof(T))
+	LinkedReader(Buffer<UT>* ipUpstream, Adaptor<UT, T>* ipAdaptor, size_t iMaxBufferSize = MAX_BUFFER_SIZE /sizeof(T))
 		: mpUpstream(ipUpstream)
 		, mpAdaptor(ipAdaptor)
 		, Buffer<T>(iMaxBufferSize)
@@ -24,7 +27,7 @@ public:
 	{}
 
 	template<typename DT>
-	LinkedReader<T, DT>* Pipe(Adaptor<T, DT>* ipAdaptor, size_t iMaxBufferSize = (64 * 1024)/sizeof(DT))
+	LinkedReader<T, DT>* Pipe(Adaptor<T, DT>* ipAdaptor, size_t iMaxBufferSize = MAX_BUFFER_SIZE /sizeof(DT))
 	{
 		return new LinkedReader<T, DT>(this, ipAdaptor, iMaxBufferSize);
 	}
@@ -66,7 +69,7 @@ public:
 
 	~LinkedReader()
 	{
-		cout << "destructor of linked buffer reader \n";
+		std::cout << "destructor of linked buffer reader \n";
 
 		if(mpUpstream)
 		{
@@ -99,8 +102,11 @@ public:
 	template<typename UT, typename T>
 	static LinkedReader<UT, T>* FromAdaptor(Adaptor<UT, T>* ipAdaptor)
 	{
-		return new LinkedReader<UT, T>(NULL, ipAdaptor)
+		return new LinkedReader<UT, T>(NULL, ipAdaptor);
 	}
 };
+
+}
+}
 
 #endif

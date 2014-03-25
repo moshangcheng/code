@@ -1,6 +1,5 @@
 #include <ctime>
 #include <iostream>
-using namespace std;
 
 
 #include "Adaptor.h"
@@ -8,11 +7,16 @@ using namespace std;
 #include "LinkedReader.h"
 #include "LinkedWriter.h"
 
+using namespace std;
+using namespace MDb;
+using namespace Streaming;
+
 int main()
 {
-	const int SIZE = 100 * 1000 * 1000;
+	const int SIZE = 10 * 1000 * 1000;
 	// basic test
 	{
+		cout << "--- Basic Test\n\n";
 		std::string lpStr = "abcdefghijklmn";
 		char lResult[14];
 
@@ -32,6 +36,7 @@ int main()
 
 	// reader test
 	{
+		cout << "\n\n--- Reader Test\n\n";
 		int* src = new int[SIZE];
 		int* result = new int[SIZE];
 		for(int i = 0; i < SIZE; i++) src[i] = i;
@@ -66,6 +71,7 @@ int main()
 
 	// writer test
 	{
+		cout << "\n\n--- Writer Test\n\n";
 		int* src = new int[SIZE];
 		int* result = new int[SIZE];
 		for(int i = 0; i < SIZE; i++) src[i] = i;
@@ -74,7 +80,7 @@ int main()
 		start = clock();
 
 		Buffer<int> *lpResultBuffer = WriterFactory::ToArray(result, SIZE)->Pipe(new IntFromChar())->Pipe(new CharFromInt());
-		lpResultBuffer->Write(src, SIZE);
+		size_t lCount = lpResultBuffer->Write(src, SIZE);
 		lpResultBuffer->Flush();
 
 		end = clock();
@@ -95,6 +101,7 @@ int main()
 
 	// connector test
 	{
+		cout << "\n\n--- Connector Test\n\n";
 		int* src = new int[SIZE];
 		int* result = new int[SIZE];
 		for(int i = 0; i < SIZE; i++) src[i] = i;

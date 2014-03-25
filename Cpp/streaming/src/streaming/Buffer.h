@@ -14,6 +14,12 @@
 // read is operation of occupied space
 // write is operation of not occupied space
 
+namespace MDb
+{
+namespace Streaming
+{
+
+const size_t MAX_BUFFER_SIZE = 1024 * 1024;
 
 template<typename T>
 class Buffer
@@ -26,11 +32,9 @@ public:
 		: mpData(NULL)
 		, mpCurrent(NULL)
 		, mpEnd(NULL)
-		, mCapacity(10)
+		, mCapacity(16)
 		, mMaxCapacity(iMaxBufferSize)
 		, mVersion(0)
-		, mTotalGetCount(0)
-		, mTotalPutCount(0)
 	{
 		mpData = new T[mCapacity];
 		mpCurrent = mpEnd = mpData;
@@ -46,8 +50,6 @@ public:
 		, mCapacity(n)
 		, mMaxCapacity(n)
 		, mVersion(0)
-		, mTotalGetCount(0)
-		, mTotalPutCount(0)
 	{
 		if(ipArray != NULL && mCapacity > 0)
 		{
@@ -71,8 +73,6 @@ public:
 		, mCapacity(n)
 		, mMaxCapacity(n)
 		, mVersion(0)
-		, mTotalGetCount(0)
-		, mTotalPutCount(0)
 	{
 		if(ipArray != NULL && mCapacity > 0)
 		{
@@ -106,6 +106,12 @@ public:
 		return mpEnd;
 	}
 
+	void Clear()
+	{
+		mpCurrent = mpEnd = mpData;
+		mVersion++;
+	}
+
 	size_t Capacity() const
 	{
 		return mCapacity;
@@ -118,22 +124,7 @@ public:
 
 	size_t FreeSpaceSize()
 	{
-		if(mpEnd == mpCurrent)
-		{
-			mpCurrent = mpEnd = mpData;
-			mVersion++;
-		}
 		return mpData + mCapacity - mpEnd;
-	}
-
-	size_t GetTotalGetCount() const
-	{
-		return mTotalGetCount;
-	}
-
-	size_t GetTotalPutCount() const
-	{
-		return mTotalPutCount;
 	}
 
 	// do nothing
@@ -154,7 +145,6 @@ public:
 		*p = mpCurrent;
 		size_t lCount = n < Size() ? n: Size();
 		mpCurrent += lCount;
-		mTotalGetCount += lCount;
 		return lCount;
 	}
 
@@ -171,7 +161,23 @@ public:
 		{
 			*(p++) = *(mpCurrent++);
 		}
-		mTotalGetCount += lCount;
+		return lCount;
+	}
+
+	// for performance
+	size_t Add(T** p, size_t n = 1)
+	{
+		if(n == 0)
+		{
+			*p = NULL;
+			return NULL;
+		}
+
+		// try to allocate memory
+		More(n);
+		size_t lCount = n < FreeSpaceSize() ? n: FreeSpaceSize();
+		*p = mpEnd;
+		mpEnd += lCount;
 		return lCount;
 	}
 
@@ -189,7 +195,6 @@ public:
 		size_t lCount = n < FreeSpaceSize() ? n: FreeSpaceSize();
 		*p = mpEnd;
 		mpEnd += lCount;
-		mTotalPutCount += lCount;
 		return lCount;
 	}
 
@@ -200,13 +205,15 @@ public:
 			return 0;
 		}
 
+		// try to allocate memory
+		More(n);
+
 		size_t lCount = FreeSpaceSize() < n ? FreeSpaceSize(): n;
 
 		for(const T* lpNewEnd = mpEnd + lCount; mpEnd < lpNewEnd;)
 		{
 			*(mpEnd++) = *(p++);
 		}
-		mTotalPutCount += lCount;
 		return lCount;
 	}
 
@@ -218,7 +225,6 @@ public:
 			return false;
 		}
 		mpCurrent -= n;
-		mTotalGetCount -= n;
 		return true;
 	}
 
@@ -230,7 +236,6 @@ public:
 			return false;
 		}
 		mpEnd -= n;
-		mTotalPutCount -= n;
 		return true;
 	}
 
@@ -317,10 +322,10 @@ private:
 	size_t mMaxCapacity;
 	size_t mVersion;
 
-	size_t mTotalGetCount;
-	size_t mTotalPutCount;
-
 	Buffer(const Buffer<T>& irBuffer) {}
 };
+
+}
+}
 
 #endif
