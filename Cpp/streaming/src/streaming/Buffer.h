@@ -36,6 +36,11 @@ public:
 		, mMaxCapacity(iMaxBufferSize)
 		, mVersion(0)
 	{
+		if(mCapacity > mMaxCapacity)
+		{
+			mCapacity = mMaxCapacity;
+		}
+
 		mpData = new T[mCapacity];
 		mpCurrent = mpEnd = mpData;
 

@@ -13,7 +13,7 @@ using namespace Streaming;
 
 int main()
 {
-	const int SIZE = 10 * 1000 * 1000;
+	const int SIZE = 100 * 1000 * 1000;
 	const int RESULT_SIZE = SIZE;
 	// basic test
 	{
@@ -65,39 +65,6 @@ int main()
 		delete [] src;
 	}
 
-	// connector test
-	{
-		cout << "\n\n--- Connector Test\n\n";
-		int* src = new int[SIZE];
-		int* result = new int[SIZE];
-		for(int i = 0; i < SIZE; i++) src[i] = i;
-
-		clock_t start, end;
-		start = clock();
-
-		SimpleConnector<int, char> lConnector(ReaderFactory::FromArray(src, SIZE)
-			, WriterFactory::ToArray(result, RESULT_SIZE)->Pipe(new IntFromChar())
-			, new IntToChar());
-		size_t lCount = lConnector.Run();
-		
-
-		end = clock();
-		cout << "\ntime: " << 1.0 * (end -start) / CLK_TCK << "\n";
-
-		// check result
-		for(size_t i = 0; i < RESULT_SIZE; i++)
-		{
-			if(src[i] != result[i])
-			{
-				cout << "the " << i << " element not equal: " << src[i] << ", " << result[i] << "\n";
-				//break;
-			}
-		}
-
-		delete [] src;
-		//delete [] result;
-	}
-
 	// reader test
 	{
 		cout << "\n\n--- Reader Test\n\n";
@@ -132,6 +99,104 @@ int main()
 		delete [] result;
 		delete [] src;
 	}
+
+	// connector test
+	{
+		cout << "\n\n--- Simple Connector Test\n\n";
+		int* src = new int[SIZE];
+		int* result = new int[SIZE];
+		for(int i = 0; i < SIZE; i++) src[i] = i;
+
+		clock_t start, end;
+		start = clock();
+
+		SimpleConnector<int, char> lConnector(ReaderFactory::FromArray(src, SIZE)
+			, WriterFactory::ToArray(result, RESULT_SIZE)->Pipe(new IntFromChar())
+			, new IntToChar());
+		size_t lCount = lConnector.Run();
+		
+
+		end = clock();
+		cout << "\ntime: " << 1.0 * (end -start) / CLK_TCK << "\n";
+
+		// check result
+		for(size_t i = 0; i < RESULT_SIZE; i++)
+		{
+			if(src[i] != result[i])
+			{
+				cout << "the " << i << " element not equal: " << src[i] << ", " << result[i] << "\n";
+				//break;
+			}
+		}
+
+		delete [] src;
+		//delete [] result;
+	}
+
+	// copyconnector test
+	{
+		cout << "\n\n--- Copy Connector Test\n\n";
+		int* src = new int[SIZE];
+		int* result = new int[SIZE];
+		for(int i = 0; i < SIZE; i++) src[i] = i;
+
+		clock_t start, end;
+		start = clock();
+
+		CopyConnector<char> lConnector(ReaderFactory::FromArray(src, SIZE)->Pipe(new IntToChar())
+			, WriterFactory::ToArray(result, RESULT_SIZE)->Pipe(new IntFromChar()));
+		size_t lCount = lConnector.Run();
+		
+
+		end = clock();
+		cout << "\ntime: " << 1.0 * (end -start) / CLK_TCK << "\n";
+
+		// check result
+		for(size_t i = 0; i < RESULT_SIZE; i++)
+		{
+			if(src[i] != result[i])
+			{
+				cout << "the " << i << " element not equal: " << src[i] << ", " << result[i] << "\n";
+				//break;
+			}
+		}
+
+		delete [] src;
+		//delete [] result;
+	}
+
+	// multi-thread copyconnector test
+	/*{
+		cout << "\n\n--- Connector Test\n\n";
+		int* src = new int[SIZE];
+		int* result = new int[SIZE];
+		for(int i = 0; i < SIZE; i++) src[i] = i;
+
+		clock_t start, end;
+		start = clock();
+
+		SimpleConnector<int, char> lConnector(ReaderFactory::FromArray(src, SIZE)
+			, WriterFactory::ToArray(result, RESULT_SIZE)->Pipe(new IntFromChar())
+			, new IntToChar());
+		size_t lCount = lConnector.Run();
+		
+
+		end = clock();
+		cout << "\ntime: " << 1.0 * (end -start) / CLK_TCK << "\n";
+
+		// check result
+		for(size_t i = 0; i < RESULT_SIZE; i++)
+		{
+			if(src[i] != result[i])
+			{
+				cout << "the " << i << " element not equal: " << src[i] << ", " << result[i] << "\n";
+				//break;
+			}
+		}
+
+		delete [] src;
+		//delete [] result;
+	}*/
 
 	return 0;
 }

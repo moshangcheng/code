@@ -8,7 +8,7 @@ namespace MDb
 namespace Streaming
 {
 
-enum AdaptorStatus
+enum StreamStatus
 {
 	ADAPTOR_NORMAL = 0,
 	DOWNSTREAM_FULL,
@@ -29,7 +29,7 @@ public:
 	// We cannot check their buffer to get status
 	// Because upstream/downstream is not one-to-one conversion
 	// The data in upstream may not enough to generate data in downstream
-	AdaptorStatus Status() const
+	StreamStatus Status() const
 	{
 		return mStatus;
 	}
@@ -44,13 +44,14 @@ public:
 	}
 
 protected:
-	AdaptorStatus mStatus;
+	StreamStatus mStatus;
 };
 
 // add method: BeforeRun(Buffer<I>* ipReader), AfterRun(Buffer<O>* opWriter)
 template<class I, class O>
-struct SimpleAdaptor: public Adaptor<I, O>
+class SimpleAdaptor: public Adaptor<I, O>
 {
+public:
 	SimpleAdaptor(size_t iMinBlockSize = 16, size_t iMaxBlockSize = MAX_BUFFER_SIZE / sizeof(I))
 		: mTotalInputSize(0)
 		, mTotalOutputSize(0)
@@ -58,6 +59,10 @@ struct SimpleAdaptor: public Adaptor<I, O>
 		, mMaxBlockSize(iMaxBlockSize)
 		, mFirstRun(true)
 	{}
+
+	virtual ~SimpleAdaptor()
+	{
+	}
 
 	size_t operator()(Buffer<I>* ipReader, Buffer<O>* opWriter, size_t iInputCount = 0, size_t iOutputCount = 0)
 	{
@@ -68,17 +73,13 @@ struct SimpleAdaptor: public Adaptor<I, O>
 
 		if(mFirstRun)
 		{
-			FirstRun(ipReader, opWriter);
+			StreamStart(ipReader, opWriter);
 			mFirstRun = false;
 		}
 
 		size_t lInputBlockSize = 0;
 		// the size of input block is very important
-		if(iInputCount == 0 && iOutputCount == 0)
-		{
-
-		}
-		else if(iInputCount > 0)
+		if(iInputCount > 0)
 		{
 			lInputBlockSize = iInputCount;
 			if(mTotalOutputSize > 0 && mTotalInputSize > 0)
@@ -103,6 +104,9 @@ struct SimpleAdaptor: public Adaptor<I, O>
 		if(lCount == 0)
 		{
 			this->mStatus = UPSTREAM_EMPTY;
+
+			I* lpNewStart = NULL;
+			StreamEnd(NULL, NULL, &lpNewStart, opWriter);
 			return 0;
 		}
 
@@ -117,6 +121,11 @@ struct SimpleAdaptor: public Adaptor<I, O>
 			{
 				I* lpNewUnitStart = NULL;
 				size_t lOutputCount = this->GenerateOutput(lpUnitStart, lpUnitEnd, &lpNewUnitStart, opWriter);
+
+				lTotalOutputCount += lOutputCount;
+				lTotalInputCount += lpNewUnitStart - lpUnitStart;
+				lpUnitStart =  lpNewUnitStart;
+
 				// output buffer is full
 				if(lOutputCount == 0)
 				{
@@ -124,9 +133,6 @@ struct SimpleAdaptor: public Adaptor<I, O>
 					this->mStatus = DOWNSTREAM_FULL;
 					break;
 				}
-				lTotalOutputCount += lOutputCount;
-				lTotalInputCount += lpNewUnitStart - lpUnitStart;
-				lpUnitStart =  lpNewUnitStart;
 			}
 			else
 			{
@@ -143,11 +149,15 @@ struct SimpleAdaptor: public Adaptor<I, O>
 					lpUnitStart = lpSrc;
 
 					// reach the end of input stream
-					// TODO: whether discard incomplete input
 					if(lNewCount == lCount)
 					{
-						// lOutputCount += this->GenerateOutput(lpUnitStart, lpEnd, opWriter);
-						// lInputCount += lpEnd - lpUnitStart;
+						I* lpNewUnitStart = NULL;
+						size_t lOutputCount = this->StreamEnd(lpUnitStart, lpUnitEnd, &lpNewUnitStart, opWriter);
+
+						lTotalOutputCount += lOutputCount;
+						lTotalInputCount += lpNewUnitStart - lpUnitStart;
+						lpUnitStart =  lpNewUnitStart;
+
 						ipReader->UnGet(lpEnd - lpUnitStart);
 						this->mStatus = UPSTREAM_EMPTY;
 						break;
@@ -167,9 +177,20 @@ struct SimpleAdaptor: public Adaptor<I, O>
 		return lTotalOutputCount;
 	}
 
-	virtual void FirstRun(Buffer<I>* ipReader, Buffer<O>* opWriter)
+protected:
+	virtual void StreamStart(Buffer<I>* ipReader, Buffer<O>* opWriter)
 	{
 		return;
+	}
+
+	// default implementation is simply restore input
+	virtual size_t StreamEnd(I* ipStart, I* ipEnd, I** oppNewStart, Buffer<O>* opWriter)
+	{
+		if(oppNewStart != NULL)
+		{
+			*oppNewStart = ipStart;
+		}
+		return 0;
 	}
 
 	// guess the end of input unit found
@@ -181,10 +202,6 @@ struct SimpleAdaptor: public Adaptor<I, O>
 	virtual size_t GenerateOutput(I* ipStart, I* ipEnd, I** oppNewStart, Buffer<O>* opWriter)
 	{
 		return 0;
-	}
-
-	virtual ~SimpleAdaptor()
-	{
 	}
 
 private:
@@ -202,6 +219,7 @@ class CharToInt: public SimpleAdaptor<char, int>
 public:
 	CharToInt() {}
 
+protected:
 	virtual char* FindInputUnit(char* ipStart, char* ipEnd)
 	{
 		return ipStart + (ipEnd - ipStart) / 4 * 4;
@@ -237,6 +255,7 @@ class IntToChar: public SimpleAdaptor<int, char>
 public:
 	IntToChar() {}
 
+protected:
 	virtual int* FindInputUnit(int* ipStart, int* ipEnd)
 	{
 		return ipEnd;
