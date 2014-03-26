@@ -82,9 +82,9 @@ public:
 		if(iInputCount  == 0 && iOutputCount > 0 && mTotalOutputSize > 0 && mTotalInputSize > 0)
 		{
 			lInputBlockSize = ceil(1.0 * mTotalInputSize / mTotalOutputSize * iOutputCount);
-			lInputBlockSize = lInputBlockSize < mMaxBlockSize ? lInputBlockSize: mMaxBlockSize;
 		}
 		lInputBlockSize = lInputBlockSize > mMinBlockSize ? lInputBlockSize: mMinBlockSize;
+		lInputBlockSize = lInputBlockSize < mMaxBlockSize ? lInputBlockSize: mMaxBlockSize;
 
 		// get data form input stream
 		I* lpSrc = NULL;
