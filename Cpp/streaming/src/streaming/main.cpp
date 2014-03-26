@@ -144,7 +144,7 @@ int main()
 		start = clock();
 
 		CopyConnector<char> lConnector(ReaderFactory::FromArray(src, SIZE)->Pipe(new IntToChar())
-			, WriterFactory::ToArray(result, RESULT_SIZE)->Pipe(new IntFromChar()));
+			, WriterFactory::ToArray(result, SIZE)->Pipe(new IntFromChar()));
 		size_t lCount = lConnector.Run();
 		
 

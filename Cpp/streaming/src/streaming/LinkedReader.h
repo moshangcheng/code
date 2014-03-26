@@ -32,6 +32,11 @@ public:
 		return new LinkedReader<T, DT>(this, ipAdaptor, iMaxBufferSize);
 	}
 
+	virtual BufferType Type()
+	{
+		return READER;
+	}
+
 	//read with copy, caller are responsible to allocate memory
 	virtual size_t Read(T* p, size_t n = 1)
 	{

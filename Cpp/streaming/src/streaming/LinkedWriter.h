@@ -32,6 +32,11 @@ public:
 		return new LinkedWriter<UT, T>(this, ipAdaptor, iMaxBufferSize);
 	}
 
+	virtual BufferType Type()
+	{
+		return WRITER;
+	}
+
 	virtual size_t Write(T* p, size_t n = 1)
 	{
 		if(n == 0)
@@ -108,7 +113,7 @@ public:
 
 	~LinkedWriter()
 	{
-		cout << "destructor of linked buffer writer\n";
+		std::wcout << "destructor of linked buffer writer\n";
 
 		if(mpDownstream)
 		{

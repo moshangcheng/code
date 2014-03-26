@@ -78,12 +78,12 @@ public:
 				{
 					mpWriter->Flush();
 					this->mStatus = UPSTREAM_EMPTY;
-					cout << "input buffer is running out\n";
+					std::wcout << "input buffer is running out\n";
 				}
 				else
 				{
 					this->mStatus = DOWNSTREAM_FULL;
-					cout << "output buffer is full\n";
+					std::wcout << "output buffer is full\n";
 				}
 				break;
 			}

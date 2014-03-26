@@ -76,31 +76,21 @@ public:
 			StreamStart(ipReader, opWriter);
 			mFirstRun = false;
 		}
-
-		size_t lInputBlockSize = 0;
-		// the size of input block is very important
-		if(iInputCount > 0)
+		
+		// the size of  block is very important
+		size_t lInputBlockSize = iInputCount;
+		if(iInputCount  == 0 && iOutputCount > 0 && mTotalOutputSize > 0 && mTotalInputSize > 0)
 		{
-			lInputBlockSize = iInputCount;
-			if(mTotalOutputSize > 0 && mTotalInputSize > 0)
-			{
-				opWriter->More(ceil(1.0 * iInputCount * mTotalOutputSize / mTotalInputSize));
-			}
-		}
-		else
-		{
-			opWriter->More(iOutputCount);
-			if(mTotalOutputSize > 0 && mTotalInputSize > 0)
-			{
-				lInputBlockSize = ceil(1.0 * mTotalInputSize / mTotalOutputSize * iOutputCount);
-			}
+			lInputBlockSize = ceil(1.0 * mTotalInputSize / mTotalOutputSize * iOutputCount);
+			lInputBlockSize = lInputBlockSize < mMaxBlockSize ? lInputBlockSize: mMaxBlockSize;
 		}
 		lInputBlockSize = lInputBlockSize > mMinBlockSize ? lInputBlockSize: mMinBlockSize;
 
-
+		// get data form input stream
 		I* lpSrc = NULL;
 		size_t lCount = ipReader->Get(&lpSrc, lInputBlockSize);
 
+		// input stream is running out
 		if(lCount == 0)
 		{
 			this->mStatus = UPSTREAM_EMPTY;
@@ -111,7 +101,6 @@ public:
 		}
 
 		I* lpEnd = lpSrc + lCount;
-
 		size_t lTotalInputCount = 0;
 		size_t lTotalOutputCount = 0;
 		for(I* lpUnitStart = lpSrc; lpUnitStart < lpEnd; )
@@ -121,18 +110,32 @@ public:
 			{
 				I* lpNewUnitStart = NULL;
 				size_t lOutputCount = this->GenerateOutput(lpUnitStart, lpUnitEnd, &lpNewUnitStart, opWriter);
-
-				lTotalOutputCount += lOutputCount;
-				lTotalInputCount += lpNewUnitStart - lpUnitStart;
-				lpUnitStart =  lpNewUnitStart;
+				size_t lInputCount = lpNewUnitStart - lpUnitStart;
 
 				// output buffer is full
 				if(lOutputCount == 0)
 				{
+					// if output stream is reader
+					// its buffer is not large enough to store data converted from one input unit
+					// if output stream is writer, set status
+					if(opWriter->Type() == WRITER)
+					{
+						this->mStatus = DOWNSTREAM_FULL;
+					}
 					ipReader->UnGet(lpEnd - lpUnitStart);
-					this->mStatus = DOWNSTREAM_FULL;
 					break;
 				}
+
+				// we didn't allocate memory for writer yet
+				// guess the output size and allocate memory now
+				if(lTotalInputCount == 0 && mTotalOutputSize == 0)
+				{
+					opWriter->More(ceil(1.0 * lOutputCount / lInputCount * (lInputBlockSize - lInputCount)));
+				}
+
+				lTotalOutputCount += lOutputCount;
+				lTotalInputCount += lInputCount;
+				lpUnitStart =  lpNewUnitStart;
 			}
 			else
 			{
@@ -151,15 +154,19 @@ public:
 					// reach the end of input stream
 					if(lNewCount == lCount)
 					{
-						I* lpNewUnitStart = NULL;
-						size_t lOutputCount = this->StreamEnd(lpUnitStart, lpUnitEnd, &lpNewUnitStart, opWriter);
+						// if input stream is writer, all data in its buffer is not enough to generate output in output stream
+						// if input stream is reader, call StreamEnd method
+						if(ipReader->Type() == READER)
+						{
+							I* lpNewUnitStart = NULL;
+							size_t lOutputCount = this->StreamEnd(lpUnitStart, lpEnd, &lpNewUnitStart, opWriter);
 
-						lTotalOutputCount += lOutputCount;
-						lTotalInputCount += lpNewUnitStart - lpUnitStart;
-						lpUnitStart =  lpNewUnitStart;
-
+							lTotalOutputCount += lOutputCount;
+							lTotalInputCount += lpNewUnitStart - lpUnitStart;
+							lpUnitStart =  lpNewUnitStart;
+							this->mStatus = UPSTREAM_EMPTY;
+						}
 						ipReader->UnGet(lpEnd - lpUnitStart);
-						this->mStatus = UPSTREAM_EMPTY;
 						break;
 					}
 

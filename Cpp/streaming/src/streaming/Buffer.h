@@ -21,6 +21,13 @@ namespace Streaming
 
 const size_t MAX_BUFFER_SIZE = 4 * 1024 * 1024;
 
+enum BufferType
+{
+	NORMAL = 0,
+	READER,
+	WRITER
+};
+
 template<typename T>
 class Buffer
 {
@@ -44,7 +51,7 @@ public:
 		mpData = new T[mCapacity];
 		mpCurrent = mpEnd = mpData;
 
-		std::cout << "Read/Write buffer constructor\n";
+		std::wcout << "Read/Write buffer constructor\n";
 	}
 
 	// constructor for write buffer
@@ -67,7 +74,7 @@ public:
 			mCapacity = mMaxCapacity = 0;
 		}
 
-		std::cout << "Write buffer constructor\n";
+		std::wcout << "Write buffer constructor\n";
 	}
 
 	// constructor for read buffer
@@ -98,7 +105,7 @@ public:
 			mCapacity = mMaxCapacity = 0;
 		}
 
-		std::cout << "Read buffer constructor\n";
+		std::wcout << "Read buffer constructor\n";
 	}
 
 	const T* Current() const
@@ -130,6 +137,11 @@ public:
 	size_t FreeSpaceSize()
 	{
 		return mpData + mCapacity - mpEnd;
+	}
+
+	virtual BufferType Type()
+	{
+		return NORMAL;
 	}
 
 	// do nothing
@@ -266,10 +278,10 @@ public:
 		size_t lExpectedCapacity = n + Size();
 		if(lExpectedCapacity > mCapacity && (mMaxCapacity == 0 || mCapacity < mMaxCapacity))
 		{
-			std::cout << "--- reallocate buffer " <<  this << " , old buffer size is: " << mCapacity << "\n";
+			std::wcout << "--- reallocate buffer " <<  this << " , old buffer size is: " << mCapacity << "\n";
 			
 			// reallocate memory, use the strategy which is used in string::append and strstreambuf
-			mCapacity = (mCapacity / 2 > lExpectedCapacity / 3) ? mCapacity * 3 / 2: lExpectedCapacity;
+			mCapacity = 2 * mCapacity > lExpectedCapacity ? 2 * mCapacity: lExpectedCapacity; //(mCapacity / 2 > lExpectedCapacity / 3) ? mCapacity * 3 / 2: lExpectedCapacity;
 
 			if(mMaxCapacity > 0 && mCapacity > mMaxCapacity)
 			{
@@ -307,7 +319,7 @@ public:
 
 	virtual ~Buffer()
 	{
-		std::cout << "Buffer destructor, version number is: " << mVersion << " \n";
+		std::wcout << "Buffer destructor, version number is: " << mVersion << " \n";
 
 		if(mCapacity > 0 && mpData != NULL)
 		{
