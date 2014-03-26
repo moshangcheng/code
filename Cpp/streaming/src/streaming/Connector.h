@@ -46,16 +46,19 @@ public:
 		if(mpReader != NULL)
 		{
 			delete mpReader;
+			mpReader = NULL;
 		}
 
 		if(mpWriter != NULL)
 		{
 			delete mpWriter;
+			mpWriter = NULL;
 		}
 
 		if(mpAdaptor != NULL)
 		{
 			delete mpAdaptor;
+			mpAdaptor = NULL;
 		}
 	}
 
@@ -100,8 +103,8 @@ private:
 	size_t mTotalSize;
 };
 
-
-// very slow
+// improver performance by doing copy in node has least elements
+// e.g. Copy(int, int<-char<-bool) is much quicker than Copy(int->char->bool, bool)
 template<class T>
 class CopyConnector: public Connector<T, T>
 {
@@ -112,6 +115,21 @@ public:
 		, mBlockSize(iBlockSize)
 		, mTotalSize(0)
 	{}
+
+	virtual ~CopyConnector()
+	{
+		if(mpReader != NULL)
+		{
+			delete mpReader;
+			mpReader = NULL;
+		}
+
+		if(mpWriter != NULL)
+		{
+			delete mpWriter;
+			mpWriter = NULL;
+		}
+	}
 
 	virtual size_t Run()
 	{
@@ -125,23 +143,25 @@ public:
 		while(1)
 		{
 			T* lpSrc = NULL;
-			size_t lInputCount = mpReader->Get(&lpSrc, mBlockSize);
-			if(lInputCount == 0)
+			size_t lOutputCount = mpWriter->Put(&lpSrc, mBlockSize);
+			if(lOutputCount == 0)
 			{
+				this->mStatus = DOWNSTREAM_FULL;
+				cout << "output buffer is full\n";
+				break;
+			}
+
+			size_t lInputCount = mpReader->Read(lpSrc, lOutputCount);
+			if(lInputCount < lOutputCount)
+			{
+				mpWriter->UnPut(lOutputCount - lInputCount);
 				mpWriter->Flush();
 				this->mStatus = UPSTREAM_EMPTY;
 				cout << "input buffer is runnning out\n";
 				break;
 			}
 
-			size_t lOutputCount = mpWriter->Write(lpSrc, lInputCount);
-			lTotalSize += lOutputCount;
-			if(lOutputCount < lInputCount)
-			{
-				this->mStatus = DOWNSTREAM_FULL;
-				cout << "output buffer is full\n";
-				break;
-			}
+			lTotalSize += lInputCount;
 		}
 		mTotalSize += lTotalSize;
 		return lTotalSize;
@@ -150,6 +170,78 @@ public:
 private:
 	Buffer<T>* mpReader;
 	Buffer<T>* mpWriter;
+	size_t mBlockSize;
+	size_t mTotalSize;
+};
+
+// improver performance by doing copy in node has least elements
+// e.g. Copy(int, int<-char<-bool) is much quicker than Copy(int->char->bool, bool)
+template<class T>
+class MTCopyConnector: public Connector<T, T>
+{
+public:
+	MTCopyConnector(Buffer<T>* ipReader, Buffer<T>* opWriter, size_t lThreadCount, size_t iBlockSize = MAX_BUFFER_SIZE /sizeof(T))
+		: mpReader(ipReader)
+		, mpWriter(opWriter)
+		, mBlockSize(iBlockSize)
+		, mTotalSize(0)
+	{}
+
+	virtual ~MTCopyConnector()
+	{
+		if(mpReader != NULL)
+		{
+			delete mpReader;
+			mpReader = NULL;
+		}
+
+		if(mpWriter != NULL)
+		{
+			delete [] mpWriter;
+			mpWriter = NULL;
+		}
+	}
+
+	virtual size_t Run()
+	{
+		if(!mpReader || !mpWriter)
+		{
+			return 0;
+		}
+
+		size_t lTotalSize = 0;
+
+		while(1)
+		{
+			T* lpSrc = NULL;
+			size_t lOutputCount = mpWriter->Put(&lpSrc, mBlockSize);
+			if(lOutputCount == 0)
+			{
+				this->mStatus = DOWNSTREAM_FULL;
+				cout << "output buffer is full\n";
+				break;
+			}
+
+			size_t lInputCount = mpReader->Read(lpSrc, lOutputCount);
+			if(lInputCount < lOutputCount)
+			{
+				mpWriter->UnPut(lOutputCount - lInputCount);
+				mpWriter->Flush();
+				this->mStatus = UPSTREAM_EMPTY;
+				cout << "input buffer is runnning out\n";
+				break;
+			}
+
+			lTotalSize += lInputCount;
+		}
+		mTotalSize += lTotalSize;
+		return lTotalSize;
+	}
+
+private:
+	Buffer<T>* mpReader;
+	Buffer<T>* mpWriter;
+	size_t mThreadCount;
 	size_t mBlockSize;
 	size_t mTotalSize;
 };

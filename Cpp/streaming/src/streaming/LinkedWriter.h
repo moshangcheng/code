@@ -32,6 +32,16 @@ public:
 		return new LinkedWriter<UT, T>(this, ipAdaptor, iMaxBufferSize);
 	}
 
+	Adaptor<T, DT>* GetAdaptor() const
+	{
+		reutrn mpAdaptor;
+	}
+
+	Buffer<DT>* GetLinkedBuffer() const
+	{
+		return mpDownstream;
+	}
+
 	virtual BufferType Type()
 	{
 		return WRITER;

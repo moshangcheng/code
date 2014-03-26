@@ -37,6 +37,16 @@ public:
 		return READER;
 	}
 
+	Adaptor<UT, T>* GetAdaptor() const
+	{
+		reutrn mpAdaptor;
+	}
+
+	Buffer<UT>* GetLinkedBuffer() const
+	{
+		return mpUpstream;
+	}
+
 	//read with copy, caller are responsible to allocate memory
 	virtual size_t Read(T* p, size_t n = 1)
 	{

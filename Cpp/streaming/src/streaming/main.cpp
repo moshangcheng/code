@@ -16,7 +16,7 @@ int main()
 	const int SIZE = 100 * 1000 * 1000;
 	const int RESULT_SIZE = SIZE;
 	// basic test
-	{
+	/*{
 		cout << "--- Basic Test\n\n";
 		std::string lpStr = "abcdefghijklmn";
 		char lResult[14];
@@ -98,7 +98,7 @@ int main()
 		delete lpResultBuffer;
 		delete [] result;
 		delete [] src;
-	}
+	}*/
 
 	// connector test
 	{
@@ -134,7 +134,7 @@ int main()
 	}
 
 	// copyconnector test
-	{
+	/*{
 		cout << "\n\n--- Copy Connector Test\n\n";
 		int* src = new int[SIZE];
 		int* result = new int[SIZE];
@@ -143,8 +143,9 @@ int main()
 		clock_t start, end;
 		start = clock();
 
-		CopyConnector<char> lConnector(ReaderFactory::FromArray(src, SIZE)->Pipe(new IntToChar())
-			, WriterFactory::ToArray(result, SIZE)->Pipe(new IntFromChar()));
+		CopyConnector<int> lConnector(
+			ReaderFactory::FromArray(src, SIZE)
+			, WriterFactory::ToArray(result, SIZE)->Pipe(new IntFromChar())->Pipe(new CharFromInt()));
 		size_t lCount = lConnector.Run();
 		
 
