@@ -10,9 +10,11 @@ namespace Streaming
 
 enum StreamStatus
 {
-	ADAPTOR_NORMAL = 0,
-	DOWNSTREAM_FULL,
-	UPSTREAM_EMPTY,
+	STREAM_START = 0,
+	STREAM_RUNNING,
+	STREAM_OVER,
+	STREAM_DOWNSTREAM_FULL,
+	STREAM_UPSTREAM_EMPTY
 };
 
 template<class I, class O>
@@ -20,7 +22,7 @@ class Adaptor
 {
 public:
 	Adaptor()
-		: mStatus(ADAPTOR_NORMAL)
+		: mStatus(STREAM_START)
 	{
 	}
 
@@ -37,6 +39,11 @@ public:
 	virtual size_t operator()(Buffer<I>* ipReader, Buffer<O>* opWriter, size_t iInputCount = 0, size_t iOutputCount = 0)
 	{
 		return 0;
+	}
+
+	virtual void SetStatus(StreamStatus iStatus)
+	{
+		mStatus = iStatus;
 	}
 
 	virtual ~Adaptor() 
@@ -71,12 +78,18 @@ public:
 			return 0;
 		}
 
-		// If status is UPSTREAM_EMPTY and there are input data
-		// it's called in Flush() by Writer
-		if(this->mStatus == UPSTREAM_EMPTY && ipReader->Type() == WRITER)
+		if(this->mStatus == STREAM_START)
+		{
+			StreamStart(ipReader, opWriter);
+			this->mStatus = STREAM_RUNNING;
+		}
+
+		// stream is over, convert the remaining data in upstream
+		// call StreamEnd() method
+		if(this->mStatus ==  STREAM_OVER)
 		{
 			I* lpSrc = NULL;
-			size_t lInputCount = ipReader->Get(&lpSrc, opWriter->Size());
+			size_t lInputCount = ipReader->Get(&lpSrc, ipReader->Size());
 			size_t lOldWriteBufferCount = opWriter->TotalWriteCount();
 
 			I* lpNewUnitStart = StreamEnd(lpSrc, lpSrc + lInputCount, opWriter);
@@ -90,11 +103,7 @@ public:
 			return lOutputCount;
 		}
 
-		if(mFirstRun)
-		{
-			StreamStart(ipReader, opWriter);
-			mFirstRun = false;
-		}
+		this->mStatus = STREAM_RUNNING;
 		
 		// the size of  block is very important
 		size_t lInputBlockSize = iInputCount;
@@ -112,7 +121,7 @@ public:
 		// input stream is running out
 		if(lCount == 0)
 		{
-			this->mStatus = UPSTREAM_EMPTY;
+			this->mStatus = STREAM_UPSTREAM_EMPTY;
 
 			I* lpNewStart = NULL;
 			StreamEnd(NULL, NULL, opWriter);
@@ -137,7 +146,7 @@ public:
 				// output buffer is full
 				if(lOutputCount == 0)
 				{
-					this->mStatus = DOWNSTREAM_FULL;
+					this->mStatus = STREAM_DOWNSTREAM_FULL;
 					ipReader->UnGet(lpEnd - lpUnitStart);
 
 					if(mTotalOutputCount == 0 && lTotalOutputCount == 0)
@@ -177,7 +186,7 @@ public:
 					// reach the end of input stream
 					if(lNewCount == lCount)
 					{
-						this->mStatus = UPSTREAM_EMPTY;
+						this->mStatus = STREAM_UPSTREAM_EMPTY;
 						// if input stream is reader, call StreamEnd method
 						if(ipReader->Type() == READER)
 						{

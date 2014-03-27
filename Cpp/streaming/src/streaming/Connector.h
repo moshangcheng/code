@@ -77,15 +77,17 @@ public:
 			lTotalSize += lCount;
 			if(lCount == 0)
 			{
-				if(mpAdaptor->Status() == UPSTREAM_EMPTY)
+				if(mpAdaptor->Status() == STREAM_UPSTREAM_EMPTY)
 				{
+					mpAdaptor->SetStatus(STREAM_OVER);
+					(*mpAdaptor)(mpReader, mpWriter);
 					mpWriter->Flush();
-					this->mStatus = UPSTREAM_EMPTY;
+					this->mStatus = STREAM_UPSTREAM_EMPTY;
 					std::wcout << "input buffer is running out\n";
 				}
 				else
 				{
-					this->mStatus = DOWNSTREAM_FULL;
+					this->mStatus = STREAM_DOWNSTREAM_FULL;
 					std::wcout << "output buffer is full\n";
 				}
 				break;
@@ -146,7 +148,7 @@ public:
 			size_t lOutputCount = mpWriter->Put(&lpSrc, mBlockSize);
 			if(lOutputCount == 0)
 			{
-				this->mStatus = DOWNSTREAM_FULL;
+				this->mStatus = STREAM_DOWNSTREAM_FULL;
 				cout << "output buffer is full\n";
 				break;
 			}
@@ -156,7 +158,7 @@ public:
 			{
 				mpWriter->UnPut(lOutputCount - lInputCount);
 				mpWriter->Flush();
-				this->mStatus = UPSTREAM_EMPTY;
+				this->mStatus = STREAM_UPSTREAM_EMPTY;
 				cout << "input buffer is runnning out\n";
 				break;
 			}
@@ -217,7 +219,7 @@ public:
 			size_t lOutputCount = mpWriter->Put(&lpSrc, mBlockSize);
 			if(lOutputCount == 0)
 			{
-				this->mStatus = DOWNSTREAM_FULL;
+				this->mStatus = STREAM_DOWNSTREAM_FULL;
 				cout << "output buffer is full\n";
 				break;
 			}
@@ -227,7 +229,7 @@ public:
 			{
 				mpWriter->UnPut(lOutputCount - lInputCount);
 				mpWriter->Flush();
-				this->mStatus = UPSTREAM_EMPTY;
+				this->mStatus = STREAM_UPSTREAM_EMPTY;
 				cout << "input buffer is runnning out\n";
 				break;
 			}

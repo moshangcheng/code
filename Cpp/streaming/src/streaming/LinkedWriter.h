@@ -63,7 +63,7 @@ public:
 			{
 				if((*mpAdaptor)(this, mpDownstream, this->Size()) == 0)
 				{
-					if(mpAdaptor->Status() == DOWNSTREAM_FULL)
+					if(mpAdaptor->Status() == STREAM_DOWNSTREAM_FULL)
 					{
 						// output buffer is full
 						return lCount;
@@ -90,7 +90,7 @@ public:
 			{
 				if((*mpAdaptor)(this, mpDownstream, this->Size()) == 0)
 				{
-					if(mpAdaptor->Status() == DOWNSTREAM_FULL)
+					if(mpAdaptor->Status() == STREAM_DOWNSTREAM_FULL)
 					{
 						// output buffer is full and dont' perform Put() operation
 						*p = NULL;
@@ -116,15 +116,16 @@ public:
 		{
 			while(this->Size())
 			{
-				if((*mpAdaptor)(this, mpDownstream, this->Size() == 0) && mpAdaptor->Status() == UPSTREAM_EMPTY)
+				if((*mpAdaptor)(this, mpDownstream, this->Size() == 0) && mpAdaptor->Status() == STREAM_UPSTREAM_EMPTY)
 				{
 					// data in buffer is not enough to generate output to downsream
 					// call adaptor one more time to trigger StreamEnd()
-					(*mpAdaptor)(this, mpDownstream, this->Size());
+					mpAdaptor->SetStatus(STREAM_OVER);
+					(*mpAdaptor)(this, mpDownstream);
 					break;
 				}
 			}
-			return this->Size() == 0 && mpDownstream->Flush();
+			return mpDownstream->Flush() && this->Size() == 0;
 		}
 		return false;
 	}
