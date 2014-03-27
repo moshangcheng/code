@@ -16,7 +16,7 @@ int main()
 	const int SIZE = 100 * 1000 * 1000;
 	const int RESULT_SIZE = SIZE;
 	// basic test
-	/*{
+	{
 		cout << "--- Basic Test\n\n";
 		std::string lpStr = "abcdefghijklmn";
 		char lResult[14];
@@ -98,7 +98,7 @@ int main()
 		delete lpResultBuffer;
 		delete [] result;
 		delete [] src;
-	}*/
+	}
 
 	// connector test
 	{
@@ -134,7 +134,7 @@ int main()
 	}
 
 	// copyconnector test
-	/*{
+	{
 		cout << "\n\n--- Copy Connector Test\n\n";
 		int* src = new int[SIZE];
 		int* result = new int[SIZE];

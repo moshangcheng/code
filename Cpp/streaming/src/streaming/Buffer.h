@@ -39,6 +39,8 @@ public:
 		: mpData(NULL)
 		, mpCurrent(NULL)
 		, mpEnd(NULL)
+		, mTotalReadCount(0)
+		, mTotalWriteCount(0)
 		, mCapacity(16)
 		, mMaxCapacity(iMaxBufferSize)
 		, mVersion(0)
@@ -59,6 +61,8 @@ public:
 		: mpData(NULL)
 		, mpCurrent(NULL)
 		, mpEnd(NULL)
+		, mTotalReadCount(0)
+		, mTotalWriteCount(0)
 		, mCapacity(n)
 		, mMaxCapacity(n)
 		, mVersion(0)
@@ -82,6 +86,8 @@ public:
 		: mpData(NULL)
 		, mpCurrent(NULL)
 		, mpEnd(NULL)
+		, mTotalReadCount(0)
+		, mTotalWriteCount(0)
 		, mCapacity(n)
 		, mMaxCapacity(n)
 		, mVersion(0)
@@ -118,6 +124,16 @@ public:
 		return mpEnd;
 	}
 
+	size_t TotalReadCount() const
+	{
+		return mTotalReadCount;
+	}
+
+	size_t TotalWriteCount() const
+	{
+		return mTotalWriteCount;
+	}
+
 	void Clear()
 	{
 		mpCurrent = mpEnd = mpData;
@@ -144,7 +160,6 @@ public:
 		return NORMAL;
 	}
 
-	// do nothing
 	virtual bool Flush()
 	{
 		return false;
@@ -162,6 +177,7 @@ public:
 		*p = mpCurrent;
 		size_t lCount = n < Size() ? n: Size();
 		mpCurrent += lCount;
+		mTotalReadCount += lCount;
 		return lCount;
 	}
 
@@ -178,23 +194,7 @@ public:
 		{
 			*(p++) = *(mpCurrent++);
 		}
-		return lCount;
-	}
-
-	// for performance
-	size_t Add(T** p, size_t n = 1)
-	{
-		if(n == 0)
-		{
-			*p = NULL;
-			return NULL;
-		}
-
-		// try to allocate memory
-		More(n);
-		size_t lCount = n < FreeSpaceSize() ? n: FreeSpaceSize();
-		*p = mpEnd;
-		mpEnd += lCount;
+		mTotalReadCount += lCount;
 		return lCount;
 	}
 
@@ -212,6 +212,7 @@ public:
 		size_t lCount = n < FreeSpaceSize() ? n: FreeSpaceSize();
 		*p = mpEnd;
 		mpEnd += lCount;
+		mTotalWriteCount += lCount;
 		return lCount;
 	}
 
@@ -231,6 +232,7 @@ public:
 		{
 			*(mpEnd++) = *(p++);
 		}
+		mTotalWriteCount += lCount;
 		return lCount;
 	}
 
@@ -242,6 +244,7 @@ public:
 			return false;
 		}
 		mpCurrent -= n;
+		mTotalReadCount -= n;
 		return true;
 	}
 
@@ -253,6 +256,7 @@ public:
 			return false;
 		}
 		mpEnd -= n;
+		mTotalWriteCount -= n;
 		return true;
 	}
 
@@ -334,6 +338,9 @@ private:
 	T* mpData;
 	T* mpCurrent;
 	T* mpEnd;
+
+	size_t mTotalReadCount;
+	size_t mTotalWriteCount;
 
 	size_t mCapacity;
 	size_t mMaxCapacity;

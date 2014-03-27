@@ -12,7 +12,7 @@ enum StreamStatus
 {
 	ADAPTOR_NORMAL = 0,
 	DOWNSTREAM_FULL,
-	UPSTREAM_EMPTY
+	UPSTREAM_EMPTY,
 };
 
 template<class I, class O>
@@ -53,8 +53,8 @@ class SimpleAdaptor: public Adaptor<I, O>
 {
 public:
 	SimpleAdaptor(size_t iMinBlockSize = 16, size_t iMaxBlockSize = MAX_BUFFER_SIZE / sizeof(I))
-		: mTotalInputSize(0)
-		, mTotalOutputSize(0)
+		: mTotalInputCount(0)
+		, mTotalOutputCount(0)
 		, mMinBlockSize(iMinBlockSize)
 		, mMaxBlockSize(iMaxBlockSize)
 		, mFirstRun(true)
@@ -71,6 +71,25 @@ public:
 			return 0;
 		}
 
+		// If status is UPSTREAM_EMPTY and there are input data
+		// it's called in Flush() by Writer
+		if(this->mStatus == UPSTREAM_EMPTY && ipReader->Type() == WRITER)
+		{
+			I* lpSrc = NULL;
+			size_t lInputCount = ipReader->Get(&lpSrc, opWriter->Size());
+			size_t lOldWriteBufferCount = opWriter->TotalWriteCount();
+
+			I* lpNewUnitStart = StreamEnd(lpSrc, lpSrc + lInputCount, opWriter);
+			size_t lOutputCount = opWriter->TotalWriteCount() - lOldWriteBufferCount;
+
+			mTotalInputCount += lpNewUnitStart - lpSrc;
+			mTotalOutputCount += lOutputCount;
+			
+			ipReader->UnGet(lpSrc + lInputCount - lpNewUnitStart);
+
+			return lOutputCount;
+		}
+
 		if(mFirstRun)
 		{
 			StreamStart(ipReader, opWriter);
@@ -79,9 +98,9 @@ public:
 		
 		// the size of  block is very important
 		size_t lInputBlockSize = iInputCount;
-		if(iInputCount  == 0 && iOutputCount > 0 && mTotalOutputSize > 0 && mTotalInputSize > 0)
+		if(iInputCount  == 0 && iOutputCount > 0 && mTotalOutputCount > 0 && mTotalInputCount > 0)
 		{
-			lInputBlockSize = ceil(1.0 * mTotalInputSize / mTotalOutputSize * iOutputCount);
+			lInputBlockSize = ceil(1.0 * mTotalInputCount / mTotalOutputCount * iOutputCount);
 		}
 		lInputBlockSize = lInputBlockSize > mMinBlockSize ? lInputBlockSize: mMinBlockSize;
 		lInputBlockSize = lInputBlockSize < mMaxBlockSize ? lInputBlockSize: mMaxBlockSize;
@@ -96,7 +115,7 @@ public:
 			this->mStatus = UPSTREAM_EMPTY;
 
 			I* lpNewStart = NULL;
-			StreamEnd(NULL, NULL, &lpNewStart, opWriter);
+			StreamEnd(NULL, NULL, opWriter);
 			return 0;
 		}
 
@@ -106,29 +125,33 @@ public:
 		for(I* lpUnitStart = lpSrc; lpUnitStart < lpEnd; )
 		{
 			I* lpUnitEnd = this->FindInputUnit(lpUnitStart, lpEnd);
- 			if(lpUnitEnd)
+			// input data is enough to genearte output
+ 			if(lpUnitEnd > lpUnitStart)
 			{
-				I* lpNewUnitStart = NULL;
-				size_t lOutputCount = this->GenerateOutput(lpUnitStart, lpUnitEnd, &lpNewUnitStart, opWriter);
+				size_t lOldWriteBufferCount = opWriter->TotalWriteCount();
+				I* lpNewUnitStart = this->GenerateOutput(lpUnitStart, lpUnitEnd, opWriter);
+				
 				size_t lInputCount = lpNewUnitStart - lpUnitStart;
+				size_t lOutputCount = opWriter->TotalWriteCount() - lOldWriteBufferCount;
 
 				// output buffer is full
 				if(lOutputCount == 0)
 				{
-					// if output stream is reader
-					// its buffer is not large enough to store data converted from one input unit
-					// if output stream is writer, set status
-					if(opWriter->Type() == WRITER)
-					{
-						this->mStatus = DOWNSTREAM_FULL;
-					}
+					this->mStatus = DOWNSTREAM_FULL;
 					ipReader->UnGet(lpEnd - lpUnitStart);
+
+					if(mTotalOutputCount == 0 && lTotalOutputCount == 0)
+					{
+						// bad configuration
+						std::wcout << L"bad configuration: output buffer is too small to store data converted from single input unit\n";
+					}
+
 					break;
 				}
 
 				// we didn't allocate memory for writer yet
 				// guess the output size and allocate memory now
-				if(lTotalInputCount == 0 && mTotalOutputSize == 0)
+				if(lTotalInputCount == 0 && mTotalOutputCount == 0)
 				{
 					opWriter->More(ceil(1.0 * lOutputCount / lInputCount * (lInputBlockSize - lInputCount)));
 				}
@@ -154,17 +177,16 @@ public:
 					// reach the end of input stream
 					if(lNewCount == lCount)
 					{
-						// if input stream is writer, all data in its buffer is not enough to generate output in output stream
+						this->mStatus = UPSTREAM_EMPTY;
 						// if input stream is reader, call StreamEnd method
 						if(ipReader->Type() == READER)
 						{
-							I* lpNewUnitStart = NULL;
-							size_t lOutputCount = this->StreamEnd(lpUnitStart, lpEnd, &lpNewUnitStart, opWriter);
+							size_t lOldWriteBufferCount = opWriter->TotalWriteCount();
+							I* lpNewUnitStart = this->StreamEnd(lpUnitStart, lpEnd, opWriter);
 
-							lTotalOutputCount += lOutputCount;
 							lTotalInputCount += lpNewUnitStart - lpUnitStart;
+							lTotalOutputCount += opWriter->TotalWriteCount() - lOldWriteBufferCount;
 							lpUnitStart =  lpNewUnitStart;
-							this->mStatus = UPSTREAM_EMPTY;
 						}
 						ipReader->UnGet(lpEnd - lpUnitStart);
 						break;
@@ -179,8 +201,8 @@ public:
 			}
 		}
 
-		mTotalOutputSize += lTotalOutputCount;
-		mTotalInputSize += lTotalInputCount;
+		mTotalOutputCount += lTotalOutputCount;
+		mTotalInputCount += lTotalInputCount;
 		return lTotalOutputCount;
 	}
 
@@ -191,29 +213,25 @@ protected:
 	}
 
 	// default implementation is simply restore input
-	virtual size_t StreamEnd(I* ipStart, I* ipEnd, I** oppNewStart, Buffer<O>* opWriter)
+	virtual I* StreamEnd(I* ipStart, I* ipEnd, Buffer<O>* opWriter)
 	{
-		if(oppNewStart != NULL)
-		{
-			*oppNewStart = ipStart;
-		}
-		return 0;
+		return ipStart;
 	}
 
 	// guess the end of input unit found
 	virtual I* FindInputUnit(I* ipStart, I* ipEnd)
 	{
-		return NULL;
+		return ipStart;
 	}
 
-	virtual size_t GenerateOutput(I* ipStart, I* ipEnd, I** oppNewStart, Buffer<O>* opWriter)
+	virtual I* GenerateOutput(I* ipStart, I* ipEnd, Buffer<O>* opWriter)
 	{
-		return 0;
+		return ipStart;
 	}
 
 private:
-	size_t mTotalInputSize;
-	size_t mTotalOutputSize;
+	size_t mTotalInputCount;
+	size_t mTotalOutputCount;
 	size_t mMinBlockSize;
 	size_t mMaxBlockSize;
 
@@ -233,7 +251,7 @@ protected:
 	}
 
 	// return the count outputed elements
-	virtual size_t GenerateOutput(char* ipStart, char* ipEnd, char** oppNewStart, Buffer<int>* opWriter)
+	virtual char* GenerateOutput(char* ipStart, char* ipEnd, Buffer<int>* opWriter)
 	{
 		size_t lOutputcount = (ipEnd - ipStart) / 4;
 
@@ -241,7 +259,7 @@ protected:
 		size_t lCount = opWriter->Put(&lpResult, lOutputcount);
 
 		int* lpCurrentResult = lpResult;
-		for(char* lpCurrent = ipStart, *lpEnd = ipStart + lCount * 4; lpCurrent < lpEnd; lpCurrentResult++, lpCurrent += 4)
+		for(char *lpCurrent = ipStart, *lpEnd = ipStart + lCount * 4; lpCurrent < lpEnd; lpCurrentResult++, lpCurrent += 4)
 		{
 			*lpCurrentResult = *((int*)lpCurrent);
 			/**lpCurrentResult =
@@ -250,8 +268,7 @@ protected:
 				+ (unsigned char)(lpCurrent[1]) * (1 << 8)
 				+ (unsigned char)(lpCurrent[0]);*/
 		}
-		*oppNewStart = ipStart + lCount * 4;
-		return lCount;
+		return ipStart + lCount * 4;
 	}
 };
 
@@ -269,7 +286,7 @@ protected:
 	}
 
 	// return the count outputed elements
-	virtual size_t GenerateOutput(int* ipStart, int* ipEnd, int** oppNewStart, Buffer<char>* opWriter)
+	virtual int* GenerateOutput(int* ipStart, int* ipEnd, Buffer<char>* opWriter)
 	{
 		size_t lOutputcount = (ipEnd - ipStart) * 4;
 
@@ -289,8 +306,7 @@ protected:
 			*lpCurrentResult++ = (char)((v >> 16) & 255);
 			*lpCurrentResult++ = (char)(v >> 24);*/
 		}
-		*oppNewStart = ipStart + lCount / 4;
-		return lCount;
+		return ipStart + lCount / 4;
 	}
 };
 

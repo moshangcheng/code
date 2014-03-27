@@ -45,10 +45,29 @@ using namespace std;
 // Analogously, for Writers W1->W2->W3
 // Not all data written to W1 are seen by W3.
 // So we have to add counter in each buffer
+
 // To avoid data stored in intermediate buffers,
-// for reader, underflow is necessary to get all data in R1
+// for reader, underflow is necessary to get all data
 // for writer, overflow is not allowed 
-// and Flush must be called after the last put/write operator
+// and Flush() must be called after the last put/write operation
+
+
+
+// Problem3
+// For LinkedReader, when it try to fetch data from upstream,
+// it may not have enough memory to store data converted from upstream.
+// This is similar to overflow of writer.
+
+// Analogously, for LinkedWriter, when it try to write data to downstream,
+// data in upstream may not large enough to generate data in downstream.
+// This is similar to underflow of reader. But in this case, we can't call StreamEnd().
+// Because it's writer, the upstream of upstream may still have data.
+// There is a paticular case, when Flush() is called
+// there is no more valid data in the upstream of upstream
+// So we should call StreamEnd() at this time ( when Flush() called)
+
+
+// Analogouly, data in do
 
 int main()
 {

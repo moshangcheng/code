@@ -92,7 +92,7 @@ public:
 				{
 					if(mpAdaptor->Status() == DOWNSTREAM_FULL)
 					{
-						// output buffer is full
+						// output buffer is full and dont' perform Put() operation
 						*p = NULL;
 						return 0;
 					}
@@ -108,15 +108,23 @@ public:
 		return Buffer<T>::Put(p, n);
 	}
 
+	// flush data to downstream
+	// return true if all data in buffer and in downstream bufers are flushed out
 	bool Flush()
 	{
 		if(mpAdaptor)
 		{
-			while(this->Size() && (*mpAdaptor)(this, mpDownstream, this->Size()))
+			while(this->Size())
 			{
-				mpDownstream->Flush();
+				if((*mpAdaptor)(this, mpDownstream, this->Size() == 0) && mpAdaptor->Status() == UPSTREAM_EMPTY)
+				{
+					// data in buffer is not enough to generate output to downsream
+					// call adaptor one more time to trigger StreamEnd()
+					(*mpAdaptor)(this, mpDownstream, this->Size());
+					break;
+				}
 			}
-			return mpAdaptor->Status() == UPSTREAM_EMPTY;
+			return this->Size() == 0 && mpDownstream->Flush();
 		}
 		return false;
 	}
