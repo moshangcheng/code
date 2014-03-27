@@ -116,7 +116,7 @@ public:
 		{
 			while(this->Size())
 			{
-				if((*mpAdaptor)(this, mpDownstream, this->Size() == 0) && mpAdaptor->Status() == STREAM_UPSTREAM_EMPTY)
+				if((*mpAdaptor)(this, mpDownstream, this->Size()) == 0 && mpAdaptor->Status() == STREAM_UPSTREAM_EMPTY)
 				{
 					// data in buffer is not enough to generate output to downsream
 					// call adaptor one more time to trigger StreamEnd()
