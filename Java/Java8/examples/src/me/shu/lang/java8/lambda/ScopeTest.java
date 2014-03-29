@@ -2,6 +2,10 @@ package me.shu.lang.java8.lambda;
 
 import java.util.function.Consumer;
 
+/**
+ * @author moshangcheng
+ * @version 1.0
+ */
 public class ScopeTest {
 
     public int x = 0;
