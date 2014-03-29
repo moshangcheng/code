@@ -1,4 +1,4 @@
-package TOJ;
+package toj;
 
 import java.math.BigInteger;
 import java.util.Scanner;
