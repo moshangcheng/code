@@ -5,6 +5,7 @@ import java.util.Random;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveAction;
 
+// In this case, we should use CountedCompleter in Java8, which is faster
 public class FJSort extends RecursiveAction {
     /**
 	 * 
@@ -109,7 +110,18 @@ public class FJSort extends RecursiveAction {
             int midpoint = partition(); //change to mypartition() is slow
             FJSort left = new FJSort(data, lo, midpoint);
             FJSort right = new FJSort(data, midpoint, hi);
+            
             invokeAll(left, right);
+            
+            // another way
+//            ArrayList<FJSort> tasks = new ArrayList<FJSort>();
+//            tasks.add(left);
+//            tasks.add(right);
+//            invokeAll(tasks);
+            
+            // wrong, if no join, the main thread doesn't know when task is finished
+//            right.fork();
+//            left.fork();
         }
     }
 
