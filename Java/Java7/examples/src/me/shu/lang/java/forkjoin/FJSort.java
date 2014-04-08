@@ -53,7 +53,7 @@ public class FJSort extends RecursiveAction {
     {
     	int v = data[hi - 1];
     	int i = lo;
-    	for(int j = hi - 1; j > i;)
+    	for(int j = hi - 1; j >= i;)
     	{
     		if(data[j] <= v)
     		{
@@ -64,10 +64,6 @@ public class FJSort extends RecursiveAction {
     		{
     			j--;
     		}
-    	}
-    	if(data[i] < v)
-    	{
-    		i++;
     	}
     	return i;
     }
@@ -110,7 +106,7 @@ public class FJSort extends RecursiveAction {
         if (hi - lo < threshold)
             sort();
         else {
-            int midpoint = mypartition(); //change to mypartition() is slow
+            int midpoint = partition(); //change to mypartition() is slow
             FJSort left = new FJSort(data, lo, midpoint);
             FJSort right = new FJSort(data, midpoint, hi);
             invokeAll(left, right);
@@ -135,7 +131,7 @@ public class FJSort extends RecursiveAction {
         
         {
         	startTime = System.currentTimeMillis();
-        	ForkJoinPool fjPool = new ForkJoinPool(1);
+        	ForkJoinPool fjPool = new ForkJoinPool();
         	fjPool.invoke(p1);
             endTime = System.currentTimeMillis();
             System.out.println("sorted: " + p1.sorted());

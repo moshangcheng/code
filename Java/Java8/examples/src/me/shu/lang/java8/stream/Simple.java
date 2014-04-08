@@ -73,16 +73,16 @@ public class Simple {
 				isBuilder.add(i);
 			}
 			//isBuilder.build().forEach(System.out::println);
-			isBuilder.build().parallel().forEach(e -> System.out.print(e + " "));
+			isBuilder.build().parallel().forEachOrdered(e -> System.out.print(e + " "));
 			System.out.println();
 		}
 		
-//		{
-//		IntStream ints = IntStream.range(0, 1000 * 1);
-//		Stream<Integer> boxedInts = ints.boxed();
-//		Stream<Double> doubles = boxedInts.map(e -> Double.valueOf(e.doubleValue()));
-//		doubles.forEach(e -> System.out.print(e + " "));
-//	}
+		{
+		IntStream ints = IntStream.range(0, 1000 * 1);
+		Stream<Integer> boxedInts = ints.boxed();
+		Stream<Double> doubles = boxedInts.map(e -> Double.valueOf(e.doubleValue()));
+		doubles.forEach(e -> System.out.print(e + " "));
+	}
 	}
 
 }

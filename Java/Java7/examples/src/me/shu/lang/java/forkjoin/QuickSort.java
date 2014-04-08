@@ -48,7 +48,7 @@ public class QuickSort {
     {
     	int v = data[hi - 1];
     	int i = lo;
-    	for(int j = hi - 1; j > i;)
+    	for(int j = hi - 1; j >= i;)
     	{
     		if(data[j] <= v)
     		{
@@ -59,10 +59,6 @@ public class QuickSort {
     		{
     			j--;
     		}
-    	}
-    	if(data[i] < v)
-    	{
-    		i++;
     	}
     	return i;
     }
