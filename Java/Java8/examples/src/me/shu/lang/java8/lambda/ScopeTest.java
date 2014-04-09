@@ -2,6 +2,8 @@ package me.shu.lang.java8.lambda;
 
 import java.util.function.Consumer;
 
+// http://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html#accessing-local-variables
+
 /**
  * @author moshangcheng
  * @version 1.0
@@ -30,7 +32,7 @@ public class ScopeTest {
                 System.out.println("LambdaScopeTest.this.x = " +
                 		ScopeTest.this.x);
             };
-
+            
             myConsumer.accept(x);
 
         }
