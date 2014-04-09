@@ -6,6 +6,7 @@ package me.shu.lang.java8.stream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.*;
 import java.util.stream.IntStream.Builder;
 
@@ -88,6 +89,13 @@ public class MakeStream {
 			Stream<Double> doubles = boxedInts.map(e -> Double.valueOf(e
 					.doubleValue()));
 			doubles.forEach(e -> System.out.print(e + " "));
+			System.out.println();
+		}
+		
+		{
+			System.out.println("--- use random to make stream");
+			new Random().ints().limit(1000 * 10).filter(e -> e > -100)
+				.map(e -> e + 500).forEach(e -> System.out.print(e + " "));
 			System.out.println();
 		}
 	}
