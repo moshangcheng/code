@@ -4,7 +4,6 @@
 #include <cstring>
 #include <cstdlib>
 #include <string>
-#include <iostream>
 #include <exception>
 
 namespace CT
@@ -129,6 +128,25 @@ public:
 		return lmResult;
 	}
 
+	bool operator == (const BooleanMatrix& obj) const
+	{
+		if(obj.mRowCount != this->mRowCount || obj.mColumnCount != this->mColumnCount)
+		{
+			return false;
+		}
+
+		for(size_t i = 0; i < mRowCount; i++)
+		for(size_t j = 0; i < mColumnCount; i++)
+		{
+			if((*this)(i, j) != obj(i, j))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	size_t GetRowCount() const
 	{
 		return mRowCount;
@@ -163,15 +181,18 @@ public:
 		return true;
 	}
 
-	BooleanMatrix& Transport()
+	BooleanMatrix Transport() const
 	{
-		size_t lTemp = mRowCount;
-		mRowCount = mColumnCount;
-		mColumnCount = lTemp;
-		return *this;
+		BooleanMatrix lmResult(mColumnCount, mRowCount);
+		for(size_t i = 0; i < mRowCount; i++)
+		for(size_t j = 0; j < mColumnCount; j++)
+		{
+			lmResult(j, i) = (*this)(i, j);
+		}
+		return lmResult;
 	}
 
-	std::string ToString()
+	std::string ToString() const
 	{
 		std::string lResultString;
 		for(size_t i = 0; i < mRowCount; i++)
