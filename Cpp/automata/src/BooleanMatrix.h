@@ -4,6 +4,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <string>
+#include <iostream>
 #include <exception>
 
 namespace CT
@@ -28,7 +29,7 @@ public:
 		}
 	}
 
-	void operator = (const BooleanMatrix& obj)
+	BooleanMatrix& operator = (const BooleanMatrix& obj)
 	{
 		mRowCount = obj.mRowCount;
 		mColumnCount = obj.mColumnCount;
@@ -37,6 +38,7 @@ public:
 		{
 			memcpy(mpData, obj.mpData, sizeof(bool) * mRowCount * mColumnCount);
 		}
+		return *this;
 	}
 
 	BooleanMatrix(const BooleanMatrix& obj)
@@ -136,15 +138,23 @@ public:
 		}
 
 		for(size_t i = 0; i < mRowCount; i++)
-		for(size_t j = 0; i < mColumnCount; i++)
+		for(size_t j = 0; j < mColumnCount; j++)
 		{
 			if((*this)(i, j) != obj(i, j))
 			{
+				std::cout << mRowCount << " " << mColumnCount << std::endl;
+				std::cout << i << ", " << j << ": " << (*this)(i, j) << " " << obj(i, j) << std::endl;
+				std::cout << this->ToSimpleString() << obj.ToSimpleString() << std::endl;
 				return false;
 			}
 		}
 
 		return true;
+	}
+
+	bool operator != (const BooleanMatrix& obj) const
+	{
+		return !(*this == obj);
 	}
 
 	size_t GetRowCount() const
@@ -192,6 +202,20 @@ public:
 		return lmResult;
 	}
 
+	std::string ToSimpleString() const
+	{
+		std::string lResultString;
+		for(size_t i = 0; i < mRowCount; i++)
+		{
+			for(size_t j = 0; j < mColumnCount; j++)
+			{
+				lResultString.append( (*this)(i, j) ? "1": "0" );
+			}
+			lResultString.append("\n" );
+		}
+		return lResultString;
+	}
+
 	std::string ToString() const
 	{
 		std::string lResultString;
@@ -201,7 +225,7 @@ public:
 			{
 				lResultString.append( (*this)(i, j) ? "true, ": "false, " );
 			}
-			lResultString.append( mColumnCount > 0 ? ( (*this)(i, mColumnCount - 1) ? "true": "false" ): "\n" );
+			lResultString.append( mColumnCount > 0 ? ( (*this)(i, mColumnCount - 1) ? "true\n": "false\n" ): "\n" );
 		}
 		return lResultString;
 	}

@@ -5,7 +5,9 @@
 using namespace std;
 using namespace CT;
 
-// Description of Automata for CSV Parser
+// Fault-Tolerance CSV Parser
+
+// Description of Automata for Fault-Tolerance CSV Parser
 /* States: (S)tart, (I)nQuote, (O)utQuote, (T)emp, (E)rror
 ** Transitions
 **		Seprator	Quote	Other
@@ -13,7 +15,7 @@ using namespace CT;
 ** I	I			T		I
 ** O	S			O		O
 ** T	S			I		E
-** E	E			E		E
+** E	S			E		E
 */
 
 
@@ -35,7 +37,7 @@ const bool M[4][5 * 5] =
 		0, 1, 0, 0, 0,
 		1, 0, 0, 0, 0,
 		1, 0, 0, 0, 0,
-		0, 0, 0, 0, 1
+		1, 0, 0, 0, 0
 	}
 	,// for quote char
 	{
@@ -65,7 +67,7 @@ const bool S[6][1 * 5] =
 	{
 		0, 1, 0, 0, 0
 	}
-	,// not quoted
+	,// unquoted
 	{
 		0, 0, 1, 0, 0
 	}
@@ -90,7 +92,7 @@ const BooleanMatrix gmOther(5, 5, M[3]);
 
 const BooleanMatrix gmStart(5, 1, S[0]);
 const BooleanMatrix gmQutoed(5, 1, S[1]);
-const BooleanMatrix gmNotQutoed(5, 1, S[2]);
+const BooleanMatrix gmUnQutoed(5, 1, S[2]);
 const BooleanMatrix gmTemp(5, 1, S[3]);
 const BooleanMatrix gmError(5, 1, S[4]);
 const BooleanMatrix gmAny(5, 1, S[5]);
@@ -147,36 +149,46 @@ BooleanMatrix BackScanCSV(const char* ipCSV, const BooleanMatrix& iEndState = gm
 
 ostream& operator << (ostream& out, const BooleanMatrix& obj)
 {
-	out << obj.ToString() << endl;
+	out << obj.ToSimpleString();
 	return out;
 }
 
 int main()
 {
+	BooleanMatrix lTemp(gmIdentity);
+
 	// scan
 	{
-		cout << "--- doing unit test\n";
+		cout << "--- doing basic unit test\n";
 
 		assert(ScanCSV("") == gmStart.Transport());
+
 		assert(ScanCSV(",") == gmStart.Transport());
 		assert(ScanCSV("|") == gmQutoed.Transport());
+		assert(ScanCSV("A") == gmUnQutoed.Transport());
 
 		assert(ScanCSV("|,") == gmQutoed.Transport());
 		assert(ScanCSV("||") == gmTemp.Transport());
 		assert(ScanCSV("|A") == gmQutoed.Transport());
 
 		assert(ScanCSV("A,") == gmStart.Transport());
-		assert(ScanCSV("A|") == gmNotQutoed.Transport());
-		assert(ScanCSV("AA") == gmNotQutoed.Transport());
+		assert(ScanCSV("A|") == gmUnQutoed.Transport());
+		assert(ScanCSV("AA") == gmUnQutoed.Transport());
 
 		assert(ScanCSV("||,") == gmStart.Transport());
 		assert(ScanCSV("||A") == gmError.Transport());
 		assert(ScanCSV("|||") == gmQutoed.Transport());
 
-		assert(ScanCSV("||A,") == gmError.Transport());
+		assert(ScanCSV("||A,") == gmStart.Transport());
 		assert(ScanCSV("||A|") == gmError.Transport());
 		assert(ScanCSV("||AA") == gmError.Transport());
 
+	}
+
+	{
+		cout << "--- doing advanced unit test\n";
+
+		assert(ScanCSV("|||,A|") == gmTemp.Transport());
 	}
 
 	// scan
@@ -198,19 +210,32 @@ int main()
 
 	// back scan, use | as quote char
 	{
-		cout << "\n\n--- back scan, the last char in the following cases are quoted\n";
-		cout << BackScanCSV("A,|,", gmQutoed).Transport() << endl;
-		cout << BackScanCSV("C,B,|A,", gmQutoed).Transport() << endl;
-		cout << BackScanCSV("C,|B,||,", gmQutoed).Transport() << endl;
-		cout << BackScanCSV("C,|B,||,", gmQutoed).Transport() << endl;
+		cout << "\n--- back scan, the last separator in the following cases are quoted\n";
+		cout << BackScanCSV("C,B,|A,", gmStart).Transport() << endl;
+		cout << BackScanCSV("C,|B,||,", gmStart).Transport() << endl;
+		cout << BackScanCSV("C,|B,||,", gmStart).Transport() << endl;
 
-		cout << "\n\n--- back scan, the last char in the following cases are note quoted\n";
-		cout << BackScanCSV("A,", gmQutoed).Transport() << endl;
-		cout << BackScanCSV("C,B,||,", gmQutoed).Transport() << endl;
-		cout << BackScanCSV("C,|,B,|,A,", gmQutoed).Transport() << endl;
+		cout << "\n--- back scan, the last separator in the following cases are unquoted\n";
 		cout << BackScanCSV("B,|A|,", gmQutoed).Transport() << endl;
 		cout << BackScanCSV("C,|B|,A,", gmQutoed).Transport() << endl;
 		cout << BackScanCSV("B,|A|,", gmQutoed).Transport() << endl;
+
+		cout << "\n--- back scan, the last separator in the following cases are quoted if reach the start\n";
+		lTemp = BackScanCSV("A,|,", gmStart);
+		cout << lTemp.Transport() << (gmStart & lTemp).Transport() << endl;
+		lTemp = BackScanCSV("B,|,A,", gmStart);
+		cout << lTemp.Transport() << (gmStart & lTemp).Transport() << endl;
+
+		cout << "\n--- back scan, the last separator in the following cases are unquoted if reach the start\n";
+		lTemp = BackScanCSV("A,", gmQutoed);
+		cout << lTemp.Transport() << (gmStart & lTemp).Transport() << endl;
+		lTemp = BackScanCSV("C,B,||,", gmQutoed);
+		cout << lTemp.Transport() << (gmStart & lTemp).Transport() << endl;
+		lTemp = BackScanCSV("C,|,B,|,A,", gmQutoed);
+		cout << lTemp.Transport() << (gmStart & lTemp).Transport() << endl;
+
+		cout << "\n--- other tests\n";
+		cout << BackScanCSV("C,B,|A,", gmStart).Transport() << endl;
 	}
 
 	return 0;
