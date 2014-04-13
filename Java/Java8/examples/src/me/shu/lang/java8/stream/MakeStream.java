@@ -78,7 +78,7 @@ public class MakeStream {
 			}
 			// isBuilder.build().forEach(System.out::println);
 			isBuilder.build().parallel()
-					.forEachOrdered(e -> System.out.print(e + " "));
+					.forEach(e -> System.out.print(e + " "));
 			System.out.println();
 		}
 

@@ -67,7 +67,13 @@ using namespace std;
 // So we should call StreamEnd() at this time ( when Flush() called)
 
 
-// Analogouly, data in do
+
+
+// Problem4
+// Why don't add a Pipe() method in Buffer class?
+// Because for Reader, it should be Buffer<UT>.Pipe<DT>(Adaptor<UT, DT>*)
+// For Writer, it's Buffer<DT>.Pipe<UT>(Adaptor<UT, DT>*)
+// We need to reverse the template argument of Adatpor
 
 int main()
 {
