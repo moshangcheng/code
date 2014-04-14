@@ -27,7 +27,7 @@ const bool M[4][5 * 5] =
 	{
 		1, 0, 0, 0, 0,
 		0, 1, 0, 0, 0,
-		1, 0, 1, 0, 0,
+		0, 0, 1, 0, 0,
 		0, 0, 0, 1, 0,
 		0, 0, 0, 0, 1
 	}
@@ -157,6 +157,13 @@ int main()
 {
 	BooleanMatrix lTemp(gmIdentity);
 
+	cout << gmOther * gmQuote * gmOther << endl;
+	cout << gmAny.Transport() * gmOther * gmQuote * gmOther << endl;
+	cout << gmOther * gmQuote * gmSeparator << endl;
+	cout << gmAny.Transport() * gmOther * gmQuote * gmSeparator << endl;
+
+	return 0;
+
 	// scan
 	{
 		cout << "--- doing basic unit test\n";
@@ -236,6 +243,8 @@ int main()
 
 		cout << "\n--- other tests\n";
 		cout << BackScanCSV("C,B,|A,", gmStart).Transport() << endl;
+
+		cout << BackScanCSV("Z|,A,||a|,A,", gmStart).Transport() << endl;
 	}
 
 	return 0;

@@ -1,4 +1,8 @@
 #include <iostream>
+#include <vector>
+#include <queue>
+#include <list>
+#include <string>
 #include <cassert>
 #include "BooleanMatrix.h"
 
@@ -20,14 +24,14 @@ using namespace CT;
 
 
 // MAAT Description
-// Check paper "Automata, Boolean Matrices, and Ultimate Periodicity"
+// Read the paper "Automata, Boolean Matrices, and Ultimate Periodicity"
 const bool M[4][4 * 4] =
 {
 	// for identity matrix
 	{
 		1, 0, 0, 0,
 		0, 1, 0, 0,
-		1, 0, 1, 0,
+		0, 0, 1, 0,
 		0, 0, 0, 1,
 	}
 	,// for separator
@@ -144,9 +148,70 @@ ostream& operator << (ostream& out, const BooleanMatrix& obj)
 	return out;
 }
 
+list<string> gPatterns;
+string gCurrentPattern;
+void SearchPattern(const BooleanMatrix& s)
+{
+	if(s.Single()) {
+		for(list<string>::iterator cnt = gPatterns.begin(); cnt != gPatterns.end();)
+		{
+			if(cnt->find(gCurrentPattern) != string::npos)
+			{
+				cnt = gPatterns.erase(cnt);
+			}
+			else
+			{
+				cnt++;
+			}
+		}
+		for(list<string>::iterator cnt = gPatterns.begin(); cnt != gPatterns.end(); cnt++)
+		{
+			if(gCurrentPattern.find(*cnt) != string::npos)
+			{
+				return;
+			}
+		}
+		gPatterns.push_back(gCurrentPattern);
+		return;
+	}
+	if(gCurrentPattern.length() > 10)
+	{
+		return;
+	}
+	gCurrentPattern.append("A");
+	SearchPattern(s * gmOther);
+	gCurrentPattern.back() = '|';
+	SearchPattern(s * gmQuote);
+	gCurrentPattern.back() = ',';
+	SearchPattern(s * gmSeparator);
+	gCurrentPattern.pop_back();
+}
+
 int main()
 {
 	BooleanMatrix lTemp(gmIdentity);
+
+	{
+		SearchPattern(gmAny.Transport());
+		for(list<string>::iterator cnt = gPatterns.begin(); cnt != gPatterns.end(); cnt++)
+		{
+			cout << *cnt << endl;
+		}
+		return 0;
+	}
+
+	cout << gmOther * gmQuote * gmOther << endl;
+	cout << gmAny.Transport() * gmOther * gmQuote * gmOther << endl;
+	cout << gmOther * gmQuote * gmSeparator << endl;
+	cout << gmAny.Transport() * gmOther * gmQuote * gmSeparator << endl;
+
+	cout << ScanCSV("A|,", gmAny) << endl;
+	cout << ScanCSV("A|A,", gmAny) << endl;
+	cout << BackScanCSV("|A|A,|,", gmStart).Transport() << endl;
+	cout << BackScanCSV("A|A,", gmStart).Transport() << endl;
+	cout << BackScanCSV("A||,", gmStart).Transport() << endl;
+
+	return 0;
 
 	// scan
 	{

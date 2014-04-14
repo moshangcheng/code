@@ -167,6 +167,17 @@ public:
 		return mColumnCount;
 	}
 
+	bool Single() const
+	{
+		size_t sum = 0;
+		for(size_t i = 0; i < mRowCount * mColumnCount; i++)
+		{
+			sum += mpData[i];
+		}
+		return sum == 1;
+	}
+
+
 	bool AllFalse() const
 	{
 		for(size_t i = 0; i < mRowCount * mColumnCount; i++)
