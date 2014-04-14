@@ -36,13 +36,13 @@ int Transitions[6][3] =
 struct State
 {
 	int state;
+	// this value indicates when the last separator is quoted whether it's possbile that
+	// the entire processed string including the last separator is in one filed
+	// This is very useful when the return state is not 0 or 5.
 	bool sameField;
 };
 
 // @return, the state of DFA
-// @orSameField, this value indicates whether it's possbile that
-// the entire processed string is in one filed. This is very
-// useful when the return state is not 0 or 5.
 State BackScanCSV(const char* ipCSV, size_t iLen = 0)
 {
 	State s = {4, true};
@@ -163,7 +163,14 @@ int main()
 
 	{
 		// sperators whose status cannot be determined
+
+		// if the last separator is qutoed, then the entire stirng is in on field
 		assert(BackScanCSV("A,A,A,").state == 4 && BackScanCSV("A,A,A,").sameField);
+		assert(BackScanCSV("A,||A,A,").state == 4 && BackScanCSV("A,||A,A,").sameField);
+		assert(BackScanCSV("A,||||A,A,").state == 4 && BackScanCSV("A,||||A,A,").sameField);
+
+		// cannot determine whether the entire stirng is in on field
+		assert(BackScanCSV("A,|||A,A,").state == 1 && !BackScanCSV("A,|||A,A,").sameField);
 		assert(BackScanCSV("A,|,").state == 1 && !BackScanCSV("A,|,").sameField);
 		assert(BackScanCSV("A,|,A,|,").state == 4 && !BackScanCSV("A,|,A,|,").sameField);
 		assert(BackScanCSV("A,|,A,|,A,|,").state == 1 && !BackScanCSV("A,|,A,|,A,|,").sameField);
