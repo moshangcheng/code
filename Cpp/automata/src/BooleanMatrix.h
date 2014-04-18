@@ -218,11 +218,15 @@ public:
 		std::string lResultString;
 		for(size_t i = 0; i < mRowCount; i++)
 		{
+			if(i > 0)
+			{
+				lResultString.append("\n" );
+			}
+
 			for(size_t j = 0; j < mColumnCount; j++)
 			{
 				lResultString.append( (*this)(i, j) ? "1": "0" );
 			}
-			lResultString.append("\n" );
 		}
 		return lResultString;
 	}
@@ -239,6 +243,16 @@ public:
 			lResultString.append( mColumnCount > 0 ? ( (*this)(i, mColumnCount - 1) ? "true\n": "false\n" ): "\n" );
 		}
 		return lResultString;
+	}
+
+	int Value() const
+	{
+		int sum = 0;
+		for(int i = 0; i < mRowCount * mColumnCount; i++)
+		{
+			sum = 2 * sum + mpData[i];
+		}
+		return sum;
 	}
 
 	~BooleanMatrix()
