@@ -32,7 +32,7 @@ int main() {
     UConverter* utf8_conv = create_conv("UTF-8");
     UConverter* eascii_conv = create_conv("ISO-8859-1");
 
-    const char* orig = "הצü";
+    const char* orig = "הצ?;
     char result[100];
 
     const char* source = orig;

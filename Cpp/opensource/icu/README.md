@@ -7,7 +7,7 @@
 		mkdir build
 		cd build
 		cmake -DCMAKE_INSTALL_PREFIX=../install ..
-		project properties->Debugging->Environment, add "PATH=..\..\icn\bin;%PATH%"
+		project properties->Debugging->Environment, add "PATH=..\..\icu\bin;%PATH%"
 
 [1]: http://download.icu-project.org/files/icu4c/53.1/icu4c-53_1-Win32-msvc10.zip
 
