@@ -10,30 +10,6 @@
 #include <unicode/dtfmtsym.h>
 using namespace std;
 
-struct buf_type_base {
-	UChar pivot_buf_[ 4096 ], *pivot_source_, *pivot_target_;
-
-	buf_type_base() { reset(); }
-	void buf_type_base::reset() {
-		pivot_source_ = pivot_target_ = pivot_buf_;
-	}
-};
-
-struct gbuf_type : buf_type_base {
-};
-gbuf_type g_;
-
-UConverter* create_conv( char const *charset ) {
-	UErrorCode err = U_ZERO_ERROR;
-	UConverter *const conv = ucnv_open( charset, &err );
-	ucnv_setFromUCallBack(
-		conv, UCNV_FROM_U_CALLBACK_STOP, NULL, NULL, NULL, &err
-		);
-	ucnv_setToUCallBack(conv, UCNV_TO_U_CALLBACK_STOP, NULL, NULL, NULL, &err
-		);
-	return conv;
-}
-
 void create_locale()
 {
 	Locale l_en("en");
@@ -83,6 +59,7 @@ void get_timezone()
 	wcout << endl;
 }
 
+// ref: http://userguide.icu-project.org/formatparse/datetime
 UnicodeString formate_datetime(const UDate& date = Calendar::getNow()
 						 , const Locale& locale = Locale::getUS()
 						 , const UnicodeString& fmt = UnicodeString("EEE MMM dd HH:mm:ss z yyyy"))
