@@ -2,7 +2,7 @@ set(ICU_DIR ${CMAKE_SOURCE_DIR}/icu)
 
 include_directories(${ICU_DIR}/include)
 
-set(files to_strfmt simple_converter datetime_parser)
+set(files to_strfmt simple_converter datetime_parser LCID)
 set(libs icudt.lib icuin.lib icuio.lib icule.lib iculx.lib icutest.lib icutu.lib icuuc.lib testplug.lib)
 
 foreach(file ${files})
