@@ -267,6 +267,42 @@ int main() {
 
 	}
 
+	// test fault-tolerence of icu format string
+	{
+		UnicodeString lIncorrectFmtStrings[] = {
+			UnicodeString("EEE  MMM dd  HH:mm:ss  z   yyyy") // dummy white space, compatitible
+			, UnicodeString("EEE MMM dd '3' HH:mm:ss z yyyy") // dummy number 3, not compatible
+		};
+
+		UnicodeString lFmtStrings[] = {
+			UnicodeString("EEE MMM dd HH:mm:ss z yyyy")
+			, UnicodeString("EEE MMM dd HH:mm:ss z yyyy")
+		};
+
+		Locale lLocales[] = {
+			Locale::getUS()
+			, Locale::getGerman()
+			, Locale::getFrance()
+			, Locale::getChina()
+			, Locale::getJapan()
+			, Locale::getKorea()
+			, Locale::getCanadaFrench()
+		};
+
+		int lFmtStringCount = sizeof(lFmtStrings) / sizeof(UnicodeString);
+		int lLocaleCount = sizeof(lLocales) / sizeof(Locale);
+
+		for(int i = 0; i < lFmtStringCount; i++)
+		{
+			for(int j = 0; j < lLocaleCount; j++)
+			{
+				lResult = ParseDatetime(FormatDatetime(Calendar::getNow(), lLocales[j], lIncorrectFmtStrings[i]), lLocales[j], lFmtStrings[i]);
+				wcout << wstring(lResult.getBuffer(), lResult.getBuffer() + lResult.length()) << endl << endl;
+			}
+		}
+
+	}
+
 	return 0;
 }
 
