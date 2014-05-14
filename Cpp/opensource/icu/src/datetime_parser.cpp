@@ -10,7 +10,7 @@
 #include <unicode/dtfmtsym.h>
 using namespace std;
 
-void create_locale()
+void CreateLocale()
 {
 	Locale l_en("en");
 	Locale l_en_us("en", "US");
@@ -25,7 +25,7 @@ void create_locale()
 }
 
 
-void get_timezone()
+void CreateTimeZone()
 {
 	wcout << L"-- get timezone\n";
 
@@ -67,8 +67,6 @@ UnicodeString FormatDatetime(const UDate& date = Calendar::getNow()
 	UErrorCode status = U_ZERO_ERROR;
 	// try to generate "Fri Jan 01 00:00:00 EST 2010"
 	{
-		//wcout << L"-- generate datetime like \"Fri Jan 01 00:00:00 EST 2010\"\n";
-
 		SimpleDateFormat* lpSrcDateFormat = new SimpleDateFormat(fmt, locale, status);
 
 		lpSrcDateFormat->setTimeZone(*TimeZone::createTimeZone(UnicodeString("EST")));
@@ -89,7 +87,8 @@ UnicodeString ParseDatetime(const UnicodeString& srcString = UnicodeString("Fri 
 	UErrorCode status = U_ZERO_ERROR;
 	// try to pase "Fri Jan 01 00:00:00 EST 2010"
 	{
-		//wcout << L"-- parse datetime " << wstring(srcString.getBuffer(), srcString.getBuffer() + srcString.length()) << endl << endl;
+		// wcout << L"-- parse datetime: " << wstring(srcString.getBuffer(), srcString.getBuffer() + srcString.length()) << endl;
+		// wcout << L"   use format string: " << wstring(fmt.getBuffer(), fmt.getBuffer() + fmt.length()) << endl;
 
 		SimpleDateFormat* lpSrcDateFormat = new SimpleDateFormat(fmt, locale, status);
 		UDate lDate = lpSrcDateFormat->parse(srcString, status);
@@ -100,7 +99,62 @@ UnicodeString ParseDatetime(const UnicodeString& srcString = UnicodeString("Fri 
 
 		UnicodeString targetString;
 		DateFormat* lpTargetDateFormat = DateFormat::createDateTimeInstance(DateFormat::FULL, DateFormat::FULL, Locale::getUS());
-		lpTargetDateFormat->setTimeZone(*TimeZone::createTimeZone(UnicodeString("EST")));
+		lpTargetDateFormat->format( lDate, targetString, status);
+		
+		delete lpSrcDateFormat;
+		delete lpTargetDateFormat;
+		return targetString;
+	}
+}
+
+UnicodeString ParseDate(const UnicodeString& srcString = UnicodeString("2000-01-01")
+							 , const Locale& locale = Locale::getUS()
+							 , const UnicodeString& fmt = UnicodeString("yyyy-mm-dd"))
+{
+	UErrorCode status = U_ZERO_ERROR;
+	// try to pase "Fri Jan 01 00:00:00 EST 2010"
+	{
+		// wcout << L"-- parse datetime: " << wstring(srcString.getBuffer(), srcString.getBuffer() + srcString.length()) << endl;
+		// wcout << L"   use format string: " << wstring(fmt.getBuffer(), fmt.getBuffer() + fmt.length()) << endl;
+
+		SimpleDateFormat* lpSrcDateFormat = new SimpleDateFormat(fmt, locale, status);
+		lpSrcDateFormat->setTimeZone(*TimeZone::createTimeZone(UnicodeString("EST")));
+		UDate lDate = lpSrcDateFormat->parse(srcString, status);
+
+		if(U_FAILURE(status)) {
+			wcout << L"parse date failed\n";
+		}
+
+		UnicodeString targetString;
+		DateFormat* lpTargetDateFormat = DateFormat::createDateInstance(DateFormat::FULL, Locale::getUS());
+		lpTargetDateFormat->format( lDate, targetString, status);
+		
+		delete lpSrcDateFormat;
+		delete lpTargetDateFormat;
+		return targetString;
+	}
+}
+
+UnicodeString ParseTime(const UnicodeString& srcString = UnicodeString("00:00:00")
+							 , const Locale& locale = Locale::getUS()
+							 , const UnicodeString& fmt = UnicodeString("HH:mm:ss"))
+{
+	UErrorCode status = U_ZERO_ERROR;
+	// try to pase "Fri Jan 01 00:00:00 EST 2010"
+	{
+		// wcout << L"-- parse datetime: " << wstring(srcString.getBuffer(), srcString.getBuffer() + srcString.length()) << endl;
+		// wcout << L"   use format string: " << wstring(fmt.getBuffer(), fmt.getBuffer() + fmt.length()) << endl;
+
+		SimpleDateFormat* lpSrcDateFormat = new SimpleDateFormat(fmt, locale, status);
+		lpSrcDateFormat->setTimeZone(*TimeZone::createTimeZone(UnicodeString("EST")));
+		UDate lDate = lpSrcDateFormat->parse(srcString, status);
+
+		if(U_FAILURE(status)) {
+			wcout << L"parse date failed\n";
+		}
+
+		UnicodeString targetString;
+		DateFormat* lpTargetDateFormat = DateFormat::createTimeInstance(DateFormat::FULL, Locale::getUS());
 		lpTargetDateFormat->format( lDate, targetString, status);
 		
 		delete lpSrcDateFormat;
@@ -110,68 +164,107 @@ UnicodeString ParseDatetime(const UnicodeString& srcString = UnicodeString("Fri 
 }
 
 int main() {
+
 	UnicodeString lResult;
 
-	// test simple format string
+	// test support for datetime format string of each locale
 	{
-		// test US
-		lResult = ParseDatetime(FormatDatetime(Calendar::getNow(), Locale::getUS()), Locale::getUS());
-		wcout << wstring(lResult.getBuffer(), lResult.getBuffer() + lResult.length()) << endl << endl;
+		UnicodeString lFmtStrings[] = {
+			UnicodeString("EEE MMM dd HH:mm:ss z yyyy")
+			, UnicodeString("EEE MMM dd HH:mm:ss 'in' z 'at' yyyy")
+		};
 
-		// test German
-		lResult = ParseDatetime(FormatDatetime(Calendar::getNow(), Locale::getGerman()), Locale::getGerman());
-		wcout << wstring(lResult.getBuffer(), lResult.getBuffer() + lResult.length()) << endl << endl;
+		Locale lLocales[] = {
+			Locale::getUS()
+			, Locale::getGerman()
+			, Locale::getFrance()
+			, Locale::getChina()
+			, Locale::getJapan()
+			, Locale::getKorea()
+			, Locale::getCanadaFrench()
+		};
 
-		// test France
-		lResult = ParseDatetime(FormatDatetime(Calendar::getNow(), Locale::getFrance()), Locale::getFrance());
-		wcout << wstring(lResult.getBuffer(), lResult.getBuffer() + lResult.length()) << endl << endl;
+		int lFmtStringCount = sizeof(lFmtStrings) / sizeof(UnicodeString);
+		int lLocaleCount = sizeof(lLocales) / sizeof(Locale);
 
-		// test China
-		lResult = ParseDatetime(FormatDatetime(Calendar::getNow(), Locale::getChina()), Locale::getChina());
-		wcout << wstring(lResult.getBuffer(), lResult.getBuffer() + lResult.length()) << endl << endl;
+		for(int i = 0; i < lFmtStringCount; i++)
+		{
+			for(int j = 0; j < lLocaleCount; j++)
+			{
+				lResult = ParseDatetime(FormatDatetime(Calendar::getNow(), lLocales[j], lFmtStrings[i]), lLocales[j], lFmtStrings[i]);
+				wcout << wstring(lResult.getBuffer(), lResult.getBuffer() + lResult.length()) << endl << endl;
+			}
+		}
 
-		// test Japan
-		lResult = ParseDatetime(FormatDatetime(Calendar::getNow(), Locale::getJapan()), Locale::getJapan());
-		wcout << wstring(lResult.getBuffer(), lResult.getBuffer() + lResult.length()) << endl << endl;
-
-		// test Korea
-		lResult = ParseDatetime(FormatDatetime(Calendar::getNow(), Locale::getKorea()), Locale::getKorea());
-		wcout << wstring(lResult.getBuffer(), lResult.getBuffer() + lResult.length()) << endl << endl;
-
-		// test CanadaFrench
-		lResult = ParseDatetime(FormatDatetime(Calendar::getNow(), Locale::getCanadaFrench()), Locale::getCanadaFrench());
-		wcout << wstring(lResult.getBuffer(), lResult.getBuffer() + lResult.length()) << endl << endl;
 	}
 
-	// test complicated format string
+	// test support for date format string of each locale
 	{
-		// test US
-		lResult = ParseDatetime(FormatDatetime(Calendar::getNow(), Locale::getUS(), UnicodeString("EEE MMM dd HH:mm:ss 'in' z 'at' yyyy")), Locale::getUS(), UnicodeString("EEE MMM dd HH:mm:ss 'in' z 'at' yyyy"));
-		wcout << wstring(lResult.getBuffer(), lResult.getBuffer() + lResult.length()) << endl << endl;
+		UnicodeString lFmtStrings[] = {
+			UnicodeString("yyyy-MM-dd")
+			, UnicodeString("yyyyMMdd")
+			, UnicodeString("yyyy/MM/dd")
+			, UnicodeString("yyyyMMdd")
+			, UnicodeString("yyyy|MM|dd")
+			, UnicodeString("yyyy '*' MM '*' dd")
+		};
 
-		// test German
-		lResult = ParseDatetime(FormatDatetime(Calendar::getNow(), Locale::getGerman(), UnicodeString("EEE MMM dd HH:mm:ss 'in' z 'at' yyyy")), Locale::getGerman(), UnicodeString("EEE MMM dd HH:mm:ss 'in' z 'at' yyyy"));
-		wcout << wstring(lResult.getBuffer(), lResult.getBuffer() + lResult.length()) << endl << endl;
+		Locale lLocales[] = {
+			Locale::getUS()
+			, Locale::getGerman()
+			, Locale::getFrance()
+			, Locale::getChina()
+			, Locale::getJapan()
+			, Locale::getKorea()
+			, Locale::getCanadaFrench()
+		};
 
-		// test France
-		lResult = ParseDatetime(FormatDatetime(Calendar::getNow(), Locale::getFrance(), UnicodeString("EEE MMM dd HH:mm:ss 'in' z 'at' yyyy")), Locale::getFrance(), UnicodeString("EEE MMM dd HH:mm:ss 'in' z 'at' yyyy"));
-		wcout << wstring(lResult.getBuffer(), lResult.getBuffer() + lResult.length()) << endl << endl;
+		int lFmtStringCount = sizeof(lFmtStrings) / sizeof(UnicodeString);
+		int lLocaleCount = sizeof(lLocales) / sizeof(Locale);
 
-		// test China
-		lResult = ParseDatetime(FormatDatetime(Calendar::getNow(), Locale::getChina(), UnicodeString("EEE MMM dd HH:mm:ss '在' z 'at' yyyy")), Locale::getChina(), UnicodeString("EEE MMM dd HH:mm:ss '在' z 'at' yyyy"));
-		wcout << wstring(lResult.getBuffer(), lResult.getBuffer() + lResult.length()) << endl << endl;
+		for(int i = 0; i < lFmtStringCount; i++)
+		{
+			for(int j = 0; j < lLocaleCount; j++)
+			{
+				lResult = ParseDate(FormatDatetime(Calendar::getNow(), lLocales[j], lFmtStrings[i]), lLocales[j], lFmtStrings[i]);
+				wcout << wstring(lResult.getBuffer(), lResult.getBuffer() + lResult.length()) << endl << endl;
+			}
+		}
 
-		// test Japan
-		lResult = ParseDatetime(FormatDatetime(Calendar::getNow(), Locale::getJapan(), UnicodeString("EEE MMM dd HH:mm:ss 'in' z 'at' yyyy")), Locale::getJapan(), UnicodeString("EEE MMM dd HH:mm:ss 'in' z 'at' yyyy"));
-		wcout << wstring(lResult.getBuffer(), lResult.getBuffer() + lResult.length()) << endl << endl;
+	}
 
-		// test Korea
-		lResult = ParseDatetime(FormatDatetime(Calendar::getNow(), Locale::getKorea(), UnicodeString("EEE MMM dd HH:mm:ss 'in' z 'at' yyyy")), Locale::getKorea(), UnicodeString("EEE MMM dd HH:mm:ss 'in' z 'at' yyyy"));
-		wcout << wstring(lResult.getBuffer(), lResult.getBuffer() + lResult.length()) << endl << endl;
+	// test support for time format string of each locale
+	{
+		UnicodeString lFmtStrings[] = {
+			UnicodeString("HH:mm:ss")
+			, UnicodeString("HH-mm-ss")
+			, UnicodeString("HH/mm/ss")
+			, UnicodeString("HH|mm|ss")
+			, UnicodeString("HH 'x' mm 'x' ss")
+		};
 
-		// test CanadaFrench
-		lResult = ParseDatetime(FormatDatetime(Calendar::getNow(), Locale::getCanadaFrench(),UnicodeString("EEE MMM dd HH:mm:ss 'in' z 'at' yyyy")), Locale::getCanadaFrench(), UnicodeString("EEE MMM dd HH:mm:ss 'in' z 'at' yyyy"));
-		wcout << wstring(lResult.getBuffer(), lResult.getBuffer() + lResult.length()) << endl << endl;
+		Locale lLocales[] = {
+			Locale::getUS()
+			, Locale::getGerman()
+			, Locale::getFrance()
+			, Locale::getChina()
+			, Locale::getJapan()
+			, Locale::getKorea()
+			, Locale::getCanadaFrench()
+		};
+
+		int lFmtStringCount = sizeof(lFmtStrings) / sizeof(UnicodeString);
+		int lLocaleCount = sizeof(lLocales) / sizeof(Locale);
+
+		for(int i = 0; i < lFmtStringCount; i++)
+		{
+			for(int j = 0; j < lLocaleCount; j++)
+			{
+				lResult = ParseTime(FormatDatetime(Calendar::getNow(), lLocales[j], lFmtStrings[i]), lLocales[j], lFmtStrings[i]);
+				wcout << wstring(lResult.getBuffer(), lResult.getBuffer() + lResult.length()) << endl << endl;
+			}
+		}
+
 	}
 
 	return 0;
