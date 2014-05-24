@@ -57,6 +57,8 @@ void CreateTimeZone()
 	wcout << wstring(result.getBuffer(), result.getBuffer() + result.length()) << endl;
 
 	wcout << endl;
+
+	delete tz;
 }
 
 // ref: http://userguide.icu-project.org/formatparse/datetime
@@ -68,13 +70,13 @@ UnicodeString FormatDatetime(const UDate& date = Calendar::getNow()
 	// try to generate "Fri Jan 01 00:00:00 EST 2010"
 	{
 		SimpleDateFormat* lpSrcDateFormat = new SimpleDateFormat(fmt, locale, status);
-
-		lpSrcDateFormat->setTimeZone(*TimeZone::createTimeZone(UnicodeString("EST")));
+		TimeZone* tz = TimeZone::createTimeZone(UnicodeString("EST"));
+		lpSrcDateFormat->setTimeZone(*tz);
 
 		UnicodeString myString;
-
 		lpSrcDateFormat->format(date, myString, status);
 
+		delete tz;
 		delete lpSrcDateFormat;
 		return myString;		
 	}
@@ -118,7 +120,8 @@ UnicodeString ParseDate(const UnicodeString& srcString = UnicodeString("2000-01-
 		// wcout << L"   use format string: " << wstring(fmt.getBuffer(), fmt.getBuffer() + fmt.length()) << endl;
 
 		SimpleDateFormat* lpSrcDateFormat = new SimpleDateFormat(fmt, locale, status);
-		lpSrcDateFormat->setTimeZone(*TimeZone::createTimeZone(UnicodeString("EST")));
+		TimeZone* tz = TimeZone::createTimeZone(UnicodeString("EST"));
+		lpSrcDateFormat->setTimeZone(*tz);
 		UDate lDate = lpSrcDateFormat->parse(srcString, status);
 
 		if(U_FAILURE(status)) {
@@ -129,6 +132,7 @@ UnicodeString ParseDate(const UnicodeString& srcString = UnicodeString("2000-01-
 		DateFormat* lpTargetDateFormat = DateFormat::createDateInstance(DateFormat::FULL, Locale::getUS());
 		lpTargetDateFormat->format( lDate, targetString, status);
 		
+		delete tz;
 		delete lpSrcDateFormat;
 		delete lpTargetDateFormat;
 		return targetString;
@@ -146,7 +150,8 @@ UnicodeString ParseTime(const UnicodeString& srcString = UnicodeString("00:00:00
 		// wcout << L"   use format string: " << wstring(fmt.getBuffer(), fmt.getBuffer() + fmt.length()) << endl;
 
 		SimpleDateFormat* lpSrcDateFormat = new SimpleDateFormat(fmt, locale, status);
-		lpSrcDateFormat->setTimeZone(*TimeZone::createTimeZone(UnicodeString("EST")));
+		TimeZone* tz = TimeZone::createTimeZone(UnicodeString("EST"));
+		lpSrcDateFormat->setTimeZone(*tz);
 		UDate lDate = lpSrcDateFormat->parse(srcString, status);
 
 		if(U_FAILURE(status)) {
@@ -157,6 +162,7 @@ UnicodeString ParseTime(const UnicodeString& srcString = UnicodeString("00:00:00
 		DateFormat* lpTargetDateFormat = DateFormat::createTimeInstance(DateFormat::FULL, Locale::getUS());
 		lpTargetDateFormat->format( lDate, targetString, status);
 		
+		delete tz;
 		delete lpSrcDateFormat;
 		delete lpTargetDateFormat;
 		return targetString;
@@ -166,6 +172,8 @@ UnicodeString ParseTime(const UnicodeString& srcString = UnicodeString("00:00:00
 int main() {
 
 	UnicodeString lResult;
+
+	CreateTimeZone();
 
 	// test support for datetime format string of each locale
 	{

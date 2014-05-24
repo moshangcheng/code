@@ -25,5 +25,13 @@ int main()
 		wcout << lLoc.getLanguage() << endl;
 		wcout << lLoc.getLCID() << endl;
 	}
+
+	{
+		wstring s(L"abc");
+		wcout << s << L" " << s.length() << L" " << s.size() << L" "  << endl;
+
+		s += L"a\0adef";
+		wcout << s << L" " << s.length() << L" " << s.size() << L" " << endl;
+	}
 	return 0;
 }
