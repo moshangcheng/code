@@ -1,3 +1,9 @@
+# eclipse project
+target/
+.classpath
+.project
+.metadata
+
 *.pydevproject
 .metadata
 .gradle
