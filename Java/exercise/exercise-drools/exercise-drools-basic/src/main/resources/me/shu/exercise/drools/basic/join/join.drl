@@ -1,0 +1,13 @@
+package me.shu.exercise.drools.basic.join
+
+query "score" (double s, Item item)
+    Item(this == item, score > s )
+end
+
+query "price" (double p, Item item)
+    Item(this == item, price < p )
+end
+
+query "score and price" (double s, double p)
+    score(s, item;) and price(p, item;)
+end
